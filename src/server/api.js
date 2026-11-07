@@ -19,6 +19,34 @@ function setCache(key, data) {
   cache.set(key, { time: Date.now(), data });
 }
 
+// Utility: parse MacCMS vod_play_url and vod_play_from into structured episode groups
+function parseVodPlayUrl(rawPlayUrl, rawPlayFrom) {
+  if (!rawPlayUrl) return [];
+  const playListGroups = [];
+  const playFroms = (rawPlayFrom || '').split('$$$');
+  const playUrlSets = rawPlayUrl.split('$$$');
+
+  playUrlSets.forEach((setStr, idx) => {
+    const fromName = playFroms[idx] || `线路 ${idx + 1}`;
+    const episodes = [];
+    const epStrings = setStr.split('#');
+    epStrings.forEach((epStr) => {
+      const parts = epStr.split('$');
+      if (parts.length >= 2) {
+        const name = parts[0].trim();
+        const url = parts.slice(1).join('$').trim();
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+          episodes.push({ name, url });
+        }
+      }
+    });
+    if (episodes.length > 0) {
+      playListGroups.push({ from: fromName, episodes });
+    }
+  });
+  return playListGroups;
+}
+
 // 1. Status API
 api.get('/api/status', (req, res) => {
   res.json({
@@ -75,7 +103,7 @@ api.get('/api/bangumi', async (req, res) => {
   }
 });
 
-// 4. Concurrent Search Across 31 Sources
+// 4. Concurrent Search Across Sources (with High-Speed Priority & 1600ms Timeout)
 api.get('/api/search', async (req, res) => {
   const { wd, sourceId, limit = 40 } = req.query;
   if (!wd || !wd.trim()) {
@@ -83,13 +111,19 @@ api.get('/api/search', async (req, res) => {
   }
 
   const keyword = wd.trim();
+  const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}`;
+  const cached = getCache(cacheKey, 600000); // 10 min cache
+  if (cached) {
+    return res.json(cached);
+  }
+
   const targetSources = sourceId
     ? VIDEO_SOURCES.filter((s) => s.id === sourceId)
     : VIDEO_SOURCES;
 
   const searchPromises = targetSources.map(async (source) => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const timeoutId = setTimeout(() => controller.abort(), 1600); // 1.6s fast cut-off
     try {
       const searchUrl = `${source.url}?ac=videolist&wd=${encodeURIComponent(keyword)}`;
       const resp = await fetch(searchUrl, {
@@ -102,23 +136,27 @@ api.get('/api/search', async (req, res) => {
       if (!resp.ok) return [];
       const json = await resp.json();
       const list = json.list || [];
-      return list.map((item) => ({
-        id: `${source.id}_${item.vod_id}`,
-        vod_id: item.vod_id,
-        sourceId: source.id,
-        sourceName: source.name,
-        sourceUrl: source.url,
-        title: item.vod_name,
-        pic: item.vod_pic,
-        actor: item.vod_actor || '',
-        director: item.vod_director || '',
-        remarks: item.vod_remarks || '',
-        area: item.vod_area || '',
-        year: item.vod_year || '',
-        type_name: item.type_name || '',
-        content: item.vod_content || '',
-        playUrlRaw: item.vod_play_url || '',
-      }));
+      return list.map((item) => {
+        const parsedGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
+        return {
+          id: `${source.id}_${item.vod_id}`,
+          vod_id: item.vod_id,
+          sourceId: source.id,
+          sourceName: source.name,
+          sourceUrl: source.url,
+          title: item.vod_name,
+          pic: item.vod_pic,
+          actor: item.vod_actor || '',
+          director: item.vod_director || '',
+          remarks: item.vod_remarks || '',
+          area: item.vod_area || '',
+          year: item.vod_year || '',
+          type_name: item.type_name || '',
+          content: item.vod_content || '',
+          playUrlRaw: item.vod_play_url || '',
+          groups: parsedGroups,
+        };
+      });
     } catch {
       clearTimeout(timeoutId);
       return [];
@@ -145,6 +183,7 @@ api.get('/api/search', async (req, res) => {
                 vod_id: item.vod_id,
                 remarks: item.remarks,
                 playUrlRaw: item.playUrlRaw,
+                groups: item.groups,
               },
             ],
           });
@@ -156,6 +195,7 @@ api.get('/api/search', async (req, res) => {
             vod_id: item.vod_id,
             remarks: item.remarks,
             playUrlRaw: item.playUrlRaw,
+            groups: item.groups,
           });
         }
       }
@@ -167,18 +207,25 @@ api.get('/api/search', async (req, res) => {
     availableSources: group.sources,
   }));
 
-  res.json({
+  const resultData = {
     total: aggregated.length,
     list: aggregated.slice(0, Number(limit)),
-  });
+  };
+
+  setCache(cacheKey, resultData);
+  res.json(resultData);
 });
 
-// 5. Video Details & Episode Parser
+// 5. Video Details & Episode Parser (with Cache)
 api.get('/api/detail', async (req, res) => {
   const { sourceUrl, id } = req.query;
   if (!sourceUrl || !id) {
     return res.status(400).json({ error: 'sourceUrl and id required' });
   }
+
+  const cacheKey = `detail_${sourceUrl}_${id}`;
+  const cached = getCache(cacheKey, 1800000); // 30 min cache
+  if (cached) return res.json(cached);
 
   try {
     const detailUrl = `${sourceUrl}?ac=detail&ids=${id}`;
@@ -190,32 +237,9 @@ api.get('/api/detail', async (req, res) => {
     const item = (json.list && json.list[0]) || null;
     if (!item) return res.status(404).json({ error: 'Not found' });
 
-    const playListGroups = [];
-    const rawPlayUrl = item.vod_play_url || '';
-    const rawPlayFrom = item.vod_play_from || '';
-    const playFroms = rawPlayFrom.split('$$$');
-    const playUrlSets = rawPlayUrl.split('$$$');
+    const playListGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
 
-    playUrlSets.forEach((setStr, idx) => {
-      const fromName = playFroms[idx] || `线路 ${idx + 1}`;
-      const episodes = [];
-      const epStrings = setStr.split('#');
-      epStrings.forEach((epStr) => {
-        const parts = epStr.split('$');
-        if (parts.length >= 2) {
-          const name = parts[0].trim();
-          const url = parts.slice(1).join('$').trim();
-          if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-            episodes.push({ name, url });
-          }
-        }
-      });
-      if (episodes.length > 0) {
-        playListGroups.push({ from: fromName, episodes });
-      }
-    });
-
-    res.json({
+    const detailData = {
       title: item.vod_name,
       pic: item.vod_pic,
       actor: item.vod_actor || '',
@@ -225,7 +249,10 @@ api.get('/api/detail', async (req, res) => {
       remarks: item.vod_remarks || '',
       content: item.vod_content || '',
       groups: playListGroups,
-    });
+    };
+
+    setCache(cacheKey, detailData);
+    res.json(detailData);
   } catch (err) {
     console.error('Detail error:', err.message);
     res.status(500).json({ error: err.message });

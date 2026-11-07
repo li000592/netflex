@@ -65,8 +65,24 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
   }
 }
 
+// Client-side in-memory cache for instant subsequent clicks
+const searchCache = new Map<string, MediaItem[]>();
+const detailCache = new Map<string, VideoDetail>();
+
+export function prefetchVideo(keyword: string): void {
+  if (!keyword || !keyword.trim()) return;
+  const key = `${keyword.trim().toLowerCase()}_all`;
+  if (searchCache.has(key)) return;
+  searchVideos(keyword).catch(() => {});
+}
+
 export async function searchVideos(keyword: string, sourceId?: string): Promise<MediaItem[]> {
   if (!keyword.trim()) return [];
+  const cacheKey = `${keyword.trim().toLowerCase()}_${sourceId || 'all'}`;
+  if (searchCache.has(cacheKey)) {
+    return searchCache.get(cacheKey)!;
+  }
+
   try {
     let url = `${API_BASE}/api/search?wd=${encodeURIComponent(keyword.trim())}&limit=60`;
     if (sourceId) {
@@ -76,7 +92,7 @@ export async function searchVideos(keyword: string, sourceId?: string): Promise<
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const list = data.list || [];
-    return list.map((item: any) => ({
+    const parsed: MediaItem[] = list.map((item: any) => ({
       id: item.id,
       title: item.title,
       cover: item.pic,
@@ -91,8 +107,16 @@ export async function searchVideos(keyword: string, sourceId?: string): Promise<
       area: item.area,
       type_name: item.type_name,
       overview: item.content,
+      groups: item.groups,
       availableSources: item.availableSources,
     }));
+
+    searchCache.set(cacheKey, parsed);
+    if (searchCache.size > 100) {
+      const first = searchCache.keys().next().value;
+      if (first) searchCache.delete(first);
+    }
+    return parsed;
   } catch (err) {
     console.error('Search failed:', err);
     return [];
@@ -100,10 +124,17 @@ export async function searchVideos(keyword: string, sourceId?: string): Promise<
 }
 
 export async function fetchVideoDetail(sourceUrl: string, id: string | number): Promise<VideoDetail | null> {
+  const cacheKey = `${sourceUrl}_${id}`;
+  if (detailCache.has(cacheKey)) {
+    return detailCache.get(cacheKey)!;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/detail?sourceUrl=${encodeURIComponent(sourceUrl)}&id=${encodeURIComponent(id)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
+    const data: VideoDetail = await res.json();
+    detailCache.set(cacheKey, data);
+    return data;
   } catch (err) {
     console.error('Failed to fetch detail:', err);
     return null;

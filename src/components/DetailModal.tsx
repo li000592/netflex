@@ -63,26 +63,52 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     setLoading(true);
 
     const loadData = async () => {
-      // 1. If movie already has sourceUrl and vod_id, fetch directly
-      if (movie.sourceUrl && movie.vod_id) {
-        const res = await fetchVideoDetail(movie.sourceUrl, movie.vod_id);
-        if (isMounted && res) {
-          setDetail(res);
-          setLoading(false);
-          return;
-        }
+      // 1. If movie already has pre-parsed groups, display immediately (0ms)
+      if (movie.groups && movie.groups.length > 0) {
+        setDetail({
+          title: movie.title,
+          pic: movie.cover,
+          actor: movie.actor || '全网公映演员阵容',
+          director: movie.director || '精选导演',
+          year: movie.year || '2024',
+          area: movie.area || '全球',
+          remarks: movie.remarks || '1080P/4K超清',
+          content: movie.overview || `${movie.title} 是当前热门流媒体内容。请点击播放或切换备用线路。`,
+          groups: movie.groups,
+        });
+        setLoading(false);
+        return;
       }
 
-      // 2. Otherwise search across our 31 sources using movie.title
+      // 2. Search across sources (cached in api.ts)
       const searchResults = await searchVideos(movie.title);
       if (!isMounted) return;
 
       if (searchResults.length > 0) {
         setSourceCandidates(searchResults);
         const bestMatch = searchResults[0];
+
+        // If bestMatch already has parsed groups from search, USE IMMEDIATELY! (Zero second delay!)
+        if (bestMatch.groups && bestMatch.groups.length > 0) {
+          setDetail({
+            title: bestMatch.title || movie.title,
+            pic: bestMatch.cover || movie.cover,
+            actor: bestMatch.actor || '全网公映演员阵容',
+            director: bestMatch.director || '精选导演',
+            year: bestMatch.year || movie.year || '2024',
+            area: bestMatch.area || movie.area || '全球',
+            remarks: bestMatch.remarks || movie.remarks || '1080P/4K超清',
+            content: bestMatch.overview || movie.overview || `${movie.title} 是当前热门流媒体内容。请点击播放或切换备用线路。`,
+            groups: bestMatch.groups,
+          });
+          setLoading(false);
+          return;
+        }
+
+        // Fallback to fetchVideoDetail only if groups were not pre-parsed
         if (bestMatch.sourceUrl && bestMatch.vod_id) {
           const res = await fetchVideoDetail(bestMatch.sourceUrl, bestMatch.vod_id);
-          if (isMounted) {
+          if (isMounted && res) {
             setDetail(res);
           }
         }
@@ -110,11 +136,27 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     };
   }, [movie, isOpen]);
 
-  // Switch between discovered source candidates
+  // Switch between discovered source candidates (instant if pre-parsed!)
   const handleSelectSource = async (index: number) => {
     setActiveSourceIndex(index);
     const candidate = sourceCandidates[index];
-    if (candidate && candidate.sourceUrl && candidate.vod_id) {
+    if (!candidate) return;
+
+    if (candidate.groups && candidate.groups.length > 0) {
+      setDetail((prev) =>
+        prev
+          ? {
+              ...prev,
+              remarks: candidate.remarks || prev.remarks,
+              groups: candidate.groups!,
+            }
+          : null
+      );
+      setActiveGroupIndex(0);
+      return;
+    }
+
+    if (candidate.sourceUrl && candidate.vod_id) {
       setLoading(true);
       const res = await fetchVideoDetail(candidate.sourceUrl, candidate.vod_id);
       if (res) {

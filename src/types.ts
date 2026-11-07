@@ -16,6 +16,7 @@ export interface MediaItem {
   sourceId?: string;
   sourceName?: string;
   sourceUrl?: string;
+  groups?: EpisodeGroup[];
   availableSources?: Array<{
     sourceId: string;
     sourceName: string;
@@ -23,6 +24,7 @@ export interface MediaItem {
     vod_id: string | number;
     remarks: string;
     playUrlRaw: string;
+    groups?: EpisodeGroup[];
   }>;
 }
 

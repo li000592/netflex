@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Play, Plus, Check, ChevronDown, Star } from 'lucide-react';
 import { MediaItem } from '../types';
 import { useI18n } from '../i18n';
+import { prefetchVideo } from '../services/api';
 
 interface MovieCardProps {
   movie: MediaItem;
@@ -26,7 +27,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   return (
     <div
       className="relative flex-none select-none transition-all duration-300"
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        prefetchVideo(movie.title);
+      }}
+      onTouchStart={() => prefetchVideo(movie.title)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-end">

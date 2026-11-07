@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Play, Info, Plus, Check } from 'lucide-react';
 import { MediaItem } from '../types';
 import { useI18n } from '../i18n';
+import { prefetchVideo } from '../services/api';
 
 interface HeroBannerProps {
   movie: MediaItem | null;
@@ -19,6 +20,12 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   onToggleFavorite,
 }) => {
   const { t } = useI18n();
+
+  useEffect(() => {
+    if (movie?.title) {
+      prefetchVideo(movie.title);
+    }
+  }, [movie]);
 
   if (!movie) {
     return (

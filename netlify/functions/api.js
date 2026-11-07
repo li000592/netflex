@@ -13,6 +13,34 @@ function setCache(key, data) {
   cache.set(key, { time: Date.now(), data });
 }
 
+// Utility: parse MacCMS vod_play_url and vod_play_from into structured episode groups
+function parseVodPlayUrl(rawPlayUrl, rawPlayFrom) {
+  if (!rawPlayUrl) return [];
+  const playListGroups = [];
+  const playFroms = (rawPlayFrom || '').split('$$$');
+  const playUrlSets = rawPlayUrl.split('$$$');
+
+  playUrlSets.forEach((setStr, idx) => {
+    const fromName = playFroms[idx] || `线路 ${idx + 1}`;
+    const episodes = [];
+    const epStrings = setStr.split('#');
+    epStrings.forEach((epStr) => {
+      const parts = epStr.split('$');
+      if (parts.length >= 2) {
+        const name = parts[0].trim();
+        const url = parts.slice(1).join('$').trim();
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+          episodes.push({ name, url });
+        }
+      }
+    });
+    if (episodes.length > 0) {
+      playListGroups.push({ from: fromName, episodes });
+    }
+  });
+  return playListGroups;
+}
+
 export async function handler(event) {
   const path = event.path.replace(/^\/\.netlify\/functions\/api/, '').replace(/^\/api/, '');
   const params = event.queryStringParameters || {};
@@ -84,7 +112,7 @@ export async function handler(event) {
       return { statusCode: 200, headers, body: JSON.stringify(data) };
     }
 
-    // 4. Concurrent Search Across 31 Sources
+    // 4. Concurrent Search Across Sources (with Fast Cut-off & Pre-parsed Episodes)
     if (path === '/search') {
       const keyword = (params.wd || '').trim();
       const sourceId = params.sourceId;
@@ -94,13 +122,19 @@ export async function handler(event) {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'Keyword required' }) };
       }
 
+      const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}`;
+      const cached = getCache(cacheKey, 600000); // 10 min cache
+      if (cached) {
+        return { statusCode: 200, headers, body: JSON.stringify(cached) };
+      }
+
       const targetSources = sourceId
         ? VIDEO_SOURCES.filter((s) => s.id === sourceId)
         : VIDEO_SOURCES;
 
       const searchPromises = targetSources.map(async (source) => {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const timeoutId = setTimeout(() => controller.abort(), 1600); // 1.6s timeout
         try {
           const searchUrl = `${source.url}?ac=videolist&wd=${encodeURIComponent(keyword)}`;
           const resp = await fetch(searchUrl, {
@@ -111,23 +145,27 @@ export async function handler(event) {
           if (!resp.ok) return [];
           const json = await resp.json();
           const list = json.list || [];
-          return list.map((item) => ({
-            id: `${source.id}_${item.vod_id}`,
-            vod_id: item.vod_id,
-            sourceId: source.id,
-            sourceName: source.name,
-            sourceUrl: source.url,
-            title: item.vod_name,
-            pic: item.vod_pic,
-            actor: item.vod_actor || '',
-            director: item.vod_director || '',
-            remarks: item.vod_remarks || '',
-            area: item.vod_area || '',
-            year: item.vod_year || '',
-            type_name: item.type_name || '',
-            content: item.vod_content || '',
-            playUrlRaw: item.vod_play_url || '',
-          }));
+          return list.map((item) => {
+            const parsedGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
+            return {
+              id: `${source.id}_${item.vod_id}`,
+              vod_id: item.vod_id,
+              sourceId: source.id,
+              sourceName: source.name,
+              sourceUrl: source.url,
+              title: item.vod_name,
+              pic: item.vod_pic,
+              actor: item.vod_actor || '',
+              director: item.vod_director || '',
+              remarks: item.vod_remarks || '',
+              area: item.vod_area || '',
+              year: item.vod_year || '',
+              type_name: item.type_name || '',
+              content: item.vod_content || '',
+              playUrlRaw: item.vod_play_url || '',
+              groups: parsedGroups,
+            };
+          });
         } catch {
           clearTimeout(timeoutId);
           return [];
@@ -152,6 +190,7 @@ export async function handler(event) {
                     vod_id: item.vod_id,
                     remarks: item.remarks,
                     playUrlRaw: item.playUrlRaw,
+                    groups: item.groups,
                   },
                 ],
               });
@@ -163,6 +202,7 @@ export async function handler(event) {
                 vod_id: item.vod_id,
                 remarks: item.remarks,
                 playUrlRaw: item.playUrlRaw,
+                groups: item.groups,
               });
             }
           }
@@ -174,22 +214,31 @@ export async function handler(event) {
         availableSources: group.sources,
       }));
 
+      const resultData = {
+        total: aggregated.length,
+        list: aggregated.slice(0, limit),
+      };
+
+      setCache(cacheKey, resultData);
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
-          total: aggregated.length,
-          list: aggregated.slice(0, limit),
-        }),
+        body: JSON.stringify(resultData),
       };
     }
 
-    // 5. Video Details & Episode Parser
+    // 5. Video Details & Episode Parser (with 30 min cache)
     if (path === '/detail') {
       const sourceUrl = params.sourceUrl;
       const id = params.id;
       if (!sourceUrl || !id) {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'sourceUrl and id required' }) };
+      }
+
+      const cacheKey = `detail_${sourceUrl}_${id}`;
+      const cached = getCache(cacheKey, 1800000);
+      if (cached) {
+        return { statusCode: 200, headers, body: JSON.stringify(cached) };
       }
 
       const detailUrl = `${sourceUrl}?ac=detail&ids=${id}`;
@@ -203,30 +252,27 @@ export async function handler(event) {
         return { statusCode: 404, headers, body: JSON.stringify({ error: 'Not found' }) };
       }
 
-      const playListGroups = [];
-      const rawPlayUrl = item.vod_play_url || '';
-      const rawPlayFrom = item.vod_play_from || '';
-      const playFroms = rawPlayFrom.split('$$$');
-      const playUrlSets = rawPlayUrl.split('$$$');
+      const playListGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
 
-      playUrlSets.forEach((setStr, idx) => {
-        const fromName = playFroms[idx] || `线路 ${idx + 1}`;
-        const episodes = [];
-        const epStrings = setStr.split('#');
-        epStrings.forEach((epStr) => {
-          const parts = epStr.split('$');
-          if (parts.length >= 2) {
-            const name = parts[0].trim();
-            const url = parts.slice(1).join('$').trim();
-            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-              episodes.push({ name, url });
-            }
-          }
-        });
-        if (episodes.length > 0) {
-          playListGroups.push({ from: fromName, episodes });
-        }
-      });
+      const detailData = {
+        title: item.vod_name,
+        pic: item.vod_pic,
+        actor: item.vod_actor || '',
+        director: item.vod_director || '',
+        year: item.vod_year || '',
+        area: item.vod_area || '',
+        remarks: item.vod_remarks || '',
+        content: item.vod_content || '',
+        groups: playListGroups,
+      };
+
+      setCache(cacheKey, detailData);
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(detailData),
+      };
+    }
 
       return {
         statusCode: 200,
