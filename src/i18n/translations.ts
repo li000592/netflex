@@ -8,6 +8,7 @@ export const translations = {
     tvShows: 'TV Shows',
     anime: 'Anime',
     variety: 'Variety',
+    huakai: 'Huakai',
     myList: 'My List',
     searchPlaceholder: 'Titles, people, genres...',
     signIn: 'Sign In',
@@ -80,6 +81,8 @@ export const translations = {
     returnToSelection: 'Go Back',
     selectEpisode: 'Select Episode',
     speed: 'Speed',
+    aspectCover: 'Fill Screen',
+    aspectContain: 'Original Ratio',
 
     // Search Page
     searchTitle: 'Search movies, TV shows, anime, directors, actors...',
@@ -88,6 +91,7 @@ export const translations = {
     catNetflix: '🔴 Overseas / Netflix',
     catSpeed: '⚡ Ultra Fast',
     catClassics: '🎬 Classics',
+    catHuakai: '🌺 Huakai',
     smartRoute: '🎯 Smart Route Selection',
     searchingFor: 'Searching for',
     searchResults: 'Search Results',
@@ -95,6 +99,14 @@ export const translations = {
     noResults: 'No titles found matching',
     noResultsSuggestion: 'Try searching with shorter keywords or choosing another category.',
     popularSearches: 'Popular Searches',
+
+    // Huakai Page
+    huakaiPortalTitle: '🌺 Huakai Special Zone',
+    huakaiPortalSub: 'Independent dedicated channel with fast streaming, kept completely isolated from other categories.',
+    huakaiSearchPlaceholder: 'Search exclusively within Huakai...',
+    prevPage: 'Previous Page',
+    nextPage: 'Next Page',
+    pageIndicator: 'Page',
 
     // My List & History
     watchHistory: 'Watch History',
@@ -148,6 +160,7 @@ export const translations = {
     tvShows: '电视剧',
     anime: '新番动漫',
     variety: '热门综艺',
+    huakai: '花开',
     myList: '我的片单',
     searchPlaceholder: '片名、演员、导演...',
     signIn: '登 录',
@@ -220,6 +233,8 @@ export const translations = {
     returnToSelection: '返回重试',
     selectEpisode: '选集',
     speed: '倍速',
+    aspectCover: '全屏填满',
+    aspectContain: '原始比例',
 
     // Search Page
     searchTitle: '搜索电影、电视剧、动漫、演员、导演...',
@@ -228,6 +243,7 @@ export const translations = {
     catNetflix: '🔴 欧美 / 奈飞',
     catSpeed: '⚡ 极速专区',
     catClassics: '🎬 经典影视',
+    catHuakai: '🌺 花开',
     smartRoute: '🎯 智能优选线路',
     searchingFor: '正在全网检索',
     searchResults: '搜索结果',
@@ -235,6 +251,14 @@ export const translations = {
     noResults: '未找到与此相关的影片',
     noResultsSuggestion: '建议尝试简化搜索词，或者切换其他分类检索。',
     popularSearches: '大家都在搜',
+
+    // Huakai Page
+    huakaiPortalTitle: '🌺 花开专区',
+    huakaiPortalSub: '独家专属分类，超清高速秒播，与其他分类独立隔离。',
+    huakaiSearchPlaceholder: '在花开专区中专属搜索...',
+    prevPage: '上一页',
+    nextPage: '下一页',
+    pageIndicator: '第',
 
     // My List & History
     watchHistory: '观看历史',

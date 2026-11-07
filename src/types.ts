@@ -72,6 +72,8 @@ export interface WatchlistItem {
   rate?: string;
   remarks?: string;
   addedAt: number;
+  sourceUrl?: string;
+  vod_id?: string | number;
 }
 
 export interface UserProfile {
@@ -89,5 +91,5 @@ export interface User {
   currentProfileId: string;
 }
 
-export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'mylist';
+export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'huakai' | 'mylist';
 

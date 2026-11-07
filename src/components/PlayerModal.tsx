@@ -16,6 +16,7 @@ import {
   Layers,
   AlertCircle,
   Loader2,
+  Sun,
 } from 'lucide-react';
 import { Episode, MediaItem, VideoDetail } from '../types';
 import { saveWatchHistory, fetchVideoDetail, getWatchHistory } from '../services/api';
@@ -55,6 +56,58 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Netflix Mobile Gestures State (iPhone / iPad)
+  const [brightness, setBrightness] = useState(1);
+  const [aspectMode, setAspectMode] = useState<'contain' | 'cover'>('contain');
+  const [gestureIndicator, setGestureIndicator] = useState<{
+    type: 'volume' | 'brightness' | 'seek' | 'ripple_left' | 'ripple_right' | 'aspect';
+    value?: number;
+    text?: string;
+  } | null>(null);
+
+  const indicatorTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const touchRef = useRef<{
+    startX: number;
+    startY: number;
+    startTime: number;
+    initialTime: number;
+    initialVol: number;
+    initialBright: number;
+    initialPinchDist: number;
+    mode: 'none' | 'volume' | 'brightness' | 'seek' | 'pinch';
+    targetSeekTime: number;
+  }>({
+    startX: 0,
+    startY: 0,
+    startTime: 0,
+    initialTime: 0,
+    initialVol: 1,
+    initialBright: 1,
+    initialPinchDist: 0,
+    mode: 'none',
+    targetSeekTime: 0,
+  });
+
+  const lastTapRef = useRef<{ time: number; x: number; y: number }>({ time: 0, x: 0, y: 0 });
+  const singleTapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showIndicator = (
+    info: {
+      type: 'volume' | 'brightness' | 'seek' | 'ripple_left' | 'ripple_right' | 'aspect';
+      value?: number;
+      text?: string;
+    },
+    autoHideMs = 800
+  ) => {
+    setGestureIndicator(info);
+    if (indicatorTimerRef.current) clearTimeout(indicatorTimerRef.current);
+    if (autoHideMs > 0) {
+      indicatorTimerRef.current = setTimeout(() => {
+        setGestureIndicator(null);
+      }, autoHideMs);
+    }
+  };
 
   // Detailed episode list & groups for in-player episode switching
   const [detailData, setDetailData] = useState<VideoDetail | null>(null);
@@ -309,6 +362,186 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     setCurrentTime(seconds);
   };
 
+  const handleRewind10s = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const target = Math.max(0, video.currentTime - 10);
+    handleSeek(target);
+    saveProgress(target);
+    showIndicator({ type: 'ripple_left' }, 650);
+  };
+
+  const handleForward10s = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const maxDur = !isNaN(video.duration) && video.duration > 0 ? video.duration : 1000;
+    const target = Math.min(maxDur, video.currentTime + 10);
+    handleSeek(target);
+    saveProgress(target);
+    showIndicator({ type: 'ripple_right' }, 650);
+  };
+
+  // Netflix Mobile Gestures Handlers (iPhone / iPad)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleUserActivity();
+
+    // 1. Two-finger pinch to toggle zoom/fill
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchRef.current.mode = 'pinch';
+      touchRef.current.initialPinchDist = Math.hypot(dx, dy);
+      return;
+    }
+
+    // 2. Single finger start
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const video = videoRef.current;
+      touchRef.current = {
+        startX: touch.clientX,
+        startY: touch.clientY,
+        startTime: Date.now(),
+        initialTime: video ? video.currentTime : 0,
+        initialVol: video ? video.volume : volume,
+        initialBright: brightness,
+        initialPinchDist: 0,
+        mode: 'none',
+        targetSeekTime: video ? video.currentTime : 0,
+      };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Two-finger pinch zoom
+    if (e.touches.length === 2 && touchRef.current.mode === 'pinch') {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const diff = dist - touchRef.current.initialPinchDist;
+
+      if (Math.abs(diff) > 40) {
+        if (diff > 0 && aspectMode !== 'cover') {
+          setAspectMode('cover');
+          showIndicator({ type: 'aspect', text: t('aspectCover') });
+        } else if (diff < 0 && aspectMode !== 'contain') {
+          setAspectMode('contain');
+          showIndicator({ type: 'aspect', text: t('aspectContain') });
+        }
+      }
+      return;
+    }
+
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchRef.current.startX;
+    const deltaY = touch.clientY - touchRef.current.startY;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+
+    // Identify gesture mode if not decided yet
+    if (touchRef.current.mode === 'none') {
+      if (absX > 20 && absX > absY) {
+        touchRef.current.mode = 'seek';
+        if (singleTapTimeoutRef.current) {
+          clearTimeout(singleTapTimeoutRef.current);
+          singleTapTimeoutRef.current = null;
+        }
+      } else if (absY > 20 && absY > absX) {
+        if (singleTapTimeoutRef.current) {
+          clearTimeout(singleTapTimeoutRef.current);
+          singleTapTimeoutRef.current = null;
+        }
+        const isLeft = touchRef.current.startX < window.innerWidth / 2;
+        touchRef.current.mode = isLeft ? 'brightness' : 'volume';
+      }
+    }
+
+    // Execute gesture
+    if (touchRef.current.mode === 'seek') {
+      const video = videoRef.current;
+      const maxDur = video && !isNaN(video.duration) && video.duration > 0 ? video.duration : 1000;
+      const seekDelta = (deltaX / window.innerWidth) * 90; // swipe across full screen = 90s
+      const target = Math.max(0, Math.min(maxDur, touchRef.current.initialTime + seekDelta));
+      touchRef.current.targetSeekTime = target;
+
+      showIndicator({
+        type: 'seek',
+        value: target,
+        text: `${formatTime(target)} / ${formatTime(maxDur)} (${seekDelta >= 0 ? '+' : ''}${Math.round(seekDelta)}s)`,
+      }, 0);
+    } else if (touchRef.current.mode === 'volume') {
+      const step = -deltaY / 200;
+      const newVol = Math.max(0, Math.min(1, touchRef.current.initialVol + step));
+      handleVolumeChange(newVol);
+      showIndicator({ type: 'volume', value: Math.round(newVol * 100) }, 0);
+    } else if (touchRef.current.mode === 'brightness') {
+      const step = -deltaY / 200;
+      const newBright = Math.max(0.3, Math.min(1.5, touchRef.current.initialBright + step));
+      setBrightness(newBright);
+      showIndicator({ type: 'brightness', value: Math.round((newBright / 1.5) * 100) }, 0);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    // 1. Finish seek gesture
+    if (touchRef.current.mode === 'seek') {
+      handleSeek(touchRef.current.targetSeekTime);
+      saveProgress(touchRef.current.targetSeekTime);
+      setTimeout(() => setGestureIndicator(null), 800);
+      touchRef.current.mode = 'none';
+      return;
+    }
+
+    // 2. Finish volume or brightness or pinch
+    if (
+      touchRef.current.mode === 'volume' ||
+      touchRef.current.mode === 'brightness' ||
+      touchRef.current.mode === 'pinch'
+    ) {
+      setTimeout(() => setGestureIndicator(null), 800);
+      touchRef.current.mode = 'none';
+      return;
+    }
+
+    // 3. Single / Double Tap Detection
+    if (e.changedTouches.length === 1) {
+      const touch = e.changedTouches[0];
+      const now = Date.now();
+      const prev = lastTapRef.current;
+      const isDouble =
+        now - prev.time < 320 &&
+        Math.abs(touch.clientX - prev.x) < 60 &&
+        Math.abs(touch.clientY - prev.y) < 60;
+
+      if (isDouble) {
+        if (singleTapTimeoutRef.current) {
+          clearTimeout(singleTapTimeoutRef.current);
+          singleTapTimeoutRef.current = null;
+        }
+
+        const screenW = window.innerWidth;
+        if (touch.clientX < screenW * 0.38) {
+          // Double Tap Left: Rewind 10s
+          handleRewind10s();
+        } else if (touch.clientX > screenW * 0.62) {
+          // Double Tap Right: Forward 10s
+          handleForward10s();
+        } else {
+          // Double Tap Center: Toggle Play/Pause
+          togglePlay();
+        }
+        lastTapRef.current = { time: 0, x: 0, y: 0 };
+      } else {
+        lastTapRef.current = { time: now, x: touch.clientX, y: touch.clientY };
+        singleTapTimeoutRef.current = setTimeout(() => {
+          setControlsVisible((prev) => !prev);
+          singleTapTimeoutRef.current = null;
+        }, 280);
+      }
+    }
+  };
+
   const handleSetSpeed = (speed: number) => {
     const video = videoRef.current;
     if (!video) return;
@@ -335,12 +568,18 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       ref={containerRef}
       onMouseMove={handleUserActivity}
       onClick={handleUserActivity}
-      className="fixed inset-0 z-50 bg-black flex items-center justify-center select-none overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      className="fixed inset-0 z-50 bg-black flex items-center justify-center select-none overflow-hidden touch-none"
     >
       {/* Video Element */}
       <video
         ref={videoRef}
-        className="w-full h-full object-contain cursor-pointer"
+        className={`w-full h-full cursor-pointer transition-all duration-300 ${
+          aspectMode === 'cover' ? 'object-cover' : 'object-contain'
+        }`}
+        style={{ filter: `brightness(${brightness})` }}
         onClick={togglePlay}
         playsInline
         onPlay={() => {
@@ -393,6 +632,73 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-black/40">
           <Loader2 className="w-14 h-14 text-[#E50914] animate-spin mb-3" />
           <span className="text-white text-sm font-semibold tracking-wider">{t('buffering')}</span>
+        </div>
+      )}
+
+      {/* 📱 Netflix Gesture Feedbacks (iPhone / iPad) */}
+
+      {/* 1. Double-Tap Left Ripple (-10s) */}
+      {gestureIndicator?.type === 'ripple_left' && (
+        <div className="absolute left-[12%] sm:left-[18%] top-1/2 -translate-y-1/2 pointer-events-none z-40 flex flex-col items-center justify-center bg-black/70 backdrop-blur-md rounded-full w-24 h-24 border border-white/20 animate-in zoom-in-75 duration-200 shadow-2xl">
+          <RotateCcw className="w-8 h-8 text-white mb-1" />
+          <span className="text-white text-xs font-black tracking-wider">-10s</span>
+        </div>
+      )}
+
+      {/* 2. Double-Tap Right Ripple (+10s) */}
+      {gestureIndicator?.type === 'ripple_right' && (
+        <div className="absolute right-[12%] sm:right-[18%] top-1/2 -translate-y-1/2 pointer-events-none z-40 flex flex-col items-center justify-center bg-black/70 backdrop-blur-md rounded-full w-24 h-24 border border-white/20 animate-in zoom-in-75 duration-200 shadow-2xl">
+          <RotateCw className="w-8 h-8 text-white mb-1" />
+          <span className="text-white text-xs font-black tracking-wider">+10s</span>
+        </div>
+      )}
+
+      {/* 3. Left-Side Vertical Brightness Slider */}
+      {gestureIndicator?.type === 'brightness' && (
+        <div className="absolute left-6 sm:left-12 top-1/2 -translate-y-1/2 pointer-events-none z-40 flex flex-col items-center bg-black/80 backdrop-blur-md px-3.5 py-4 rounded-2xl border border-white/15 shadow-2xl animate-in fade-in duration-150">
+          <Sun className="w-5 h-5 text-yellow-400 mb-3" />
+          <div className="w-2 h-28 bg-white/20 rounded-full relative overflow-hidden mb-2">
+            <div
+              className="w-full bg-yellow-400 absolute bottom-0 transition-all rounded-full"
+              style={{ height: `${gestureIndicator.value}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-bold text-white font-mono">{gestureIndicator.value}%</span>
+        </div>
+      )}
+
+      {/* 4. Right-Side Vertical Volume Slider */}
+      {gestureIndicator?.type === 'volume' && (
+        <div className="absolute right-6 sm:right-12 top-1/2 -translate-y-1/2 pointer-events-none z-40 flex flex-col items-center bg-black/80 backdrop-blur-md px-3.5 py-4 rounded-2xl border border-white/15 shadow-2xl animate-in fade-in duration-150">
+          {gestureIndicator.value && gestureIndicator.value > 0 ? (
+            <Volume2 className="w-5 h-5 text-white mb-3" />
+          ) : (
+            <VolumeX className="w-5 h-5 text-red-500 mb-3" />
+          )}
+          <div className="w-2 h-28 bg-white/20 rounded-full relative overflow-hidden mb-2">
+            <div
+              className="w-full bg-[#E50914] absolute bottom-0 transition-all rounded-full"
+              style={{ height: `${gestureIndicator.value}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-bold text-white font-mono">{gestureIndicator.value}%</span>
+        </div>
+      )}
+
+      {/* 5. Center Seek Progress Indicator */}
+      {gestureIndicator?.type === 'seek' && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-40 flex items-center space-x-2.5 bg-black/85 backdrop-blur-md px-5 py-3 rounded-full border border-white/20 shadow-2xl">
+          <FastForward className="w-5 h-5 text-[#E50914]" />
+          <span className="text-white text-xs sm:text-sm font-bold tracking-wide font-mono">
+            {gestureIndicator.text}
+          </span>
+        </div>
+      )}
+
+      {/* 6. Aspect Ratio Pinch Toast */}
+      {gestureIndicator?.type === 'aspect' && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 pointer-events-none z-40 bg-black/85 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-white text-xs font-bold shadow-2xl">
+          {gestureIndicator.text}
         </div>
       )}
 
@@ -475,7 +781,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
             {/* -10s */}
             <button
-              onClick={() => handleSeek(Math.max(0, currentTime - 10))}
+              onClick={handleRewind10s}
               className="p-1 hover:text-[#E50914] transition-colors"
               title={t('rewind10s')}
             >
@@ -484,7 +790,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
             {/* +10s */}
             <button
-              onClick={() => handleSeek(Math.min(duration, currentTime + 10))}
+              onClick={handleForward10s}
               className="p-1 hover:text-[#E50914] transition-colors"
               title={t('forward10s')}
             >
