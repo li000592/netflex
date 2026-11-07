@@ -1,4 +1,5 @@
 import { User, UserProfile } from '../types';
+import { getSupabase, isSupabaseConfigured } from './supabase';
 
 const AUTH_USER_KEY = 'netflex_current_user';
 const USERS_DB_KEY = 'netflex_registered_users';
@@ -6,27 +7,27 @@ const USERS_DB_KEY = 'netflex_registered_users';
 export const AVATAR_PRESETS = [
   {
     id: 'avatar_red',
-    name: '经典红',
+    name: 'Classic Red',
     url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces',
   },
   {
     id: 'avatar_blue',
-    name: '深邃蓝',
+    name: 'Deep Blue',
     url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces',
   },
   {
     id: 'avatar_yellow',
-    name: '活力黄',
+    name: 'Vibrant Yellow',
     url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces',
   },
   {
     id: 'avatar_green',
-    name: '清新绿',
+    name: 'Fresh Green',
     url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=faces',
   },
   {
     id: 'avatar_kids',
-    name: '少儿专区',
+    name: 'Kids Zone',
     url: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=150&h=150&fit=crop&crop=faces',
   },
 ];
@@ -65,7 +66,6 @@ export function saveCurrentUser(user: User | null): void {
   try {
     if (user) {
       localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-      // update in users db
       const db = getRegisteredUsers();
       if (db[user.email]) {
         db[user.email].user = user;
@@ -77,38 +77,71 @@ export function saveCurrentUser(user: User | null): void {
   } catch {}
 }
 
-export function login(account: string, password: string): { success: boolean; user?: User; error?: string } {
+export async function login(
+  account: string,
+  password: string
+): Promise<{ success: boolean; user?: User; error?: string }> {
   const cleanAccount = account.trim().toLowerCase();
-  const db = getRegisteredUsers();
 
-  // Find user by email or username
+  // 1. Try Supabase Cloud Login if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('netflex_accounts')
+        .select('*')
+        .or(`email.ilike.${cleanAccount},username.ilike.${cleanAccount}`)
+        .limit(1);
+
+      if (!error && data && data.length > 0) {
+        const record = data[0];
+        if (record.password_hash === password) {
+          const user: User = {
+            id: record.id,
+            email: record.email,
+            username: record.username,
+            profiles: record.profiles || [],
+            currentProfileId: record.current_profile_id || 'profile_main',
+          };
+          saveCurrentUser(user);
+          return { success: true, user };
+        } else {
+          return { success: false, error: 'Password incorrect' };
+        }
+      }
+    } catch (err) {
+      console.warn('Supabase cloud login error:', err);
+    }
+  }
+
+  // 2. Fallback to LocalStorage
+  const db = getRegisteredUsers();
   const entry = Object.values(db).find(
     (e) => e.user.email.toLowerCase() === cleanAccount || e.user.username.toLowerCase() === cleanAccount
   );
 
   if (!entry) {
-    return { success: false, error: '账号不存在，请检查或点击下方立即注册' };
+    return { success: false, error: 'Account not found. Please register below.' };
   }
 
   if (entry.passwordHash !== password) {
-    return { success: false, error: '密码错误，请重新输入' };
+    return { success: false, error: 'Password incorrect' };
   }
 
   saveCurrentUser(entry.user);
   return { success: true, user: entry.user };
 }
 
-export function register(email: string, username: string, password: string): { success: boolean; user?: User; error?: string } {
+export async function register(
+  email: string,
+  username: string,
+  password: string
+): Promise<{ success: boolean; user?: User; error?: string }> {
   const cleanEmail = email.trim().toLowerCase();
   const cleanUsername = username.trim();
 
   if (!cleanEmail || !cleanUsername || !password) {
-    return { success: false, error: '请完整填写注册信息' };
-  }
-
-  const db = getRegisteredUsers();
-  if (db[cleanEmail]) {
-    return { success: false, error: '该邮箱已被注册，请直接登录' };
+    return { success: false, error: 'Please fill in all registration fields' };
   }
 
   const newUser: User = {
@@ -124,18 +157,41 @@ export function register(email: string, username: string, password: string): { s
       },
       {
         id: 'profile_kids',
-        name: '少儿',
+        name: 'Kids',
         avatar: AVATAR_PRESETS[4].url,
         isKids: true,
       },
     ],
   };
 
+  // 1. Save to Supabase Cloud if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { error } = await supabase.from('netflex_accounts').insert([
+        {
+          id: newUser.id,
+          email: cleanEmail,
+          username: cleanUsername,
+          password_hash: password,
+          profiles: newUser.profiles,
+          current_profile_id: newUser.currentProfileId,
+        },
+      ]);
+      if (error && error.code === '23505') {
+        return { success: false, error: 'This email is already registered in cloud. Please sign in.' };
+      }
+    } catch (err) {
+      console.warn('Supabase cloud register error:', err);
+    }
+  }
+
+  // 2. Save to LocalStorage
+  const db = getRegisteredUsers();
   db[cleanEmail] = {
     user: newUser,
     passwordHash: password,
   };
-
   saveRegisteredUsers(db);
   saveCurrentUser(newUser);
 
@@ -154,27 +210,27 @@ export function quickDemoLogin(): User {
   const demoUser: User = {
     id: 'user_guest_demo',
     email: demoEmail,
-    username: 'Netflix 尊贵会员',
+    username: 'Netflix Member',
     currentProfileId: 'profile_1',
     profiles: [
       {
         id: 'profile_1',
-        name: '主人',
+        name: 'Primary',
         avatar: AVATAR_PRESETS[0].url,
       },
       {
         id: 'profile_2',
-        name: '朋友',
+        name: 'Friend',
         avatar: AVATAR_PRESETS[1].url,
       },
       {
         id: 'profile_3',
-        name: '家庭影院',
+        name: 'Living Room',
         avatar: AVATAR_PRESETS[2].url,
       },
       {
         id: 'profile_4',
-        name: '少儿频道',
+        name: 'Kids',
         avatar: AVATAR_PRESETS[4].url,
         isKids: true,
       },
@@ -191,7 +247,7 @@ export function quickDemoLogin(): User {
   return demoUser;
 }
 
-export function switchProfile(profileId: string): User | null {
+export async function switchProfile(profileId: string): Promise<User | null> {
   const user = getCurrentUser();
   if (!user) return null;
   const target = user.profiles.find((p) => p.id === profileId);
@@ -199,9 +255,25 @@ export function switchProfile(profileId: string): User | null {
 
   user.currentProfileId = profileId;
   saveCurrentUser(user);
+
+  // Sync to Supabase Cloud if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase
+        .from('netflex_accounts')
+        .update({ current_profile_id: profileId })
+        .eq('id', user.id);
+    } catch {}
+  }
+
   return user;
 }
 
 export function logout(): void {
   saveCurrentUser(null);
+  const supabase = getSupabase();
+  if (supabase) {
+    supabase.auth.signOut().catch(() => {});
+  }
 }

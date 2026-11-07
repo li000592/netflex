@@ -9,6 +9,7 @@ import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
+import { CloudSyncModal } from './components/CloudSyncModal';
 import { useI18n, LanguageSelector } from './i18n';
 import {
   fetchDoubanCatalog,
@@ -17,6 +18,7 @@ import {
   toggleWatchlist,
   searchVideos,
   fetchVideoDetail,
+  syncCloudData,
 } from './services/api';
 import {
   getCurrentUser,
@@ -35,6 +37,7 @@ export const App: React.FC = () => {
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(() => getCurrentProfile());
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [cloudSyncModalOpen, setCloudSyncModalOpen] = useState(false);
 
   // Row Data State
   const [heroMovie, setHeroMovie] = useState<MediaItem | null>(null);
@@ -64,6 +67,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     reloadWatchlist();
+    if (currentUser) {
+      syncCloudData().then(() => reloadWatchlist());
+    }
   }, [currentUser, currentProfile]);
 
   const handleToggleFavorite = (movie: MediaItem) => {
@@ -212,6 +218,7 @@ export const App: React.FC = () => {
         onOpenProfileModal={() => setProfileModalOpen(true)}
         onLogout={handleLogout}
         onSwitchProfile={handleSwitchProfile}
+        onOpenCloudSync={() => setCloudSyncModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -419,6 +426,18 @@ export const App: React.FC = () => {
         isOpen={profileModalOpen}
         onClose={() => setProfileModalOpen(false)}
         onSelectProfile={(p) => handleSwitchProfile(p.id)}
+      />
+
+      {/* Supabase Cloud Sync Modal */}
+      <CloudSyncModal
+        isOpen={cloudSyncModalOpen}
+        onClose={() => setCloudSyncModalOpen(false)}
+        onConfigChanged={() => {
+          reloadWatchlist();
+          if (currentUser) {
+            syncCloudData().then(() => reloadWatchlist());
+          }
+        }}
       />
 
       {/* Netflix Footer with Language Selector */}

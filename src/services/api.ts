@@ -1,5 +1,13 @@
 import { MediaItem, VideoDetail, WatchHistoryItem, WatchlistItem } from '../types';
 import { getCurrentUser } from './auth';
+import {
+  cloudFetchWatchlist,
+  cloudSaveWatchlist,
+  cloudFetchWatchHistory,
+  cloudSaveWatchHistory,
+  cloudClearWatchHistory,
+  isSupabaseConfigured,
+} from './supabase';
 
 const API_BASE = ''; // Relative path, works for both localhost:3000 and Netlify
 
@@ -115,12 +123,43 @@ export function getWatchHistory(): WatchHistoryItem[] {
   }
 }
 
+// Background sync helper from cloud
+export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; history: WatchHistoryItem[] }> {
+  const user = getCurrentUser();
+  if (!user || !isSupabaseConfigured()) {
+    return { watchlist: getWatchlist(), history: getWatchHistory() };
+  }
+
+  const [cloudList, cloudHist] = await Promise.all([
+    cloudFetchWatchlist(user.id, user.currentProfileId),
+    cloudFetchWatchHistory(user.id, user.currentProfileId),
+  ]);
+
+  if (cloudList && cloudList.length > 0) {
+    localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(cloudList));
+  }
+  if (cloudHist && cloudHist.length > 0) {
+    localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(cloudHist));
+  }
+
+  return {
+    watchlist: cloudList.length > 0 ? cloudList : getWatchlist(),
+    history: cloudHist.length > 0 ? cloudHist : getWatchHistory(),
+  };
+}
+
 export function saveWatchHistory(item: WatchHistoryItem): void {
   try {
     const key = getStorageKey(BASE_HISTORY_KEY);
     const history = getWatchHistory().filter((h) => h.id !== item.id);
     history.unshift(item);
     localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
+
+    // Cloud sync
+    const user = getCurrentUser();
+    if (user && isSupabaseConfigured()) {
+      cloudSaveWatchHistory(user.id, user.currentProfileId, item);
+    }
   } catch (err) {
     console.error('Failed to save history:', err);
   }
@@ -129,6 +168,10 @@ export function saveWatchHistory(item: WatchHistoryItem): void {
 export function clearWatchHistory(): void {
   try {
     localStorage.removeItem(getStorageKey(BASE_HISTORY_KEY));
+    const user = getCurrentUser();
+    if (user && isSupabaseConfigured()) {
+      cloudClearWatchHistory(user.id, user.currentProfileId);
+    }
   } catch {}
 }
 
@@ -153,6 +196,13 @@ export function toggleWatchlist(item: WatchlistItem): boolean {
       updated = [item, ...list];
     }
     localStorage.setItem(key, JSON.stringify(updated));
+
+    // Cloud sync
+    const user = getCurrentUser();
+    if (user && isSupabaseConfigured()) {
+      cloudSaveWatchlist(user.id, user.currentProfileId, item, exists ? 'remove' : 'add');
+    }
+
     return !exists;
   } catch {
     return false;
