@@ -470,3 +470,321 @@ export function toggleWatchlist(item: WatchlistItem): boolean {
 export function isInWatchlist(id: string): boolean {
   return getWatchlist().some((w) => w.id === id);
 }
+
+// -------------------------------------------------------------
+// Related Series & Franchise Recommendations
+// -------------------------------------------------------------
+
+const relatedCache = new Map<string, MediaItem[]>();
+
+export function cleanTitle(t?: string): string {
+  if (!t) return '';
+  return t
+    .replace(/\[[^\]]+\]|\([^)]+\)|【[^】]+】|4K|1080P|720P|HD|BD|国语|粤语|中字|未删减|完整版|公映版|重制版|修复版/gi, '')
+    .trim();
+}
+
+export function normalizeTitle(t?: string): string {
+  return (t || '')
+    .toLowerCase()
+    .replace(/[·\s:：\-—_.,/()（）\[\]【】]/g, '');
+}
+
+export function extractFranchiseTerms(rawTitle: string): string[] {
+  const cleaned = cleanTitle(rawTitle);
+  const terms = new Set<string>();
+
+  const stripNumbersAndSubtitles = (str: string) => {
+    return str
+      .replace(/(第[0-9一二三四五六七八九十]+[季部集期卷篇章]|season\s*\d+|s\d+|part\s*\d+|\s*\d+$|[一二三四五六七八九十]+$)/i, '')
+      .replace(/[·\s]/g, '')
+      .trim();
+  };
+
+  // Subtitle splitters
+  const splitters = ['：', ':', ' - ', '—', '之'];
+  for (const s of splitters) {
+    if (cleaned.includes(s)) {
+      const prefix = cleaned.split(s)[0].trim();
+      if (prefix.length >= 2) {
+        terms.add(stripNumbersAndSubtitles(prefix));
+        terms.add(prefix.replace(/[·\s]/g, ''));
+        terms.add(prefix);
+      }
+    }
+  }
+
+  // Handle "与" (e.g. 哈利·波特与魔法石, 波西·杰克逊与神火之盗, but preserve 速度与激情)
+  if (cleaned.includes('与') && !cleaned.startsWith('速度与激情')) {
+    const prefix = cleaned.split('与')[0].trim();
+    if (prefix.length >= 3) {
+      terms.add(stripNumbersAndSubtitles(prefix));
+      terms.add(prefix.replace(/[·\s]/g, ''));
+      terms.add(prefix);
+    }
+  }
+
+  // Strip trailing numbers/seasons from the main title
+  const noNum = stripNumbersAndSubtitles(cleaned);
+  if (noNum.length >= 2) {
+    terms.add(noNum);
+  }
+
+  terms.add(cleaned.replace(/[·\s]/g, ''));
+  terms.add(cleaned);
+
+  return Array.from(terms)
+    .filter((t) => t && t.length >= 2)
+    .sort((a, b) => a.length - b.length);
+}
+
+const SUBTITLE_SEQUEL_MAP: Array<{ pattern: RegExp; order: number }> = [
+  // Harry Potter
+  { pattern: /(魔法石|神秘的魔法石|Sorcerer|Philosopher)/i, order: 1 },
+  { pattern: /(密室|消失的密室|Chamber of Secrets)/i, order: 2 },
+  { pattern: /(阿兹卡班|Azkaban)/i, order: 3 },
+  { pattern: /(火焰杯|火杯的考验|Goblet of Fire)/i, order: 4 },
+  { pattern: /(凤凰社|凤凰令|Order of the Phoenix)/i, order: 5 },
+  { pattern: /(混血王子|混血王子的背叛|Half-Blood Prince)/i, order: 6 },
+  { pattern: /(死亡圣器.*(上|1)|死神的圣物.*(上|1)|Deathly Hallows.*(Part 1|1))/i, order: 7.1 },
+  { pattern: /(死亡圣器.*(下|2)|死神的圣物.*(下|2)|Deathly Hallows.*(Part 2|2))/i, order: 7.2 },
+  { pattern: /(死亡圣器|死神的圣物|Deathly Hallows)/i, order: 7 },
+  // Fantastic Beasts
+  { pattern: /(神奇动物在哪里|怪兽与它们的产地)/i, order: 8.1 },
+  { pattern: /(格林德沃之罪|葛林戴华德的罪行)/i, order: 8.2 },
+  { pattern: /(邓布利多之谜|邓不利多的秘密)/i, order: 8.3 },
+
+  // Lord of the Rings
+  { pattern: /(护戒使者|魔戒现身|Fellowship of the Ring)/i, order: 1 },
+  { pattern: /(双塔奇兵|双城奇谋|Two Towers)/i, order: 2 },
+  { pattern: /(王者无敌|王者归来|王者再临|Return of the King)/i, order: 3 },
+
+  // Hobbit
+  { pattern: /(意外之旅|Unexpected Journey)/i, order: 1 },
+  { pattern: /(史矛革之战|荒谷恶龙|Desolation of Smaug)/i, order: 2 },
+  { pattern: /(五军之战|Battle of the Five Armies)/i, order: 3 },
+
+  // MCU Spider-Man
+  { pattern: /(英雄归来|返校日|Homecoming)/i, order: 1 },
+  { pattern: /(英雄远征|离家日|Far From Home)/i, order: 2 },
+  { pattern: /(英雄无归|无回之战|No Way Home)/i, order: 3 },
+
+  // Dark Knight
+  { pattern: /(侠影之谜|开战时刻|Batman Begins)/i, order: 1 },
+  { pattern: /(黑暗骑士(?!崛起)|The Dark Knight(?! Rises))/i, order: 2 },
+  { pattern: /(黑暗骑士崛起|黎明升起|Dark Knight Rises)/i, order: 3 },
+
+  // Avengers
+  { pattern: /(复仇者联盟(?!2|3|4|：|:|\d)|The Avengers(?!:))/i, order: 1 },
+  { pattern: /(奥创纪元|Age of Ultron)/i, order: 2 },
+  { pattern: /(无限战争|Infinity War)/i, order: 3 },
+  { pattern: /(终局之战|Endgame)/i, order: 4 },
+];
+
+const CHN_NUM_MAP: Record<string, number> = {
+  一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5,
+  六: 6, 七: 7, 八: 8, 九: 9, 十: 10,
+  十一: 11, 十二: 12, 十三: 13, 十四: 14, 十五: 15,
+};
+
+export function getSequelNumber(title: string, franchise?: string): number | null {
+  if (!title) return null;
+
+  // 1. Check known subtitle mapping
+  for (const item of SUBTITLE_SEQUEL_MAP) {
+    if (item.pattern.test(title)) {
+      return item.order;
+    }
+  }
+
+  // 2. Explicit "第X部" / "第X季" / "第X集"
+  const chnMatch = title.match(/第([0-9一二三四五六七八九十]+)[部季集期卷篇章]/);
+  if (chnMatch) {
+    const rawNum = chnMatch[1];
+    if (CHN_NUM_MAP[rawNum]) return CHN_NUM_MAP[rawNum];
+    const n = parseInt(rawNum, 10);
+    if (!isNaN(n)) return n;
+  }
+
+  // 3. Season / S / Part / Vol patterns
+  const seasonMatch = title.match(/(?:season|s|part|vol|volume)\s*(\d+)/i);
+  if (seasonMatch) {
+    return parseInt(seasonMatch[1], 10);
+  }
+
+  // 4. Roman numerals
+  const romanMap: Record<string, number> = {
+    i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6, vii: 7, viii: 8, ix: 9, x: 10,
+  };
+  const romanMatch = title.match(/[\s:：_\-]([ivx]{1,4})(?:[\s:：_\-]|$)/i);
+  if (romanMatch) {
+    const r = romanMatch[1].toLowerCase();
+    if (romanMap[r]) return romanMap[r];
+  }
+
+  // 5. Trailing digits after franchise or name, e.g. "流浪地球2", "唐人街探案3", "叶问4"
+  const trailingMatch = title.match(/(\d+)(?:[：:\s\-—]|完结|终结|大结局|$)/);
+  if (trailingMatch) {
+    const n = parseInt(trailingMatch[1], 10);
+    if (n > 0 && n < 100) return n;
+  }
+
+  // 6. Trailing single Chinese numeral: e.g. "封神第一部" or "封神一"
+  const chnTrailing = title.match(/([一二三四五六七八九十])(?:[：:\s\-—]|完结|终结|$)/);
+  if (chnTrailing && CHN_NUM_MAP[chnTrailing[1]]) {
+    return CHN_NUM_MAP[chnTrailing[1]];
+  }
+
+  // 7. Base franchise match (Part 1)
+  if (franchise && normalizeTitle(cleanTitle(title)) === normalizeTitle(cleanTitle(franchise))) {
+    return 1;
+  }
+
+  return null;
+}
+
+export function getSequelBadge(
+  item: { title: string; year?: string; remarks?: string },
+  sequelOrder: number | null
+): string {
+  if (sequelOrder !== null) {
+    if (sequelOrder === 7.1) return '第 7 部(上)';
+    if (sequelOrder === 7.2) return '第 7 部(下)';
+    if (sequelOrder === 8.1) return '前传 1';
+    if (sequelOrder === 8.2) return '前传 2';
+    if (sequelOrder === 8.3) return '前传 3';
+
+    const isSeason = /(季|season|s\d+)/i.test(item.title);
+    return isSeason ? `第 ${sequelOrder} 季` : `第 ${sequelOrder} 部`;
+  }
+
+  if (item.remarks && /^(4K|HD|1080P|完结|全集)$/i.test(item.remarks.trim())) {
+    return item.remarks.trim();
+  }
+
+  return item.year ? `${item.year}` : '';
+}
+
+export async function fetchRelatedSeries(
+  movie: MediaItem,
+  huakaiEnabled: boolean = false
+): Promise<MediaItem[]> {
+  if (!movie || !movie.title) return [];
+
+  const rawTitle = movie.title;
+  const currentNormalized = normalizeTitle(cleanTitle(rawTitle));
+  const franchiseTerms = extractFranchiseTerms(rawTitle);
+  const primaryFranchise = franchiseTerms[0] || rawTitle;
+
+  const cacheKey = `related_${currentNormalized}_${huakaiEnabled ? 'hk1' : 'hk0'}`;
+  if (relatedCache.has(cacheKey)) {
+    return relatedCache.get(cacheKey)!;
+  }
+
+  const isJunk = (t: string) =>
+    /(解说|预告|花絮|片段|盘点|回顾|混剪|讲解|吐槽|点评|特辑|访谈|纪录片)/i.test(t);
+
+  const candidatePool: MediaItem[] = [];
+
+  // 1. Search candidate franchise terms
+  for (const term of franchiseTerms) {
+    if (!term || term.length < 2) continue;
+    const results = await searchVideos(term, undefined, undefined, huakaiEnabled);
+    if (results.length > 0) {
+      candidatePool.push(...results);
+      if (candidatePool.length >= 12) break;
+    }
+  }
+
+  // 2. If franchise search yields no other candidates, fallback to director search
+  if (candidatePool.length <= 1 && movie.director && movie.director !== '精选导演') {
+    const directorClean = movie.director.split(/[,/、\s]/)[0]?.trim();
+    if (directorClean && directorClean.length >= 2) {
+      const results = await searchVideos(directorClean, undefined, undefined, huakaiEnabled);
+      candidatePool.push(...results);
+    }
+  }
+
+  // 3. Filter candidates
+  const primaryNorm = normalizeTitle(primaryFranchise);
+  const filtered = candidatePool.filter((item) => {
+    if (!item.title) return false;
+    const itemNorm = normalizeTitle(cleanTitle(item.title));
+
+    // Exclude current movie
+    if (itemNorm === currentNormalized) return false;
+    if (movie.vod_id && item.vod_id && item.vod_id === movie.vod_id && item.sourceId === movie.sourceId) {
+      return false;
+    }
+    if (movie.id && item.id && item.id === movie.id) return false;
+
+    // Filter junk clips
+    if (isJunk(item.title)) return false;
+
+    // Must match at least one franchise term if primaryNorm was established
+    if (primaryNorm.length >= 2) {
+      const matchesAny = franchiseTerms.some((f) => {
+        const fn = normalizeTitle(f);
+        return fn.length >= 2 && (itemNorm.includes(fn) || fn.includes(itemNorm));
+      });
+      if (!matchesAny && (!movie.director || !item.director?.includes(movie.director))) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // 4. Deduplicate candidates by clean title
+  const dedupedMap = new Map<string, MediaItem>();
+  for (const item of filtered) {
+    const key = normalizeTitle(cleanTitle(item.title));
+    const existing = dedupedMap.get(key);
+    if (!existing) {
+      dedupedMap.set(key, item);
+    } else {
+      // Prefer candidate with valid cover
+      if (hasValidCover(item.cover) && !hasValidCover(existing.cover)) {
+        dedupedMap.set(key, item);
+      }
+    }
+  }
+
+  const deduped = Array.from(dedupedMap.values()).map((item) => {
+    const seqOrder = getSequelNumber(item.title, primaryFranchise);
+    return {
+      ...item,
+      sequelOrder: seqOrder,
+      sequelBadge: getSequelBadge(item, seqOrder),
+    };
+  });
+
+  // 5. Sort candidates
+  // Order priority:
+  // 1) Items with valid cover first
+  // 2) Sequel number ascending (1, 2, 3...)
+  // 3) Chronological release year ascending
+  deduped.sort((a, b) => {
+    const coverA = hasValidCover(a.cover) ? 1 : 0;
+    const coverB = hasValidCover(b.cover) ? 1 : 0;
+    if (coverA !== coverB) return coverB - coverA;
+
+    const seqA = a.sequelOrder ?? null;
+    const seqB = b.sequelOrder ?? null;
+    if (seqA !== null && seqB !== null) {
+      return seqA - seqB;
+    }
+    if (seqA !== null) return -1;
+    if (seqB !== null) return 1;
+
+    const yA = parseInt(a.year || '0', 10);
+    const yB = parseInt(b.year || '0', 10);
+    if (yA && yB) return yA - yB;
+
+    return a.title.localeCompare(b.title);
+  });
+
+  const finalResults = deduped.slice(0, 20);
+  relatedCache.set(cacheKey, finalResults);
+  return finalResults;
+}

@@ -30,7 +30,6 @@ export const VIDEO_SOURCES = [
   { id: 'feifan', name: '非凡资源', url: 'https://cj.ffzyapi.com/api.php/provide/vod', category: 'general', priority: 2 },
   { id: 'baofeng', name: '暴风资源', url: 'https://bfzyapi.com/api.php/provide/vod', category: 'general', priority: 3 },
   { id: 'baidu', name: '百度资源', url: 'https://api.apibdzy.com/api.php/provide/vod', category: 'general', priority: 4 },
-  { id: 'wolong', name: '卧龙资源', url: 'https://collect.wolongzyw.com/api.php/provide/vod', category: 'general', priority: 5 },
   { id: 'huya', name: '虎牙资源', url: 'https://www.huyaapi.com/api.php/provide/vod', category: 'general', priority: 6 },
   { id: 'jinying', name: '金鹰资源', url: 'https://jyzyapi.com/api.php/provide/vod', category: 'general', priority: 7 },
   { id: 'zuid', name: '最大资源', url: 'https://api.zuidapi.com/api.php/provide/vod', category: 'general', priority: 8 },

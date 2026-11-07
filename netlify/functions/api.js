@@ -13,7 +13,22 @@ function setCache(key, data) {
   cache.set(key, { time: Date.now(), data });
 }
 
-// Utility: parse MacCMS vod_play_url and vod_play_from into structured episode groups
+// Helper: check if a URL is a directly playable media stream (not an unplayable web player/share page)
+function isPlayableStreamUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const clean = url.trim().toLowerCase();
+  if (!clean.startsWith('http://') && !clean.startsWith('https://')) return false;
+  // Non-stream web player / share / embed iframe pages that cannot be played inside <video> or Hls.js
+  if (clean.includes('/share/') || (clean.includes('/play/') && !clean.includes('.m3u8') && !clean.includes('.mp4'))) {
+    return false;
+  }
+  if (clean.endsWith('.html') || clean.endsWith('.htm') || clean.endsWith('.php')) {
+    return false;
+  }
+  return true;
+}
+
+// Utility: parse MacCMS vod_play_url and vod_play_from into structured episode groups with priority for playable direct streams
 function parseVodPlayUrl(rawPlayUrl, rawPlayFrom) {
   if (!rawPlayUrl) return [];
   const playListGroups = [];
@@ -21,24 +36,66 @@ function parseVodPlayUrl(rawPlayUrl, rawPlayFrom) {
   const playUrlSets = rawPlayUrl.split('$$$');
 
   playUrlSets.forEach((setStr, idx) => {
-    const fromName = playFroms[idx] || `线路 ${idx + 1}`;
+    const rawFrom = (playFroms[idx] || '').trim();
+    const fromName = rawFrom || `线路 ${idx + 1}`;
     const episodes = [];
-    const epStrings = setStr.split('#');
+    // Split episodes by #, \r\n, \n, or \r
+    const epStrings = setStr.split(/#|[\r\n]+/);
     epStrings.forEach((epStr) => {
-      const parts = epStr.split('$');
+      const trimmed = epStr.trim();
+      if (!trimmed) return;
+      const parts = trimmed.split('$');
+      let name = '';
+      let url = '';
       if (parts.length >= 2) {
-        const name = parts[0].trim();
-        const url = parts.slice(1).join('$').trim();
-        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-          episodes.push({ name, url });
-        }
+        name = parts[0].trim();
+        url = parts.slice(1).join('$').replace(/[\r\n\t]/g, '').trim();
+      } else if (parts.length === 1 && /^https?:\/\//i.test(parts[0].trim())) {
+        name = `第 ${episodes.length + 1} 集`;
+        url = parts[0].replace(/[\r\n\t]/g, '').trim();
+      }
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        episodes.push({ name: name || `第 ${episodes.length + 1} 集`, url });
       }
     });
     if (episodes.length > 0) {
       playListGroups.push({ from: fromName, episodes });
     }
   });
-  return playListGroups;
+
+  if (playListGroups.length <= 1) return playListGroups;
+
+  // Rank and prioritize playable stream lines (e.g. .m3u8, .mp4) over web player / share wrapper pages
+  const scoredGroups = playListGroups.map((group) => {
+    let m3u8Count = 0;
+    let playableCount = 0;
+    group.episodes.forEach((ep) => {
+      const u = ep.url.toLowerCase();
+      if (u.includes('.m3u8') || u.includes('.mp4') || u.includes('.m4v') || u.includes('.webm')) {
+        m3u8Count++;
+        playableCount++;
+      } else if (isPlayableStreamUrl(ep.url)) {
+        playableCount++;
+      }
+    });
+
+    const fromLower = group.from.toLowerCase();
+    const isM3u8From = fromLower.includes('m3u8');
+    const isWebEmbed = fromLower.includes('yun') || fromLower.includes('share') || fromLower.includes('dp');
+
+    let score = m3u8Count * 2 + playableCount;
+    if (isM3u8From) score += 100;
+    if (isWebEmbed && !isM3u8From) score -= 50;
+
+    return { group, score, m3u8Count, playableCount };
+  });
+
+  // If there are groups with valid media streams, filter out unplayable web-player iframe wrapper pages
+  const hasPlayable = scoredGroups.some((sg) => sg.playableCount > 0);
+  const filtered = hasPlayable ? scoredGroups.filter((sg) => sg.playableCount > 0) : scoredGroups;
+
+  filtered.sort((a, b) => b.score - a.score);
+  return filtered.map((sg) => sg.group);
 }
 
 function hasValidCover(cover) {

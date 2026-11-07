@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, Airplay } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
-import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover } from '../services/api';
+import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover, fetchRelatedSeries } from '../services/api';
 import { useI18n } from '../i18n';
 
 interface DetailModalProps {
@@ -12,6 +12,7 @@ interface DetailModalProps {
   isFavorite: boolean;
   onToggleFavorite: (movie: MediaItem) => void;
   huakaiEnabled?: boolean;
+  onSelectMovie?: (movie: MediaItem) => void;
 }
 
 export const DetailModal: React.FC<DetailModalProps> = ({
@@ -22,9 +23,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   isFavorite,
   onToggleFavorite,
   huakaiEnabled = false,
+  onSelectMovie,
 }) => {
   const { t } = useI18n();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const modalCardRef = useRef<HTMLDivElement>(null);
+  const relatedScrollRef = useRef<HTMLDivElement>(null);
   const [detail, setDetail] = useState<VideoDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
@@ -32,6 +35,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
   const [showAllLines, setShowAllLines] = useState(false);
   const [historyRecord, setHistoryRecord] = useState<WatchHistoryItem | null>(null);
+  const [relatedSeries, setRelatedSeries] = useState<MediaItem[]>([]);
+  const [loadingRelated, setLoadingRelated] = useState(false);
 
   // Check if movie has watch history
   useEffect(() => {
@@ -47,21 +52,44 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     setHistoryRecord(found || null);
   }, [movie, isOpen]);
 
-  // Sync native <dialog> with isOpen
+  // Hard-lock background body scroll & handle ESC key when modal is open (essential for iPad/iOS Safari)
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!isOpen) return;
 
-    if (isOpen) {
-      if (!dialog.open) {
-        dialog.showModal();
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    const originalTop = document.body.style.top;
+    const originalLeft = document.body.style.left;
+    const originalRight = document.body.style.right;
+    const originalWidth = document.body.style.width;
+
+    // Fixed position hard-locks the page on iOS / iPadOS Safari
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
       }
-    } else {
-      if (dialog.open) {
-        dialog.close();
-      }
-    }
-  }, [isOpen]);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.position = originalPosition;
+      document.body.style.top = originalTop;
+      document.body.style.left = originalLeft;
+      document.body.style.right = originalRight;
+      document.body.style.width = originalWidth;
+      document.body.style.overflow = originalOverflow;
+      window.scrollTo(0, scrollY);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   // Load details when movie changes
   useEffect(() => {
@@ -85,12 +113,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         setDetail({
           title: movie.title,
           pic: movie.cover,
-          actor: movie.actor || '全网公映演员阵容',
-          director: movie.director || '精选导演',
+          actor: movie.actor || t('defaultCast'),
+          director: movie.director || t('defaultDirector'),
           year: movie.year || '2024',
-          area: movie.area || '全球',
-          remarks: movie.remarks || '1080P/4K超清',
-          content: movie.overview || `${movie.title} 是当前热门流媒体内容。请点击播放或切换备用线路。`,
+          area: movie.area || t('defaultArea'),
+          remarks: movie.remarks || t('defaultRemarks'),
+          content: movie.overview || `${movie.title} - ${t('defaultOverview')}`,
           groups: movie.groups,
         });
         setLoading(false);
@@ -116,12 +144,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           setDetail({
             title: bestMatch.title || movie.title,
             pic: resolvedPic,
-            actor: bestMatch.actor || '全网公映演员阵容',
-            director: bestMatch.director || '精选导演',
+            actor: bestMatch.actor || t("defaultCast"),
+            director: bestMatch.director || t("defaultDirector"),
             year: bestMatch.year || movie.year || '2024',
             area: bestMatch.area || movie.area || '全球',
-            remarks: bestMatch.remarks || movie.remarks || '1080P/4K超清',
-            content: bestMatch.overview || movie.overview || `${movie.title} 是当前热门流媒体内容。请点击播放或切换备用线路。`,
+            remarks: bestMatch.remarks || movie.remarks || t("defaultRemarks"),
+            content: bestMatch.overview || movie.overview || `${movie.title} - ${t("defaultOverview")}`,
             groups: bestMatch.groups,
           });
           setLoading(false);
@@ -143,12 +171,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         setDetail({
           title: movie.title,
           pic: movie.cover,
-          actor: '全网公映演员阵容',
-          director: '精选导演',
+          actor: t("defaultCast"),
+          director: t("defaultDirector"),
           year: movie.year || '2024',
-          area: '全球',
-          remarks: movie.remarks || '1080P/4K超清',
-          content: movie.overview || `${movie.title} 是当前热门流媒体内容。请点击播放或切换备用线路。`,
+          area: t("defaultArea"),
+          remarks: movie.remarks || t("defaultRemarks"),
+          content: movie.overview || `${movie.title} - ${t("defaultOverview")}`,
           groups: [],
         });
       }
@@ -161,6 +189,57 @@ export const DetailModal: React.FC<DetailModalProps> = ({
       isMounted = false;
     };
   }, [movie, isOpen]);
+
+  // Fetch related & franchise series when movie or modal opens
+  useEffect(() => {
+    if (!movie || !isOpen) {
+      setRelatedSeries([]);
+      setLoadingRelated(false);
+      return;
+    }
+
+    let isMounted = true;
+    setLoadingRelated(true);
+
+    fetchRelatedSeries(movie, huakaiEnabled)
+      .then((items) => {
+        if (isMounted) {
+          setRelatedSeries(items);
+          setLoadingRelated(false);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load related series:', err);
+        if (isMounted) {
+          setRelatedSeries([]);
+          setLoadingRelated(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [movie?.id, movie?.title, isOpen, huakaiEnabled]);
+
+  const handleSelectRelatedMovie = (item: MediaItem) => {
+    if (onSelectMovie) {
+      onSelectMovie(item);
+    }
+    if (modalCardRef.current) {
+      modalCardRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRelated = (direction: 'left' | 'right') => {
+    if (relatedScrollRef.current) {
+      const { scrollLeft, clientWidth } = relatedScrollRef.current;
+      const scrollAmount = clientWidth * 0.75;
+      relatedScrollRef.current.scrollTo({
+        left: direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   // Switch between discovered source candidates (instant if pre-parsed!)
   const handleSelectSource = async (index: number) => {
@@ -202,14 +281,52 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     ? movie.cover
     : '';
 
+  const currentCandidate = sourceCandidates[activeSourceIndex] || null;
+  const resolvedMovie: MediaItem = {
+    ...movie,
+    ...(currentCandidate || {}),
+    id: currentCandidate?.id || movie.id,
+    title: detail?.title || currentCandidate?.title || movie.title,
+    cover: modalCover || currentCandidate?.cover || movie.cover,
+    sourceUrl: currentCandidate?.sourceUrl || movie.sourceUrl,
+    vod_id: currentCandidate?.vod_id || movie.vod_id,
+    sourceName: currentCandidate?.sourceName || movie.sourceName,
+    groups: detail?.groups || currentCandidate?.groups || movie.groups,
+  };
+
   return (
-    <dialog
-      ref={dialogRef}
-      onClose={onClose}
-      className="fixed inset-0 z-50 w-full max-w-4xl max-h-[90vh] my-auto bg-[#181818] text-white rounded-xl shadow-2xl overflow-y-auto no-scrollbar border border-white/10"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 select-none"
+      role="dialog"
+      aria-modal="true"
     >
-      {/* Hero Header in Modal */}
-      <div className="relative h-64 sm:h-96 w-full bg-[#141414] select-none">
+      {/* Blurred Backdrop - Fullscreen Click & Touch to Close */}
+      <div
+        onClick={onClose}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          onClose();
+        }}
+        onTouchMove={(e) => {
+          e.preventDefault();
+        }}
+        className="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer transition-opacity"
+        aria-label="关闭详情遮罩"
+      />
+
+      {/* Modal Dialog Card */}
+      <div
+        ref={modalCardRef}
+        onClick={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
+        className="relative z-10 w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] bg-[#181818] text-white rounded-xl shadow-2xl overflow-y-auto no-scrollbar border border-white/10 select-text animate-in fade-in zoom-in-95 duration-200 flex flex-col"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+        }}
+      >
+        {/* Hero Header in Modal */}
+        <div className="relative h-64 sm:h-96 w-full bg-[#141414] select-none flex-shrink-0">
         {modalCover ? (
           <img
             src={modalCover}
@@ -255,7 +372,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                     );
                     if (targetIdx !== -1) {
                       onPlayEpisode(
-                        movie,
+                        resolvedMovie,
                         currentGroup.episodes[targetIdx],
                         activeGroupIndex,
                         targetIdx
@@ -263,11 +380,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                       return;
                     }
                   }
-                  onPlayEpisode(movie, currentGroup.episodes[0], activeGroupIndex, 0);
+                  onPlayEpisode(resolvedMovie, currentGroup.episodes[0], activeGroupIndex, 0);
                 } else if (sourceCandidates.length > 0) {
                   const candidate = sourceCandidates[0];
                   if (candidate.sourceUrl && candidate.vod_id) {
-                    onPlayEpisode(candidate, { name: '正片', url: '' }, 0, 0);
+                    onPlayEpisode(resolvedMovie, { name: '正片', url: '' }, 0, 0);
                   }
                 }
               }}
@@ -471,7 +588,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                   return (
                     <button
                       key={idx}
-                      onClick={() => onPlayEpisode(movie, ep, activeGroupIndex, idx)}
+                      onClick={() => onPlayEpisode(resolvedMovie, ep, activeGroupIndex, idx)}
                       className={`group relative flex flex-col items-center justify-center py-3 px-2 rounded-lg text-xs font-medium border transition-all hover:scale-105 cursor-pointer ${
                         isCurrentHistory
                           ? 'bg-[#E50914]/20 border-[#E50914] text-white shadow-[0_0_12px_rgba(229,9,20,0.35)]'
@@ -498,7 +615,127 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             )}
           </div>
         )}
+
+        {/* Related & Franchise Series Row */}
+        {(loadingRelated || relatedSeries.length > 0) && (
+          <div className="border-t border-white/10 pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="text-xl">🍿</span>
+                <h3 className="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
+                  <span>{t('relatedSeries')}</span>
+                  {relatedSeries.length > 0 && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-gray-300 font-normal">
+                      {relatedSeries.length}
+                    </span>
+                  )}
+                </h3>
+              </div>
+
+              {/* Navigation arrows */}
+              {relatedSeries.length > 3 && (
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    type="button"
+                    onClick={() => scrollRelated('left')}
+                    aria-label="Previous series"
+                    className="p-1.5 rounded-full bg-white/5 hover:bg-white/20 text-gray-300 hover:text-white transition-all cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollRelated('right')}
+                    aria-label="Next series"
+                    className="p-1.5 rounded-full bg-white/5 hover:bg-white/20 text-gray-300 hover:text-white transition-all cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {loadingRelated && relatedSeries.length === 0 ? (
+              <div className="flex items-center space-x-3 overflow-x-hidden py-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="w-32 sm:w-40 flex-shrink-0 aspect-[2/3] rounded-lg bg-zinc-800/80 netflix-skeleton-shimmer border border-white/5"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div
+                ref={relatedScrollRef}
+                className="flex items-stretch space-x-3.5 overflow-x-auto no-scrollbar py-2 -mx-1 px-1 scroll-smooth"
+              >
+                {relatedSeries.map((item) => {
+                  const hasCover = hasValidCover(item.cover);
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => handleSelectRelatedMovie(item)}
+                      className="group relative flex-shrink-0 w-32 sm:w-40 cursor-pointer transition-all duration-300 hover:scale-[1.04] select-none"
+                    >
+                      {/* Poster Card */}
+                      <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-zinc-900 border border-white/10 group-hover:border-[#E50914] shadow-md group-hover:shadow-[0_0_16px_rgba(229,9,20,0.35)] transition-all">
+                        {hasCover ? (
+                          <img
+                            src={item.cover}
+                            alt={item.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-[#2a1111] via-zinc-900 to-black">
+                            <span className="text-[#E50914] font-black text-3xl mb-1 opacity-70">N</span>
+                            <span className="text-xs text-gray-400 font-medium line-clamp-2">{item.title}</span>
+                          </div>
+                        )}
+
+                        {/* Top Badge: Sequel order or Year/Remarks */}
+                        {item.sequelBadge ? (
+                          <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-[#E50914] text-white text-[10px] sm:text-[11px] font-bold shadow-md tracking-wide">
+                            {item.sequelBadge}
+                          </div>
+                        ) : item.year ? (
+                          <div className="absolute top-2 left-2 z-10 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm text-gray-200 text-[10px] font-medium border border-white/20">
+                            {item.year}
+                          </div>
+                        ) : null}
+
+                        {/* Dark Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+
+                        {/* Play Icon on Hover */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                            <Play className="w-5 h-5 fill-white ml-0.5" />
+                          </div>
+                        </div>
+
+                        {/* Bottom Info on Card */}
+                        <div className="absolute bottom-2 left-2 right-2 z-10">
+                          <p className="text-xs font-bold text-white line-clamp-1 drop-shadow-md group-hover:text-red-300 transition-colors">
+                            {item.title}
+                          </p>
+                          <div className="flex items-center justify-between text-[10px] text-gray-400 mt-0.5">
+                            <span>{item.year || item.remarks || ''}</span>
+                            {item.rate && (
+                              <span className="text-emerald-400 font-bold">★ {item.rate}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </dialog>
-  );
+    </div>
+  </div>
+);
 };

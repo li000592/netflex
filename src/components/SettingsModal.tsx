@@ -129,7 +129,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Privacy Note */}
           <div className="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center space-x-2.5 text-xs text-gray-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            <span>设置将安全保存在当前本地浏览器中，随时可按需开启或关闭。</span>
+            <span>{t('settingsSavedNote')}</span>
           </div>
         </div>
 

@@ -145,47 +145,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Actions: Language, Search, Watchlist, Profile / Login */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Language Switcher in Header (Desktop) */}
-            <div className="hidden md:block">
+            {/* Language Switcher in Header (Desktop & Mobile) */}
+            <div className="flex items-center">
               <LanguageSelector />
             </div>
 
-            {/* Expandable Search Input */}
-            <div className="relative flex items-center">
-              <div
-                className={`flex items-center transition-all duration-300 rounded-full ${
-                  searchOpen || searchQuery
-                    ? 'w-44 sm:w-60 bg-black/80 border border-white/20 px-3 py-1.5'
-                    : 'w-10 bg-transparent'
-                }`}
-              >
-                <button
-                  onClick={() => setSearchOpen(!searchOpen)}
-                  className="text-gray-300 hover:text-white transition-colors"
-                  aria-label="Search"
-                >
-                  <Search className="w-5 h-5" />
-                </button>
-                {(searchOpen || searchQuery) && (
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => onSearch(e.target.value)}
-                    placeholder={t('searchPlaceholder')}
-                    autoFocus
-                    className="ml-2 bg-transparent text-sm text-white placeholder-gray-400 outline-none w-full"
-                  />
-                )}
-                {searchQuery && (
-                  <button
-                    onClick={() => onSearch('')}
-                    className="text-gray-400 hover:text-white text-xs ml-1"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
+            {/* Search Navigation Button */}
+            <button
+              onClick={() => {
+                onSelectTab('search');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`p-2 transition-all rounded-full ${
+                currentTab === 'search'
+                  ? 'text-[#E50914] bg-white/10'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+              }`}
+              aria-label={t('search')}
+              title={t('search')}
+            >
+              <Search className="w-5 h-5" />
+            </button>
 
             {/* Quick Watchlist Shortcut */}
             <button
@@ -451,6 +431,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             {t('huakai')}
           </button>
         )}
+        <button
+          onClick={() => {
+            onSelectTab('search');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`flex flex-col items-center py-1 px-2 text-[10px] ${
+            currentTab === 'search' ? 'text-[#E50914]' : 'text-gray-400'
+          }`}
+        >
+          <Search className="w-5 h-5 mb-0.5" />
+          {t('search')}
+        </button>
         <button
           onClick={handleMyListClick}
           className={`flex flex-col items-center py-1 px-2 text-[10px] ${

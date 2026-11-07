@@ -18,6 +18,8 @@ export interface MediaItem {
   sourceName?: string;
   sourceUrl?: string;
   groups?: EpisodeGroup[];
+  sequelOrder?: number | null;
+  sequelBadge?: string;
   availableSources?: Array<{
     sourceId: string;
     sourceName: string;
@@ -93,5 +95,5 @@ export interface User {
   currentProfileId: string;
 }
 
-export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'huakai' | 'mylist';
+export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'huakai' | 'mylist' | 'search';
 

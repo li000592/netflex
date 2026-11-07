@@ -56,17 +56,17 @@ export const LanguageSelector: React.FC<{ className?: string }> = ({ className =
 
   return (
     <div className={`relative inline-flex items-center ${className}`}>
-      <Globe className="absolute left-2.5 w-3.5 h-3.5 text-gray-300 pointer-events-none" />
+      <Globe className="absolute left-2 sm:left-2.5 w-3.5 h-3.5 text-gray-300 pointer-events-none" />
       <select
         value={lang}
         onChange={(e) => setLang(e.target.value as Language)}
-        className="bg-black/60 hover:bg-black/80 text-white text-xs font-semibold pl-8 pr-6 py-1.5 rounded border border-white/20 hover:border-white/40 outline-none cursor-pointer appearance-none transition-colors"
+        className="bg-black/60 hover:bg-black/80 text-white text-[11px] sm:text-xs font-semibold pl-6 sm:pl-8 pr-5 sm:pr-6 py-1 sm:py-1.5 rounded border border-white/20 hover:border-white/40 outline-none cursor-pointer appearance-none transition-colors"
         aria-label="Select Language"
       >
         <option value="en">English</option>
-        <option value="zh">中文 (简体)</option>
+        <option value="zh">中文</option>
       </select>
-      <div className="absolute right-2 pointer-events-none text-[9px] text-gray-400">▼</div>
+      <div className="absolute right-1.5 sm:right-2 pointer-events-none text-[8px] sm:text-[9px] text-gray-400">▼</div>
     </div>
   );
 };

@@ -18,6 +18,7 @@ import { searchVideos, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
 import { VIDEO_SOURCES } from '../config/sources';
 import { useI18n } from '../i18n';
+import { TranslationKey } from '../i18n/translations';
 
 interface SearchPageProps {
   initialQuery: string;
@@ -42,40 +43,45 @@ const TOP_SEARCH_ITEMS = [
   { rank: 10, title: '赛博朋克：边缘行者', tag: 'Trigger 燃作' },
 ];
 
-const GENRE_COLLECTIONS = [
+const GENRE_COLLECTIONS: {
+  titleKey: TranslationKey;
+  descKey: TranslationKey;
+  keyword: string;
+  gradient: string;
+}[] = [
   {
-    title: '🍿 豆瓣高分经典',
-    desc: '历年殿堂级口碑电影与剧集',
+    titleKey: 'catCardDouban',
+    descKey: 'catCardDoubanDesc',
     keyword: '高分',
     gradient: 'from-amber-600/40 via-yellow-900/30 to-black/80',
   },
   {
-    title: '💥 4K 震撼好莱坞大片',
-    desc: '科幻视觉特效与动作视听盛宴',
+    titleKey: 'catCardHollywood',
+    descKey: 'catCardHollywoodDesc',
     keyword: '科幻',
     gradient: 'from-blue-600/40 via-indigo-950/30 to-black/80',
   },
   {
-    title: '🌸 日本连载人气新番',
-    desc: '每周日系动漫同步极速追更',
+    titleKey: 'catCardAnime',
+    descKey: 'catCardAnimeDesc',
     keyword: '动漫',
     gradient: 'from-pink-600/40 via-rose-950/30 to-black/80',
   },
   {
-    title: '🕵️ 烧脑高分悬疑犯罪',
-    desc: '剧情反转跌宕伏笔连连',
+    titleKey: 'catCardMystery',
+    descKey: 'catCardMysteryDesc',
     keyword: '悬疑',
     gradient: 'from-emerald-600/40 via-teal-950/30 to-black/80',
   },
   {
-    title: '🔴 奈飞海外爆款独播',
-    desc: '欧美高分剧集与全球热播榜',
+    titleKey: 'catCardNetflix',
+    descKey: 'catCardNetflixDesc',
     keyword: '美剧',
     gradient: 'from-red-600/40 via-rose-950/30 to-black/80',
   },
   {
-    title: '📺 华语经典电视剧集',
-    desc: '百看不厌的国民经典佳作',
+    titleKey: 'catCardChineseTv',
+    descKey: 'catCardChineseTvDesc',
     keyword: '国产剧',
     gradient: 'from-purple-600/40 via-violet-950/30 to-black/80',
   },
@@ -99,6 +105,8 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [sourceDropdownOpen, setSourceDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isComposingRef = useRef(false);
 
   // Recent Searches in LocalStorage
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
@@ -130,9 +138,12 @@ export const SearchPage: React.FC<SearchPageProps> = ({
     } catch {}
   };
 
-  // Sync with initialQuery prop if it changes externally
+  // Sync with initialQuery prop if it changes externally (e.g. navigation switch)
+  // but NEVER overwrite while the user is actively focused or composing in the input
   useEffect(() => {
-    setQuery(initialQuery);
+    if (!isComposingRef.current && document.activeElement !== inputRef.current && initialQuery !== query) {
+      setQuery(initialQuery);
+    }
   }, [initialQuery]);
 
   // Close dropdown on outside click
@@ -154,6 +165,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
     }
 
     const timer = setTimeout(async () => {
+      if (isComposingRef.current) return;
       setLoading(true);
       const res = await searchVideos(query, selectedSource || undefined, selectedCategory, huakaiEnabled);
       setResults(res);
@@ -177,11 +189,44 @@ export const SearchPage: React.FC<SearchPageProps> = ({
     }
   }, [huakaiEnabled, selectedCategory, selectedSource]);
 
-  const handleUpdateQuery = (newQuery: string) => {
-    setQuery(newQuery);
+  const handleCompositionStart = () => {
+    isComposingRef.current = true;
+  };
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    isComposingRef.current = false;
+    const val = e.currentTarget.value;
+    setQuery(val);
     if (onQueryChange) {
-      onQueryChange(newQuery);
+      onQueryChange(val);
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setQuery(val);
+    // While composing (e.g. typing Pinyin on iPad), do not sync to parent to prevent re-render loops
+    if (!isComposingRef.current) {
+      if (onQueryChange) {
+        onQueryChange(val);
+      }
+    }
+  };
+
+  const handleClearQuery = () => {
+    setQuery('');
+    if (onQueryChange) {
+      onQueryChange('');
+    }
+    inputRef.current?.focus();
+  };
+
+  const handleSelectKeyword = (kw: string) => {
+    setQuery(kw);
+    if (onQueryChange) {
+      onQueryChange(kw);
+    }
+    inputRef.current?.focus();
   };
 
   const categories = [
@@ -247,16 +292,21 @@ export const SearchPage: React.FC<SearchPageProps> = ({
           <div className="relative flex items-center bg-[#181818]/90 backdrop-blur-xl border border-white/10 hover:border-white/25 focus-within:border-[#E50914] focus-within:ring-4 focus-within:ring-[#E50914]/20 rounded-full transition-all duration-300 shadow-2xl overflow-hidden px-4 sm:px-5 py-2.5 sm:py-3.5">
             <Search className="w-5 h-5 sm:w-6 sm:h-6 text-[#E50914] flex-shrink-0 transition-transform duration-300 group-focus-within:scale-110 mr-3" />
             <input
+              ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => handleUpdateQuery(e.target.value)}
+              onChange={handleInputChange}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
               placeholder={t('searchTitle')}
               className="flex-1 min-w-0 bg-transparent text-white placeholder-gray-400 text-sm sm:text-base outline-none font-medium"
-              autoFocus
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
             />
             {query && (
               <button
-                onClick={() => handleUpdateQuery('')}
+                onClick={handleClearQuery}
                 className="flex items-center justify-center w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors ml-2 flex-shrink-0 text-xs"
                 title={t('clearSearch')}
               >
@@ -486,7 +536,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
 
           <div className="pt-2">
             <button
-              onClick={() => handleUpdateQuery('')}
+              onClick={handleClearQuery}
               className="bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all shadow-lg hover:shadow-red-900/30"
             >
               {t('clearSearch')}
@@ -501,7 +551,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                 (item) => (
                   <button
                     key={item}
-                    onClick={() => handleUpdateQuery(item)}
+                    onClick={() => handleSelectKeyword(item)}
                     className="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/15 text-xs text-gray-300 hover:text-white transition-all border border-white/5"
                   >
                     {item}
@@ -533,7 +583,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                 {recentSearches.map((kw) => (
                   <button
                     key={kw}
-                    onClick={() => handleUpdateQuery(kw)}
+                    onClick={() => handleSelectKeyword(kw)}
                     className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#1f1f1f] hover:bg-white/10 text-xs text-gray-200 hover:text-white transition-all border border-white/5 shadow"
                   >
                     <span>{kw}</span>
@@ -556,7 +606,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               {TOP_SEARCH_ITEMS.map((item) => (
                 <button
                   key={item.rank}
-                  onClick={() => handleUpdateQuery(item.title)}
+                  onClick={() => handleSelectKeyword(item.title)}
                   className="flex items-center justify-between p-3.5 rounded-xl bg-[#1c1c1c]/90 hover:bg-[#252525] border border-white/5 hover:border-white/20 transition-all duration-200 group text-left shadow-lg"
                 >
                   <div className="flex items-center space-x-3 overflow-hidden">
@@ -594,18 +644,18 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               {GENRE_COLLECTIONS.map((col, idx) => (
                 <div
                   key={idx}
-                  onClick={() => handleUpdateQuery(col.keyword)}
+                  onClick={() => handleSelectKeyword(col.keyword)}
                   className={`p-5 rounded-2xl bg-gradient-to-br ${col.gradient} border border-white/10 hover:border-white/30 cursor-pointer transition-all duration-300 hover:scale-[1.02] shadow-xl group relative overflow-hidden`}
                 >
                   <div className="relative z-10 flex flex-col justify-between h-24">
                     <div>
                       <h4 className="text-base sm:text-lg font-black text-white group-hover:text-[#E50914] transition-colors">
-                        {col.title}
+                        {t(col.titleKey)}
                       </h4>
-                      <p className="text-xs text-gray-300 mt-1 line-clamp-1">{col.desc}</p>
+                      <p className="text-xs text-gray-300 mt-1 line-clamp-1">{t(col.descKey)}</p>
                     </div>
                     <div className="flex items-center text-xs font-bold text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all">
-                      <span>立即探索</span>
+                      <span>{t('exploreNow')}</span>
                       <span className="ml-1">→</span>
                     </div>
                   </div>

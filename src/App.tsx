@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { NavTab, MediaItem, Episode, User, UserProfile } from './types';
 import { Navbar } from './components/Navbar';
@@ -15,6 +15,7 @@ import { ProfileModal } from './components/ProfileModal';
 import { SettingsModal } from './components/SettingsModal';
 import { NetflixHomeSkeleton, NetflixRowSkeleton } from './components/NetflixSkeleton';
 import { useI18n, LanguageSelector } from './i18n';
+import { TranslationKey } from './i18n/translations';
 import {
   fetchDoubanCatalog,
   fetchBangumiCalendar,
@@ -35,71 +36,83 @@ import {
   switchProfile,
 } from './services/auth';
 
-const MOVIE_TAGS = [
-  { id: '热门', label: '全部热门' },
-  { id: '最新', label: '最新公映' },
-  { id: '经典', label: '豆瓣高分' },
-  { id: '华语', label: '华语经典' },
-  { id: '欧美', label: '欧美大片' },
-  { id: '动作', label: '动作热血' },
-  { id: '喜剧', label: '爆笑喜剧' },
-  { id: '科幻', label: '科幻视效' },
-  { id: '悬疑', label: '悬疑烧脑' },
-  { id: '恐怖', label: '惊悚怪兽' },
-  { id: '动画', label: '院线动画' },
-];
-
-const TV_TAGS = [
-  { id: '热门', label: '全部热播' },
-  { id: '国产剧', label: '华语大剧' },
-  { id: '美剧', label: '欧美剧集' },
-  { id: '韩剧', label: '高分韩剧' },
-  { id: '日剧', label: '日剧精选' },
-  { id: '悬疑', label: '悬疑破案' },
-  { id: '动作', label: '动作冒险' },
-  { id: '科幻', label: '科幻脑洞' },
-  { id: '喜剧', label: '轻松搞笑' },
-];
-
-const VARIETY_TAGS = [
-  { id: '综艺', label: '全部综艺' },
-  { id: '热门', label: '人气榜单' },
-  { id: '国内综艺', label: '王牌真人秀' },
-  { id: '国外综艺', label: '海外娱乐' },
-  { id: '脱口秀', label: '脱口秀/喜剧' },
-];
-
-const ANIME_TAGS = [
-  { id: '日本动画', label: '全部动画' },
-  { id: '热门', label: '当季热度' },
-  { id: '剧场版', label: '剧场版/电影' },
-  { id: '经典', label: '童年神作' },
-  { id: '奇幻', label: '异世界/奇幻' },
-  { id: '动作', label: '热血战斗' },
-  { id: '搞笑', label: '日常萌系' },
-];
-
 interface ExtraRowDef {
   id: string;
-  title: string;
+  titleKey: TranslationKey;
   type: 'movie' | 'tv';
   tag: string;
   tab: NavTab;
 }
 
-const HOME_EXTRA_ROW_DEFS: ExtraRowDef[] = [
-  { id: 'scifi', title: '🚀 硬核科幻与时空奇幻', type: 'movie', tag: '科幻', tab: 'movies' },
-  { id: 'action', title: '🔥 动作极限视觉大片', type: 'movie', tag: '动作', tab: 'movies' },
-  { id: 'ustv', title: '🗽 欧美高分王牌美剧', type: 'tv', tag: '美剧', tab: 'tv' },
-  { id: 'koreatv', title: '🍿 人气韩剧心动剧场', type: 'tv', tag: '韩剧', tab: 'tv' },
-  { id: 'comedy', title: '🎭 爆笑高分解压喜剧', type: 'movie', tag: '喜剧', tab: 'movies' },
-  { id: 'suspense', title: '🔎 烧脑悬疑惊天反转', type: 'movie', tag: '悬疑', tab: 'movies' },
-  { id: 'romance', title: '💖 浪漫爱情心动影院', type: 'movie', tag: '爱情', tab: 'movies' },
-  { id: 'animation', title: '🎨 院线爆款巅峰动画', type: 'movie', tag: '动画', tab: 'movies' },
+const HOME_EXTRA_ROW_CONFIGS: ExtraRowDef[] = [
+  { id: 'scifi', titleKey: 'rowSciFi', type: 'movie', tag: '科幻', tab: 'movies' },
+  { id: 'action', titleKey: 'rowAction', type: 'movie', tag: '动作', tab: 'movies' },
+  { id: 'ustv', titleKey: 'rowUsTv', type: 'tv', tag: '美剧', tab: 'tv' },
+  { id: 'koreatv', titleKey: 'rowKoreaTv', type: 'tv', tag: '韩剧', tab: 'tv' },
+  { id: 'comedy', titleKey: 'rowComedy', type: 'movie', tag: '喜剧', tag_tab: 'movies' as any, tab: 'movies' },
+  { id: 'suspense', titleKey: 'rowSuspense', type: 'movie', tag: '悬疑', tab: 'movies' },
+  { id: 'romance', titleKey: 'rowRomance', type: 'movie', tag: '爱情', tab: 'movies' },
+  { id: 'animation', titleKey: 'rowAnimation', type: 'movie', tag: '动画', tab: 'movies' },
 ];
 
 export const App: React.FC = () => {
   const { t } = useI18n();
+
+  const movieTags = useMemo(
+    () => [
+      { id: '热门', label: t('tagAllHot') },
+      { id: '最新', label: t('tagLatest') },
+      { id: '经典', label: t('tagTopRated') },
+      { id: '华语', label: t('tagChinese') },
+      { id: '欧美', label: t('tagWestern') },
+      { id: '动作', label: t('tagAction') },
+      { id: '喜剧', label: t('tagComedy') },
+      { id: '科幻', label: t('tagSciFi') },
+      { id: '悬疑', label: t('tagSuspense') },
+      { id: '恐怖', label: t('tagHorror') },
+      { id: '动画', label: t('tagAnimation') },
+    ],
+    [t]
+  );
+
+  const tvTags = useMemo(
+    () => [
+      { id: '热门', label: t('tagAllHot') },
+      { id: '国产剧', label: t('tagDomesticTv') },
+      { id: '美剧', label: t('tagUsTv') },
+      { id: '韩剧', label: t('tagKoreaTv') },
+      { id: '日剧', label: t('tagJapanTv') },
+      { id: '悬疑', label: t('tagCrime') },
+      { id: '动作', label: t('tagAdventure') },
+      { id: '科幻', label: t('tagSciFiTv') },
+      { id: '喜剧', label: t('tagLightComedy') },
+    ],
+    [t]
+  );
+
+  const varietyTags = useMemo(
+    () => [
+      { id: '综艺', label: t('tagAllVariety') },
+      { id: '热门', label: t('tagTrending') },
+      { id: '国内综艺', label: t('tagDomesticVariety') },
+      { id: '国外综艺', label: t('tagOverseasVariety') },
+      { id: '脱口秀', label: t('tagTalkShow') },
+    ],
+    [t]
+  );
+
+  const animeTags = useMemo(
+    () => [
+      { id: '日本动画', label: t('tagAllAnime') },
+      { id: '热门', label: t('tagSeasonTrend') },
+      { id: '剧场版', label: t('tagTheatrical') },
+      { id: '经典', label: t('tagClassics') },
+      { id: '奇幻', label: t('tagIsekai') },
+      { id: '动作', label: t('tagBattle') },
+      { id: '搞笑', label: t('tagMoe') },
+    ],
+    [t]
+  );
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -155,7 +168,7 @@ export const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(() => !initialCache || !initialCache.movies?.length);
 
   // Home Page Infinite Rows State
-  const [homeExtraRows, setHomeExtraRows] = useState<{ id: string; title: string; movies: MediaItem[]; tab: NavTab }[]>([]);
+  const [homeExtraRows, setHomeExtraRows] = useState<{ id: string; titleKey: TranslationKey; movies: MediaItem[]; tab: NavTab }[]>([]);
   const [loadingHomeRow, setLoadingHomeRow] = useState(false);
   const homeSentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -292,13 +305,13 @@ export const App: React.FC = () => {
   const loadMoreHomeRow = useCallback(async () => {
     if (loadingHomeRow || currentTab !== 'home' || searchQuery.trim()) return;
     const nextIdx = homeExtraRows.length;
-    if (nextIdx >= HOME_EXTRA_ROW_DEFS.length) return;
+    if (nextIdx >= HOME_EXTRA_ROW_CONFIGS.length) return;
     setLoadingHomeRow(true);
-    const def = HOME_EXTRA_ROW_DEFS[nextIdx];
+    const def = HOME_EXTRA_ROW_CONFIGS[nextIdx];
     try {
       const res = await fetchDoubanCatalog(def.type, def.tag, 16);
       if (res.length > 0) {
-        setHomeExtraRows((prev) => [...prev, { id: def.id, title: def.title, movies: res, tab: def.tab }]);
+        setHomeExtraRows((prev) => [...prev, { id: def.id, titleKey: def.titleKey, movies: res, tab: def.tab }]);
       }
     } catch (e) {
       console.error('Failed to load extra home row:', e);
@@ -331,10 +344,30 @@ export const App: React.FC = () => {
       (h) => h.id === movie.id || (movieTitle && h.title?.trim().toLowerCase() === movieTitle)
     );
 
+    // 1. If movie already has pre-parsed groups
+    if (movie.groups && movie.groups.length > 0 && movie.groups[0].episodes.length > 0) {
+      setPlayerMovie(movie);
+      let targetEp = movie.groups[0].episodes[0];
+      if (existing) {
+        for (const grp of movie.groups) {
+          const found = grp.episodes.find(
+            (ep) => ep.url === existing.episodeUrl || ep.name === existing.episodeName
+          );
+          if (found) {
+            targetEp = found;
+            break;
+          }
+        }
+      }
+      setPlayerEpisode(targetEp);
+      setIsPlayerOpen(true);
+      return;
+    }
+
     if (movie.sourceUrl && movie.vod_id) {
       const detail = await fetchVideoDetail(movie.sourceUrl, movie.vod_id);
       if (detail && detail.groups.length > 0 && detail.groups[0].episodes.length > 0) {
-        setPlayerMovie(movie);
+        setPlayerMovie({ ...movie, groups: detail.groups });
         let targetEp = detail.groups[0].episodes[0];
         if (existing) {
           for (const grp of detail.groups) {
@@ -356,10 +389,30 @@ export const App: React.FC = () => {
     const results = await searchVideos(movie.title, undefined, undefined, huakaiEnabled);
     if (results.length > 0) {
       const best = results[0];
+      const groups = best.groups || [];
+      if (groups.length > 0 && groups[0].episodes.length > 0) {
+        setPlayerMovie(best);
+        let targetEp = groups[0].episodes[0];
+        if (existing) {
+          for (const grp of groups) {
+            const found = grp.episodes.find(
+              (ep) => ep.url === existing.episodeUrl || ep.name === existing.episodeName
+            );
+            if (found) {
+              targetEp = found;
+              break;
+            }
+          }
+        }
+        setPlayerEpisode(targetEp);
+        setIsPlayerOpen(true);
+        return;
+      }
+
       if (best.sourceUrl && best.vod_id) {
         const detail = await fetchVideoDetail(best.sourceUrl, best.vod_id);
         if (detail && detail.groups.length > 0 && detail.groups[0].episodes.length > 0) {
-          setPlayerMovie(best);
+          setPlayerMovie({ ...best, groups: detail.groups });
           let targetEp = detail.groups[0].episodes[0];
           if (existing) {
             for (const grp of detail.groups) {
@@ -407,7 +460,9 @@ export const App: React.FC = () => {
         currentTab={currentTab}
         onSelectTab={(tab) => {
           setCurrentTab(tab);
-          setSearchQuery('');
+          if (tab !== 'search') {
+            setSearchQuery('');
+          }
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onSearch={(query) => {
@@ -426,7 +481,7 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {searchQuery.trim() ? (
+        {currentTab === 'search' || searchQuery.trim() ? (
           /* Search Results View */
           <SearchPage
             initialQuery={searchQuery}
@@ -454,16 +509,16 @@ export const App: React.FC = () => {
           <InfiniteCatalogView
             type="tv"
             initialTag="日本动画"
-            tags={ANIME_TAGS}
+            tags={animeTags}
             title={t('animePortalTitle')}
             subtitle={t('animePortalSub')}
             headerSlot={
               animeRows.length > 0 ? (
                 <div className="mb-10">
                   <h2 className="text-xl sm:text-2xl font-bold mb-4 flex items-center">
-                    🌸 每日新番周历连载
+                    {t('dailyAnimeCalendar')}
                     <span className="ml-3 text-xs bg-[#E50914] text-white px-2 py-0.5 rounded font-mono">
-                      周一至周日同步连载
+                      {t('simulcastMonSun')}
                     </span>
                   </h2>
                   {animeRows.map((row) => (
@@ -490,7 +545,7 @@ export const App: React.FC = () => {
           <InfiniteCatalogView
             type="movie"
             initialTag="热门"
-            tags={MOVIE_TAGS}
+            tags={movieTags}
             title={t('moviesPageTitle')}
             subtitle={t('moviesPageSub')}
             onPlay={handleDirectPlay}
@@ -503,7 +558,7 @@ export const App: React.FC = () => {
           <InfiniteCatalogView
             type="tv"
             initialTag="热门"
-            tags={TV_TAGS}
+            tags={tvTags}
             title={t('tvPageTitle')}
             subtitle={t('tvPageSub')}
             onPlay={handleDirectPlay}
@@ -524,7 +579,7 @@ export const App: React.FC = () => {
           <InfiniteCatalogView
             type="tv"
             initialTag="综艺"
-            tags={VARIETY_TAGS}
+            tags={varietyTags}
             title={t('varietyPageTitle')}
             subtitle={t('varietyPageSub')}
             onPlay={handleDirectPlay}
@@ -639,7 +694,7 @@ export const App: React.FC = () => {
               {homeExtraRows.map((extra) => (
                 <MovieRow
                   key={extra.id}
-                  title={extra.title}
+                  title={t(extra.titleKey)}
                   movies={extra.movies}
                   onPlay={handleDirectPlay}
                   onOpenDetail={handleOpenDetail}
@@ -658,10 +713,10 @@ export const App: React.FC = () => {
                   <div className="w-full">
                     <NetflixRowSkeleton />
                   </div>
-                ) : homeExtraRows.length < HOME_EXTRA_ROW_DEFS.length ? (
-                  <span className="opacity-40">继续向下滑动探索更多影片专区</span>
+                ) : homeExtraRows.length < HOME_EXTRA_ROW_CONFIGS.length ? (
+                  <span className="opacity-40">{t('scrollForMore')}</span>
                 ) : (
-                  <span className="opacity-40">已经为您呈现全部热榜专区</span>
+                  <span className="opacity-40">{t('allContentLoaded')}</span>
                 )}
               </div>
             </div>
@@ -679,6 +734,7 @@ export const App: React.FC = () => {
         isFavorite={detailMovie ? watchlistIds.has(detailMovie.id) : false}
         onToggleFavorite={handleToggleFavorite}
         huakaiEnabled={huakaiEnabled}
+        onSelectMovie={handleOpenDetail}
       />
 
       {/* Cinema Player Modal */}

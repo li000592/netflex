@@ -4,6 +4,7 @@ import { MediaItem } from '../types';
 import { fetchDoubanCatalog, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
 import { NetflixGridSkeleton } from './NetflixSkeleton';
+import { useI18n } from '../i18n';
 
 interface TagOption {
   id: string;
@@ -39,6 +40,7 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
   watchlistIds,
   onToggleFavorite,
 }) => {
+  const { t } = useI18n();
   const [selectedTag, setSelectedTag] = useState<string>(initialTag);
   const [items, setItems] = useState<MediaItem[]>([]);
   const [start, setStart] = useState<number>(0);
@@ -179,16 +181,16 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
                 <NetflixGridSkeleton count={6} />
               </div>
             ) : hasMore ? (
-              <span className="opacity-40">继续向下滑动加载更多内容</span>
+              <span className="opacity-40">{t('loadMoreContent')}</span>
             ) : (
-              <span className="opacity-40">已加载完当前分类全部内容</span>
+              <span className="opacity-40">{t('allContentLoaded')}</span>
             )}
           </div>
         </div>
       ) : (
         <div className="text-center py-24 text-gray-400">
-          <p className="text-lg mb-2">暂无该分类内容</p>
-          <p className="text-sm text-gray-500">建议尝试点击其他分类标签。</p>
+          <p className="text-lg mb-2">{t('noCategoryContent')}</p>
+          <p className="text-sm text-gray-500">{t('tryOtherTags')}</p>
         </div>
       )}
     </div>

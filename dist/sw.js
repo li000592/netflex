@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netflex-v2';
+const CACHE_NAME = 'netflex-v3';
 const STATIC_ASSETS = ['/', '/index.html', '/favicon.svg', '/manifest.json'];
 
 // Fast installation & take control immediately
@@ -9,6 +9,12 @@ self.addEventListener('install', (event) => {
       return cache.addAll(STATIC_ASSETS).catch(() => {});
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('activate', (event) => {

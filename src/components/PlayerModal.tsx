@@ -127,7 +127,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
   // Detailed episode list & groups for in-player episode switching
   const [detailData, setDetailData] = useState<VideoDetail | null>(null);
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [activeEp, setActiveEp] = useState<Episode | null>(episode);
+
+  const allGroups = detailData?.groups || movie?.groups || [];
 
   // Auto-Resume State & References
   const resumeTimeRef = useRef<number>(0);
@@ -212,13 +215,42 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
   // Load detail data for full episode list if needed
   useEffect(() => {
-    if (!movie || !isOpen) return;
+    if (!movie || !isOpen) {
+      setDetailData(null);
+      setActiveGroupIndex(0);
+      return;
+    }
+    if (movie.groups && movie.groups.length > 0) {
+      setDetailData({
+        title: movie.title,
+        pic: movie.cover,
+        actor: movie.actor || '',
+        director: movie.director || '',
+        year: movie.year || '',
+        area: movie.area || '',
+        remarks: movie.remarks || '',
+        content: movie.overview || '',
+        groups: movie.groups,
+      });
+    }
     if (movie.sourceUrl && movie.vod_id) {
       fetchVideoDetail(movie.sourceUrl, movie.vod_id).then((res) => {
-        if (res) setDetailData(res);
+        if (res && res.groups && res.groups.length > 0) {
+          setDetailData(res);
+        }
       });
     }
   }, [movie, isOpen]);
+
+  // Keep activeGroupIndex in sync with activeEp
+  useEffect(() => {
+    if (allGroups.length > 0 && activeEp) {
+      const idx = allGroups.findIndex((grp) =>
+        grp.episodes.some((e) => e.url === activeEp.url || e.name === activeEp.name)
+      );
+      if (idx !== -1) setActiveGroupIndex(idx);
+    }
+  }, [allGroups, activeEp]);
 
   // WebKit AirPlay API & Wireless Target Detection
   useEffect(() => {
@@ -299,15 +331,22 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
     setIsLoading(true);
     setHasError(false);
+    setErrorMessage('');
 
     const playUrl = activeEp.url;
     const targetStart = resumeTimeRef.current;
 
-    // Clean up previous HLS instance
+    // Clean up previous HLS instance & reset native video element
     if (hlsRef.current) {
       hlsRef.current.destroy();
       hlsRef.current = null;
     }
+
+    try {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    } catch {}
 
     const applyResumeSeek = () => {
       const seekTo = resumeTimeRef.current;
@@ -324,19 +363,23 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       /Safari/i.test(navigator.userAgent) &&
       !/Chrome|CriOS|Android/i.test(navigator.userAgent);
     const canPlayAppleHls = video.canPlayType('application/vnd.apple.mpegurl');
+    const isM3u8 = playUrl.includes('.m3u8');
+    const isMp4 = playUrl.includes('.mp4');
 
     // On Apple Safari (macOS & iOS/iPadOS), using native HLS playback (video.src = playUrl)
     // is essential so Apple AirPlay can stream the actual HTTP/HLS URL directly to Apple TV / AirPlay 2 TVs.
-    // (Hls.js uses MSE Blob URLs which Apple TV cannot access across the local network).
-    if ((isAppleSafari && canPlayAppleHls) || (!Hls.isSupported() && canPlayAppleHls) || playUrl.endsWith('.mp4')) {
+    if ((isAppleSafari && canPlayAppleHls && isM3u8) || isMp4 || (!Hls.isSupported() && canPlayAppleHls && isM3u8)) {
       video.src = playUrl;
       const onLoaded = () => {
         applyResumeSeek();
         video.removeEventListener('loadedmetadata', onLoaded);
       };
       video.addEventListener('loadedmetadata', onLoaded);
-      video.play().catch(() => setIsPlaying(false));
-    } else if (Hls.isSupported() && playUrl.includes('.m3u8')) {
+      video.play().catch((err) => {
+        console.warn('Native play() error caught:', err);
+        setIsPlaying(false);
+      });
+    } else if (Hls.isSupported() && isM3u8) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
@@ -350,20 +393,33 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         applyResumeSeek();
-        video.play().catch(() => setIsPlaying(false));
+        video.play().catch((err) => {
+          console.warn('HLS play() error caught:', err);
+          setIsPlaying(false);
+        });
       });
 
+      let recoveryAttempted = false;
       hls.on(Hls.Events.ERROR, (_event, data) => {
         console.warn('HLS Error:', data);
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              hls.startLoad();
+              if (!recoveryAttempted) {
+                recoveryAttempted = true;
+                hls.startLoad();
+              } else {
+                setIsLoading(false);
+                setHasError(true);
+                setErrorMessage(t('playbackErrorMsg'));
+                hls.destroy();
+              }
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
               hls.recoverMediaError();
               break;
             default:
+              setIsLoading(false);
               setHasError(true);
               setErrorMessage(t('playbackErrorMsg'));
               hls.destroy();
@@ -378,7 +434,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         video.removeEventListener('loadedmetadata', onLoaded);
       };
       video.addEventListener('loadedmetadata', onLoaded);
-      video.play().catch(() => setIsPlaying(false));
+      video.play().catch((err) => {
+        console.warn('Fallback play() error caught:', err);
+        setIsPlaying(false);
+      });
     }
 
     return () => {
@@ -475,17 +534,52 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     };
   }, [isOpen, activeEp, movie, saveProgress]);
 
+  const isPlayingRef = useRef(isPlaying);
+  isPlayingRef.current = isPlaying;
+  const castMenuOpenRef = useRef(castMenuOpen);
+  castMenuOpenRef.current = castMenuOpen;
+  const speedMenuOpenRef = useRef(speedMenuOpen);
+  speedMenuOpenRef.current = speedMenuOpen;
+  const epMenuOpenRef = useRef(epMenuOpen);
+  epMenuOpenRef.current = epMenuOpen;
+  const lastTouchTimeRef = useRef(0);
+
   // Handle Controls Visibility on Idle
-  const handleUserActivity = () => {
+  const resetHideTimer = useCallback(() => {
     setControlsVisible(true);
     if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     hideControlsTimer.current = setTimeout(() => {
-      if (isPlaying) {
+      if (
+        isPlayingRef.current &&
+        !speedMenuOpenRef.current &&
+        !epMenuOpenRef.current &&
+        !castMenuOpenRef.current
+      ) {
         setControlsVisible(false);
+      }
+    }, 4000);
+  }, []);
+
+  const handleUserActivity = () => {
+    resetHideTimer();
+  };
+
+  const handleContainerClick = () => {
+    // Ignore synthetic click right after touch on mobile
+    if (Date.now() - lastTouchTimeRef.current < 450) return;
+
+    setControlsVisible((prevVisible) => {
+      if (!prevVisible) {
+        resetHideTimer();
+        return true;
+      } else {
+        if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
         setSpeedMenuOpen(false);
         setEpMenuOpen(false);
+        setCastMenuOpen(false);
+        return false;
       }
-    }, 3500);
+    });
   };
 
   // Keyboard Shortcuts
@@ -500,8 +594,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       switch (e.code) {
         case 'Space':
           e.preventDefault();
-          if (video.paused) video.play();
-          else video.pause();
+          if (video.paused) {
+            video.play().catch(() => setIsPlaying(false));
+          } else {
+            video.pause();
+          }
           break;
         case 'ArrowLeft':
           e.preventDefault();
@@ -543,9 +640,12 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
   const togglePlay = () => {
     const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) video.play();
-    else video.pause();
+    if (!video || hasError) return;
+    if (video.paused) {
+      video.play().catch(() => setIsPlaying(false));
+    } else {
+      video.pause();
+    }
   };
 
   const toggleMute = () => {
@@ -605,7 +705,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
   // Netflix Mobile Gestures Handlers (iPhone / iPad)
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleUserActivity();
+    lastTouchTimeRef.current = Date.now();
 
     // 1. Two-finger pinch to toggle zoom/fill
     if (e.touches.length === 2) {
@@ -706,12 +806,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    lastTouchTimeRef.current = Date.now();
+
     // 1. Finish seek gesture
     if (touchRef.current.mode === 'seek') {
       handleSeek(touchRef.current.targetSeekTime);
       saveProgress(touchRef.current.targetSeekTime);
       setTimeout(() => setGestureIndicator(null), 800);
       touchRef.current.mode = 'none';
+      resetHideTimer();
       return;
     }
 
@@ -723,6 +826,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     ) {
       setTimeout(() => setGestureIndicator(null), 800);
       touchRef.current.mode = 'none';
+      resetHideTimer();
       return;
     }
 
@@ -754,10 +858,22 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           togglePlay();
         }
         lastTapRef.current = { time: 0, x: 0, y: 0 };
+        resetHideTimer();
       } else {
         lastTapRef.current = { time: now, x: touch.clientX, y: touch.clientY };
         singleTapTimeoutRef.current = setTimeout(() => {
-          setControlsVisible((prev) => !prev);
+          setControlsVisible((prevVisible) => {
+            if (!prevVisible) {
+              resetHideTimer();
+              return true;
+            } else {
+              if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
+              setSpeedMenuOpen(false);
+              setEpMenuOpen(false);
+              setCastMenuOpen(false);
+              return false;
+            }
+          });
           singleTapTimeoutRef.current = null;
         }, 280);
       }
@@ -789,7 +905,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     <div
       ref={containerRef}
       onMouseMove={handleUserActivity}
-      onClick={handleUserActivity}
+      onClick={handleContainerClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -802,7 +918,6 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           aspectMode === 'cover' ? 'object-cover' : 'object-contain'
         }`}
         style={{ filter: `brightness(${brightness})` }}
-        onClick={togglePlay}
         playsInline
         {...({
           'x-webkit-airplay': 'allow',
@@ -850,6 +965,12 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             saveProgress(videoRef.current.duration, videoRef.current.duration);
           }
           if (onNextEpisode) onNextEpisode();
+        }}
+        onError={() => {
+          console.warn('Native video element onError triggered');
+          setIsLoading(false);
+          setHasError(true);
+          setErrorMessage(t('playbackErrorMsg'));
         }}
       />
 
@@ -978,20 +1099,55 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       {/* Error State */}
       {hasError && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 p-6 text-center z-40">
-          <AlertCircle className="w-16 h-16 text-[#E50914] mb-4" />
+          <AlertCircle className="w-16 h-16 text-[#E50914] mb-4 animate-bounce" />
           <h2 className="text-xl font-bold text-white mb-2">{t('playbackError')}</h2>
           <p className="text-gray-400 text-sm max-w-md mb-6">{errorMessage || t('playbackErrorMsg')}</p>
-          <button
-            onClick={handleClose}
-            className="px-6 py-2 bg-[#E50914] text-white rounded-md font-bold hover:bg-[#b80710]"
-          >
-            {t('returnToSelection')}
-          </button>
+          <div className="flex items-center space-x-3">
+            {allGroups.length > 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const nextGroupIdx = (activeGroupIndex + 1) % allGroups.length;
+                  setActiveGroupIndex(nextGroupIdx);
+                  const nextGroup = allGroups[nextGroupIdx];
+                  if (nextGroup && nextGroup.episodes.length > 0) {
+                    const sameEp =
+                      nextGroup.episodes.find((e) => e.name === activeEp?.name) || nextGroup.episodes[0];
+                    setActiveEp(sameEp);
+                    setHasError(false);
+                    setIsLoading(true);
+                  }
+                }}
+                className="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold border border-white/20 transition-all hover:scale-105 cursor-pointer flex items-center space-x-1.5"
+              >
+                <span>⚡ {t('switchingLine')}</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-6 py-2.5 bg-[#E50914] text-white rounded-xl text-xs font-bold hover:bg-[#b80710] transition-all hover:scale-105 cursor-pointer"
+            >
+              {t('returnToSelection')}
+            </button>
+          </div>
         </div>
       )}
 
       {/* Top Overlay Bar */}
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
+        onTouchEnd={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
         className={`absolute top-0 left-0 right-0 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-4 sm:pb-6 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 z-30 ${
           controlsVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
@@ -999,8 +1155,8 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         <div className="flex items-center space-x-4">
           <button
             onClick={handleClose}
-            className="p-2 rounded-full hover:bg-white/20 text-white transition-all hover:scale-110"
-            aria-label="返回"
+            className="p-2 rounded-full hover:bg-white/20 text-white transition-all hover:scale-110 cursor-pointer"
+            aria-label={t('back')}
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
@@ -1009,7 +1165,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               {movie?.title}
             </h1>
             <p className="text-xs text-gray-300">
-              {activeEp?.name} • 超清极速专线
+              {activeEp?.name} • {t('ultraFastLine')}
             </p>
           </div>
         </div>
@@ -1024,6 +1180,18 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       {/* Bottom Control Bar */}
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
+        onTouchEnd={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
         className={`absolute bottom-0 left-0 right-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pt-4 sm:pt-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent transition-opacity duration-300 z-30 ${
           controlsVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
@@ -1046,8 +1214,8 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           <div className="flex items-center space-x-3 sm:space-x-5">
             <button
               onClick={togglePlay}
-              className="p-1 hover:text-[#E50914] transition-colors"
-              aria-label={isPlaying ? '暂停' : '播放'}
+              className="p-1 hover:text-[#E50914] transition-colors cursor-pointer"
+              aria-label={isPlaying ? t('pauseLabel') : t('playLabel')}
             >
               {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current" />}
             </button>
@@ -1105,10 +1273,24 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           {/* Right Controls */}
           <div className="flex items-center space-x-3 sm:space-x-5">
             {/* Speed Selector */}
-            <div className="relative">
+            <div
+              className="relative"
+              onClick={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+            >
               <button
                 onClick={() => setSpeedMenuOpen(!speedMenuOpen)}
-                className="flex items-center text-xs font-semibold hover:text-[#E50914] transition-colors"
+                className="flex items-center text-xs font-semibold hover:text-[#E50914] transition-colors cursor-pointer"
               >
                 <Gauge className="w-4 h-4 mr-1" />
                 {playbackSpeed}x
@@ -1119,7 +1301,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     <button
                       key={s}
                       onClick={() => handleSetSpeed(s)}
-                      className={`text-xs px-3 py-1 rounded text-left transition-colors ${
+                      className={`text-xs px-3 py-1 rounded text-left transition-colors cursor-pointer ${
                         playbackSpeed === s ? 'bg-[#E50914] text-white font-bold' : 'hover:bg-white/10 text-gray-300'
                       }`}
                     >
@@ -1131,27 +1313,71 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             </div>
 
             {/* Episode Drawer Button (if episodes exist) */}
-            {detailData && detailData.groups.length > 0 && (
-              <div className="relative">
+            {allGroups.length > 0 && (
+              <div
+                className="relative"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetHideTimer();
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  resetHideTimer();
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  resetHideTimer();
+                }}
+              >
                 <button
+                  type="button"
                   onClick={() => setEpMenuOpen(!epMenuOpen)}
-                  className="flex items-center text-xs font-semibold hover:text-[#E50914] transition-colors"
+                  className="flex items-center text-xs font-semibold hover:text-[#E50914] transition-colors cursor-pointer"
                   title={t('selectEpisode')}
                 >
                   <ListVideo className="w-5 h-5" />
                 </button>
                 {epMenuOpen && (
-                  <div className="absolute bottom-8 right-0 bg-[#181818] border border-white/20 rounded-lg p-3 shadow-2xl w-64 max-h-80 overflow-y-auto no-scrollbar z-50">
-                    <h4 className="text-xs font-bold text-gray-400 mb-2">{t('selectEpisode')}</h4>
+                  <div className="absolute bottom-8 right-0 bg-[#181818] border border-white/20 rounded-xl p-3 shadow-2xl w-72 max-h-80 overflow-y-auto no-scrollbar z-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-xs font-bold text-gray-300">{t('selectEpisode')}</h4>
+                      {allGroups.length > 1 && (
+                        <span className="text-[10px] text-gray-400 font-mono">
+                          {allGroups[activeGroupIndex]?.from || `线路 ${activeGroupIndex + 1}`}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Group/Line Tabs if multiple lines exist */}
+                    {allGroups.length > 1 && (
+                      <div className="flex items-center space-x-1.5 mb-2.5 overflow-x-auto no-scrollbar pb-1">
+                        {allGroups.map((grp, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setActiveGroupIndex(idx)}
+                            className={`text-[10px] px-2.5 py-1 rounded-md font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                              activeGroupIndex === idx
+                                ? 'bg-[#E50914] text-white font-bold'
+                                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                            }`}
+                          >
+                            {grp.from}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-3 gap-2">
-                      {detailData.groups[0]?.episodes.map((ep, idx) => (
+                      {allGroups[activeGroupIndex]?.episodes.map((ep, idx) => (
                         <button
                           key={idx}
+                          type="button"
                           onClick={() => {
                             setActiveEp(ep);
                             setEpMenuOpen(false);
                           }}
-                          className={`text-xs p-1.5 rounded truncate transition-colors ${
+                          className={`text-xs p-1.5 rounded truncate transition-colors cursor-pointer ${
                             activeEp?.url === ep.url
                               ? 'bg-[#E50914] text-white font-bold'
                               : 'bg-white/10 text-gray-300 hover:bg-white/20'
@@ -1167,7 +1393,21 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             )}
 
             {/* Apple AirPlay & Cast Button */}
-            <div className="relative">
+            <div
+              className="relative"
+              onClick={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+            >
               <button
                 type="button"
                 onClick={() => {
@@ -1192,7 +1432,18 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               {/* AirPlay & Apple TV Casting Popover */}
               {castMenuOpen && (
                 <div
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetHideTimer();
+                  }}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    resetHideTimer();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    resetHideTimer();
+                  }}
                   className="absolute bottom-10 right-0 bg-[#181818]/95 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl w-80 sm:w-96 max-h-[80vh] overflow-y-auto no-scrollbar z-50 animate-in fade-in zoom-in-95"
                 >
                   {/* Header */}
@@ -1234,7 +1485,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                           )}
                         </div>
                         <div className="text-[11px] text-white/80 font-normal">
-                          Apple TV / 支持 AirPlay 2 电视
+                          {t('castAppleTvSupport')}
                         </div>
                       </div>
                     </div>
@@ -1244,7 +1495,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   {/* Secondary: Apple TV Dedicated Players (Infuse / VLC) */}
                   <div className="space-y-2 mb-3">
                     <div className="text-[11px] font-semibold text-gray-400 px-0.5">
-                      Apple TV 专属播放器 (极客直连)
+                      {t('appleTvDedicatedPlayer')}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <button
@@ -1258,7 +1509,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                           }
                         }}
                         className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/10 hover:border-white/20 cursor-pointer"
-                        title="使用 Infuse 打开当前流媒体"
+                        title={t('openWithInfuse')}
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-orange-400" />
                         <span>{t('openInInfuse')}</span>
@@ -1271,7 +1522,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                           }
                         }}
                         className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/10 hover:border-white/20 cursor-pointer"
-                        title="使用 VLC 播放器打开"
+                        title={t('openWithVlc')}
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-amber-500" />
                         <span>{t('openInVlc')}</span>
@@ -1312,7 +1563,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                         <span>{t('appleEcosystemGuide')}</span>
                       </span>
                       <span className="text-[10px] text-gray-400 hover:underline">
-                        {showGuide ? '收起' : '查看指引'}
+                        {showGuide ? t('collapseGuide') : t('viewGuide')}
                       </span>
                     </button>
 
@@ -1347,8 +1598,9 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             {/* Fullscreen Toggle */}
             <button
               onClick={toggleFullscreen}
-              className="hover:text-[#E50914] transition-colors"
-              aria-label={isFullscreen ? '退出全屏' : '全屏'}
+              className="hover:text-[#E50914] transition-colors cursor-pointer"
+              aria-label={isFullscreen ? t('exitFullscreen') : t('fullscreen')}
+              title={isFullscreen ? t('exitFullscreen') : t('fullscreen')}
             >
               {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
             </button>
