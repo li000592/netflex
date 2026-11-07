@@ -14,6 +14,7 @@ import { useI18n, LanguageSelector } from './i18n';
 import {
   fetchDoubanCatalog,
   fetchBangumiCalendar,
+  fetchHuakaiCatalog,
   getWatchlist,
   getWatchHistory,
   toggleWatchlist,
@@ -46,6 +47,7 @@ export const App: React.FC = () => {
   const [top10, setTop10] = useState<MediaItem[]>([]);
   const [animeRows, setAnimeRows] = useState<{ day: string; items: MediaItem[] }[]>([]);
   const [varietyShows, setVarietyShows] = useState<MediaItem[]>([]);
+  const [huakaiMovies, setHuakaiMovies] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Watchlist State
@@ -120,10 +122,11 @@ export const App: React.FC = () => {
     const loadContent = async () => {
       setLoading(true);
       try {
-        const [moviesRes, tvRes, bangumiRes] = await Promise.all([
+        const [moviesRes, tvRes, bangumiRes, huakaiRes] = await Promise.all([
           fetchDoubanCatalog('movie', '热门', 24),
           fetchDoubanCatalog('tv', '热门', 24),
           fetchBangumiCalendar(),
+          fetchHuakaiCatalog(1).catch(() => ({ page: 1, pagecount: 1, total: 0, items: [] })),
         ]);
 
         if (moviesRes.length > 0) {
@@ -143,6 +146,10 @@ export const App: React.FC = () => {
         // Fetch high-rated variety
         const varietyRes = await fetchDoubanCatalog('tv', '综艺', 16);
         setVarietyShows(varietyRes);
+
+        if (huakaiRes && huakaiRes.items.length > 0) {
+          setHuakaiMovies(huakaiRes.items.slice(0, 18));
+        }
       } catch (err) {
         console.error('Failed to load initial catalog:', err);
       } finally {
@@ -389,6 +396,10 @@ export const App: React.FC = () => {
                 onOpenDetail={handleOpenDetail}
                 watchlistIds={watchlistIds}
                 onToggleFavorite={handleToggleFavorite}
+                onExplore={() => {
+                  setCurrentTab('movies');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
 
               <MovieRow
@@ -398,6 +409,10 @@ export const App: React.FC = () => {
                 onOpenDetail={handleOpenDetail}
                 watchlistIds={watchlistIds}
                 onToggleFavorite={handleToggleFavorite}
+                onExplore={() => {
+                  setCurrentTab('movies');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
 
               <MovieRow
@@ -407,6 +422,10 @@ export const App: React.FC = () => {
                 onOpenDetail={handleOpenDetail}
                 watchlistIds={watchlistIds}
                 onToggleFavorite={handleToggleFavorite}
+                onExplore={() => {
+                  setCurrentTab('tv');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
 
               {animeRows.length > 0 && (
@@ -417,6 +436,10 @@ export const App: React.FC = () => {
                   onOpenDetail={handleOpenDetail}
                   watchlistIds={watchlistIds}
                   onToggleFavorite={handleToggleFavorite}
+                  onExplore={() => {
+                    setCurrentTab('anime');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 />
               )}
 
@@ -428,6 +451,25 @@ export const App: React.FC = () => {
                   onOpenDetail={handleOpenDetail}
                   watchlistIds={watchlistIds}
                   onToggleFavorite={handleToggleFavorite}
+                  onExplore={() => {
+                    setCurrentTab('variety');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              )}
+
+              {huakaiMovies.length > 0 && (
+                <MovieRow
+                  title={t('huakaiPortalTitle')}
+                  movies={huakaiMovies}
+                  onPlay={handleDirectPlay}
+                  onOpenDetail={handleOpenDetail}
+                  watchlistIds={watchlistIds}
+                  onToggleFavorite={handleToggleFavorite}
+                  onExplore={() => {
+                    setCurrentTab('huakai');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 />
               )}
             </div>

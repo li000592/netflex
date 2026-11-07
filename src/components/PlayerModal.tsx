@@ -347,7 +347,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     onClose();
   };
 
-  // Immediate save on open + periodic background save every 4 seconds
+  // Immediate save on open + periodic background save every 4 seconds + tab exit listeners
   useEffect(() => {
     if (!isOpen || !movie || !activeEp) return;
 
@@ -358,11 +358,29 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       saveProgress();
     }, 4000);
 
-    return () => {
-      clearInterval(interval);
+    // Guaranteed save on browser tab close, refresh, tab switch, or app minimize (iOS/iPad/Desktop)
+    const handleTabExit = () => {
       saveProgress();
     };
-  }, [isOpen, activeEp, saveProgress]);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        saveProgress();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleTabExit);
+    window.addEventListener('pagehide', handleTabExit);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('beforeunload', handleTabExit);
+      window.removeEventListener('pagehide', handleTabExit);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      saveProgress();
+    };
+  }, [isOpen, activeEp, movie, saveProgress]);
 
   // Handle Controls Visibility on Idle
   const handleUserActivity = () => {

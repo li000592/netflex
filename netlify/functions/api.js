@@ -339,23 +339,6 @@ export async function handler(event) {
       };
     }
 
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          title: item.vod_name,
-          pic: item.vod_pic,
-          actor: item.vod_actor || '',
-          director: item.vod_director || '',
-          year: item.vod_year || '',
-          area: item.vod_area || '',
-          remarks: item.vod_remarks || '',
-          content: item.vod_content || '',
-          groups: playListGroups,
-        }),
-      };
-    }
-
     // 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)
     if (path === '/proxy/image') {
       const url = params.url;

@@ -12,6 +12,7 @@ interface MovieRowProps {
   onOpenDetail: (movie: MediaItem) => void;
   watchlistIds: Set<string>;
   onToggleFavorite: (movie: MediaItem) => void;
+  onExplore?: () => void;
 }
 
 export const MovieRow: React.FC<MovieRowProps> = ({
@@ -22,6 +23,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({
   onOpenDetail,
   watchlistIds,
   onToggleFavorite,
+  onExplore,
 }) => {
   const { t } = useI18n();
   const rowRef = useRef<HTMLDivElement>(null);
@@ -50,11 +52,18 @@ export const MovieRow: React.FC<MovieRowProps> = ({
     <div className="relative group my-6 sm:my-8 px-4 sm:px-6 lg:px-8">
       {/* Row Header */}
       <div className="flex items-center justify-between mb-2 sm:mb-3">
-        <h2 className="text-lg sm:text-2xl font-bold text-white tracking-wide hover:text-[#E50914] transition-colors cursor-pointer flex items-center">
-          {title}
-          <span className="text-xs text-gray-400 font-normal ml-3 hidden sm:inline-block">
-            {t('exploreAll')} &gt;
-          </span>
+        <h2
+          onClick={onExplore}
+          className={`text-lg sm:text-2xl font-bold text-white tracking-wide transition-colors flex items-center group/header ${
+            onExplore ? 'cursor-pointer hover:text-[#E50914]' : ''
+          }`}
+        >
+          <span>{title}</span>
+          {onExplore && (
+            <span className="text-xs text-gray-400 font-normal ml-3 inline-flex items-center group-hover/header:text-[#E50914] group-hover/header:translate-x-1 transition-all">
+              {t('exploreAll')} &gt;
+            </span>
+          )}
         </h2>
       </div>
 
