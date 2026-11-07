@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Loader2, Flower2 } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { MediaItem } from '../types';
 import { fetchHuakaiCatalog } from '../services/api';
 import { MovieCard } from './MovieCard';
@@ -129,9 +129,6 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
           <div>
             <h1 className="text-2xl sm:text-4xl font-black mb-2 flex items-center">
-              <span className="text-[#E50914] mr-2">
-                <Flower2 className="w-7 h-7 sm:w-9 sm:h-9 inline" />
-              </span>
               {t('huakaiPortalTitle')}
               <span className="ml-3 text-xs bg-[#E50914] text-white px-2 py-0.5 rounded font-mono">
                 155动漫专线
