@@ -86,11 +86,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Left Brand & Navigation */}
-          <div className="flex items-center space-x-4 lg:space-x-8">
+          <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-8">
             {/* Mobile menu trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-300 hover:text-white"
+              className="sm:hidden p-2 text-gray-300 hover:text-white"
               aria-label="Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -109,8 +109,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </div>
 
-            {/* Desktop Nav Links */}
-            <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
+            {/* Desktop & Tablet Nav Links */}
+            <nav className="hidden sm:flex items-center space-x-3 md:space-x-5 lg:space-x-6 text-xs md:text-sm font-medium">
               {navItems.map((item) => (
                 <button
                   key={item.tab}
@@ -121,10 +121,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onSelectTab(item.tab);
                     }
                   }}
-                  className={`transition-colors duration-200 hover:text-white ${
-                    currentTab === item.tab ? 'text-white font-bold' : 'text-gray-300'
+                  className={`transition-colors duration-200 flex items-center ${
+                    currentTab === item.tab
+                      ? 'text-white font-bold'
+                      : item.tab === 'huakai'
+                      ? 'text-pink-400 hover:text-pink-300 font-semibold'
+                      : 'text-gray-300 hover:text-white'
                   }`}
                 >
+                  {item.tab === 'huakai' && <Flower2 className="w-3.5 h-3.5 mr-1 inline text-pink-400" />}
                   {item.label}
                 </button>
               ))}
@@ -313,7 +318,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#141414]/98 border-b border-white/10 px-4 py-4 space-y-2 backdrop-blur-xl">
+          <div className="sm:hidden bg-[#141414]/98 border-b border-white/10 px-4 py-4 space-y-2 backdrop-blur-xl">
             {navItems.map((item) => (
               <button
                 key={item.tab}
