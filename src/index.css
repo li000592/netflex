@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Remove Netlify floating promotional badge & card */
+.nl-wrap,
+#nl-card,
+#nl-badge,
+[aria-label*="Netlify"],
+[class*="nl-"],
+iframe[id*="netlify"],
+iframe[src*="netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
 :root {
   color-scheme: dark;
   --netflix-red: #E50914;
