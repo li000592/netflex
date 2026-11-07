@@ -369,7 +369,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               {movie?.title}
             </h1>
             <p className="text-xs text-gray-300">
-              {activeEp?.name} • 31源聚合极速专线
+              {activeEp?.name} • 超清极速专线
             </p>
           </div>
         </div>

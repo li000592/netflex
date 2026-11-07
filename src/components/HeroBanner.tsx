@@ -66,7 +66,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
         {/* Synopsis / Remarks */}
         <p className="text-sm sm:text-base text-gray-300 line-clamp-3 mb-6 drop-shadow leading-relaxed">
-          {movie.overview || movie.remarks || `${movie.title} - 31路全网极速高清片源，支持秒播与多线路无缝切换。`}
+          {movie.overview || movie.remarks || `${movie.title} - 全网高分甄选，超清无缝流畅畅享。`}
         </p>
 
         {/* Action Buttons */}

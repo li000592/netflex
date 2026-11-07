@@ -66,9 +66,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-[#E50914] font-black tracking-wider text-2xl sm:text-3xl font-sans drop-shadow-md group-hover:scale-105 transition-transform">
                 NETFLEX
               </span>
-              <span className="ml-2 px-1.5 py-0.5 text-[10px] font-semibold bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/40 rounded hidden sm:inline-block">
-                31源聚合
-              </span>
             </div>
 
             {/* Desktop Nav Links */}

@@ -360,9 +360,8 @@ export const App: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <span className="text-[#E50914] font-black text-lg">NETFLEX</span>
-            <span>• 31路极速高清流媒体聚合系统</span>
           </div>
-          <p>© 2024 NETFLEX. Powered by 31 High-Speed Stream Endpoints, Bangumi & Douban API.</p>
+          <p>© 2024 NETFLEX, Inc. 保留所有权利。</p>
         </div>
       </footer>
     </div>
