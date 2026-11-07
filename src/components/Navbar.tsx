@@ -13,7 +13,6 @@ import {
   Users,
   History,
   Check,
-  Database,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
 import { useI18n, LanguageSelector } from '../i18n';
@@ -29,7 +28,6 @@ interface NavbarProps {
   onOpenProfileModal: () => void;
   onLogout: () => void;
   onSwitchProfile: (profileId: string) => void;
-  onOpenCloudSync: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -43,7 +41,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenProfileModal,
   onLogout,
   onSwitchProfile,
-  onOpenCloudSync,
 }) => {
   const { t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -275,17 +272,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                         >
                           <History className="w-3.5 h-3.5 mr-2 text-gray-400" />
                           {t('myList')}
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setProfileDropdownOpen(false);
-                            onOpenCloudSync();
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
-                        >
-                          <Database className="w-3.5 h-3.5 mr-2 text-[#E50914]" />
-                          Supabase 云端同步
                         </button>
                       </div>
 
