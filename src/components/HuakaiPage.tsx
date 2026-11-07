@@ -123,7 +123,7 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
   };
 
   return (
-    <div className="pt-20 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+    <div className="safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
       {/* Header Banner */}
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">

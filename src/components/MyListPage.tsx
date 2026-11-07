@@ -50,7 +50,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   // If user is not logged in, show Netflix Sign-In Callout
   if (!currentUser) {
     return (
-      <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+      <div className="min-h-screen safe-page-top-lg pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E50914]/20 border border-[#E50914]/40 flex items-center justify-center mb-6 shadow-2xl">
           <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-[#E50914]" />
         </div>
@@ -94,7 +94,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   }
 
   return (
-    <div className="min-h-screen pt-24 sm:pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Profile Header Badge */}
       <div className="flex items-center space-x-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl">
         <img

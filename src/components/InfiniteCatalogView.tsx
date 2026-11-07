@@ -113,7 +113,7 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
   };
 
   return (
-    <div className="pt-20 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+    <div className="safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
       {/* Optional Top Slot (e.g. Bangumi calendar for Anime) */}
       {headerSlot}
 

@@ -85,13 +85,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 safe-top ${
           isScrolled
             ? 'bg-[#141414]/95 backdrop-blur-md shadow-2xl border-b border-white/5'
-            : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent'
+            : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-left safe-right h-16 sm:h-20 flex items-center justify-between">
           {/* Left Brand & Navigation */}
           <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-8">
             {/* Mobile menu trigger */}

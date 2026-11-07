@@ -765,7 +765,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       {/* 🎬 Netflix-Style Auto-Resume Notification */}
       {resumeToast?.show && (
-        <div className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-3 bg-black/85 backdrop-blur-md border border-white/20 px-4 py-2 sm:py-2.5 rounded-full shadow-2xl transition-all animate-in fade-in zoom-in-95 duration-200 pointer-events-auto">
+        <div className="absolute top-[calc(4.5rem+env(safe-area-inset-top,0px))] sm:top-[calc(5.5rem+env(safe-area-inset-top,0px))] left-1/2 -translate-x-1/2 z-50 flex items-center space-x-3 bg-black/85 backdrop-blur-md border border-white/20 px-4 py-2 sm:py-2.5 rounded-full shadow-2xl transition-all animate-in fade-in zoom-in-95 duration-200 pointer-events-auto">
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse inline-block" />
             <span className="text-white text-xs sm:text-sm font-medium whitespace-nowrap">
@@ -870,7 +870,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       {/* Top Overlay Bar */}
       <div
-        className={`absolute top-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 z-30 ${
+        className={`absolute top-0 left-0 right-0 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-4 sm:pb-6 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between transition-opacity duration-300 z-30 ${
           controlsVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
@@ -902,7 +902,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       {/* Bottom Control Bar */}
       <div
-        className={`absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent transition-opacity duration-300 z-30 ${
+        className={`absolute bottom-0 left-0 right-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pt-4 sm:pt-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent transition-opacity duration-300 z-30 ${
           controlsVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
