@@ -232,23 +232,53 @@ api.get('/api/detail', async (req, res) => {
   }
 });
 
-// 6. Anti-hotlinking Image Proxy
+// Image in-memory buffer cache for instant poster serving
+const imageCache = new Map();
+
+// 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)
 api.get('/api/proxy/image', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send('URL required');
+
+  if (imageCache.has(url)) {
+    const cached = imageCache.get(url);
+    res.setHeader('Content-Type', cached.contentType);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.send(cached.buffer);
+  }
+
   try {
+    const isDouban = url.includes('doubanio.com') || url.includes('douban.com');
+    const referer = isDouban ? 'https://movie.douban.com/' : '';
+
     const imgResp = await fetch(url, {
       headers: {
-        Referer: '',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+        Referer: referer,
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+        Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
       },
     });
-    if (!imgResp.ok) return res.status(imgResp.status).send('Failed to fetch image');
+
+    if (!imgResp.ok) {
+      return res.status(imgResp.status).send('Failed to fetch image');
+    }
+
     const contentType = imgResp.headers.get('content-type') || 'image/jpeg';
+    const arrayBuffer = await imgResp.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Cache image buffer
+    imageCache.set(url, { contentType, buffer });
+    // Limit cache size to 300 images
+    if (imageCache.size > 300) {
+      const firstKey = imageCache.keys().next().value;
+      imageCache.delete(firstKey);
+    }
+
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
-    const arrayBuffer = await imgResp.arrayBuffer();
-    res.send(Buffer.from(arrayBuffer));
+    res.send(buffer);
   } catch (err) {
     res.status(500).send(err.message);
   }

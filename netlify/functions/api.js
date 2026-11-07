@@ -245,15 +245,20 @@ export async function handler(event) {
       };
     }
 
-    // 6. Anti-hotlinking Image Proxy
+    // 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)
     if (path === '/proxy/image') {
       const url = params.url;
       if (!url) return { statusCode: 400, headers, body: 'URL required' };
 
+      const isDouban = url.includes('doubanio.com') || url.includes('douban.com');
+      const referer = isDouban ? 'https://movie.douban.com/' : '';
+
       const imgResp = await fetch(url, {
         headers: {
-          Referer: '',
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          Referer: referer,
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+          Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
         },
       });
       if (!imgResp.ok) return { statusCode: imgResp.status, headers, body: 'Image fetch failed' };
