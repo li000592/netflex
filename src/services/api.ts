@@ -19,9 +19,16 @@ function getStorageKey(baseKey: string): string {
   return `${baseKey}_guest`;
 }
 
-export async function fetchDoubanCatalog(type: 'movie' | 'tv', tag: string = '热门', limit: number = 20): Promise<MediaItem[]> {
+export async function fetchDoubanCatalog(
+  type: 'movie' | 'tv',
+  tag: string = '热门',
+  limit: number = 24,
+  start: number = 0
+): Promise<MediaItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/douban?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&limit=${limit}`);
+    const res = await fetch(
+      `${API_BASE}/api/douban?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&limit=${limit}&start=${start}`
+    );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const subjects = data.subjects || [];

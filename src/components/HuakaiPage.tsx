@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Loader2, Sparkles, ChevronLeft, ChevronRight, Flower2 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Search, Loader2, Flower2 } from 'lucide-react';
 import { MediaItem } from '../types';
 import { fetchHuakaiCatalog } from '../services/api';
 import { MovieCard } from './MovieCard';
@@ -25,8 +25,12 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
   const [searchInput, setSearchInput] = useState<string>('');
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [pageCount, setPageCount] = useState<number>(1);
   const [totalCount, setTotalCount] = useState<number>(0);
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const subCategories = [
     { id: undefined, label: '全部' },
@@ -40,47 +44,82 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
     { id: 35, label: '网红头条' },
   ];
 
+  // Load first page on filter change
   useEffect(() => {
     let isCancelled = false;
-    const load = async () => {
+    const loadFirst = async () => {
       setLoading(true);
-      const res = await fetchHuakaiCatalog(page, selectedType, keyword);
+      setPage(1);
+      const res = await fetchHuakaiCatalog(1, selectedType, keyword);
       if (!isCancelled) {
         setItems(res.items);
         setPageCount(res.pagecount || 1);
         setTotalCount(res.total || 0);
+        setHasMore((res.pagecount || 1) > 1);
         setLoading(false);
       }
     };
-    load();
+    loadFirst();
     return () => {
       isCancelled = true;
     };
-  }, [page, selectedType, keyword]);
+  }, [selectedType, keyword]);
+
+  // Load more function
+  const loadMore = useCallback(async () => {
+    if (loading || loadingMore || !hasMore) return;
+    const nextPage = page + 1;
+    if (nextPage > pageCount) {
+      setHasMore(false);
+      return;
+    }
+    setLoadingMore(true);
+    const res = await fetchHuakaiCatalog(nextPage, selectedType, keyword);
+    if (res.items.length > 0) {
+      setItems((prev) => {
+        const existingIds = new Set(prev.map((i) => i.id));
+        const filteredNew = res.items.filter((i) => !existingIds.has(i.id));
+        return [...prev, ...filteredNew];
+      });
+      setPage(nextPage);
+      setHasMore(nextPage < (res.pagecount || pageCount));
+    } else {
+      setHasMore(false);
+    }
+    setLoadingMore(false);
+  }, [page, pageCount, selectedType, keyword, loading, loadingMore, hasMore]);
+
+  // Intersection Observer for infinite scrolling
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
     setKeyword(searchInput.trim());
   };
 
   const handleClearSearch = () => {
     setSearchInput('');
     setKeyword('');
-    setPage(1);
   };
 
   const handleSelectCategory = (typeId?: number) => {
     setSelectedType(typeId);
-    setPage(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= pageCount) {
-      setPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   };
 
   return (
@@ -145,13 +184,13 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
           })}
           {totalCount > 0 && (
             <span className="ml-auto text-xs text-gray-500 font-mono hidden sm:inline">
-              共 {totalCount} 部影片
+              共 {totalCount} 部影片 · 无限滚动浏览
             </span>
           )}
         </div>
       </div>
 
-      {/* Video Grid or Loader */}
+      {/* Video Grid or Initial Loader */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-28 text-gray-400">
           <Loader2 className="w-10 h-10 animate-spin text-[#E50914] mb-3" />
@@ -173,37 +212,18 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
             ))}
           </div>
 
-          {/* Pagination Controls */}
-          <div className="flex items-center justify-center space-x-3 mt-12 pt-6 border-t border-white/10">
-            <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page <= 1}
-              className={`flex items-center px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                page <= 1
-                  ? 'bg-white/5 text-gray-600 cursor-not-allowed'
-                  : 'bg-white/10 text-white hover:bg-[#E50914]'
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              {t('prevPage')}
-            </button>
-
-            <span className="text-xs text-gray-400 font-mono px-3">
-              {t('pageIndicator')} <span className="text-white font-bold">{page}</span> / {pageCount}
-            </span>
-
-            <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page >= pageCount}
-              className={`flex items-center px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                page >= pageCount
-                  ? 'bg-white/5 text-gray-600 cursor-not-allowed'
-                  : 'bg-white/10 text-white hover:bg-[#E50914]'
-              }`}
-            >
-              {t('nextPage')}
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </button>
+          {/* Infinite Scroll Sentinel & Loader */}
+          <div ref={sentinelRef} className="py-10 flex justify-center items-center text-gray-500 text-xs">
+            {loadingMore ? (
+              <div className="flex items-center space-x-2 text-gray-400">
+                <Loader2 className="w-5 h-5 animate-spin text-[#E50914]" />
+                <span>正在加载更多影片...</span>
+              </div>
+            ) : hasMore ? (
+              <span className="opacity-40">继续向下滑动加载更多内容</span>
+            ) : (
+              <span className="opacity-40">已加载完当前分类全部内容</span>
+            )}
           </div>
         </div>
       ) : (
