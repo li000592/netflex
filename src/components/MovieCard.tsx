@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Play, Plus, Check, ChevronDown, Star } from 'lucide-react';
 import { MediaItem } from '../types';
 import { useI18n } from '../i18n';
-import { prefetchVideo } from '../services/api';
+import { prefetchVideo, hasValidCover } from '../services/api';
 
 interface MovieCardProps {
   movie: MediaItem;
@@ -23,6 +23,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const canShowCover = hasValidCover(movie.cover) && !imgError;
 
   return (
     <div
@@ -49,16 +52,14 @@ export const MovieCard: React.FC<MovieCardProps> = ({
             isHovered ? 'scale-105 shadow-2xl ring-2 ring-white/30' : ''
           }`}
         >
-          {movie.cover ? (
+          {canShowCover ? (
             <img
               src={movie.cover}
               alt={movie.title}
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              onError={(e) => {
-                // Fallback placeholder image if poster fails
-                (e.target as HTMLImageElement).src =
-                  'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&fit=crop';
+              onError={() => {
+                setImgError(true);
               }}
             />
           ) : (

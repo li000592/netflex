@@ -121,8 +121,20 @@ export const App: React.FC = () => {
     try {
       localStorage.setItem('netflex_huakai_enabled', enabled ? 'true' : 'false');
     } catch {}
-    if (!enabled && currentTab === 'huakai') {
-      setCurrentTab('home');
+    if (!enabled) {
+      if (currentTab === 'huakai') {
+        setCurrentTab('home');
+      }
+    } else {
+      if (huakaiMovies.length === 0) {
+        fetchHuakaiCatalog(1)
+          .then((res) => {
+            if (res && res.items.length > 0) {
+              setHuakaiMovies(res.items.slice(0, 18));
+            }
+          })
+          .catch(() => {});
+      }
     }
   };
 
@@ -218,7 +230,9 @@ export const App: React.FC = () => {
           fetchDoubanCatalog('movie', '热门', 24),
           fetchDoubanCatalog('tv', '热门', 24),
           fetchBangumiCalendar(),
-          fetchHuakaiCatalog(1).catch(() => ({ page: 1, pagecount: 1, total: 0, items: [] })),
+          huakaiEnabled
+            ? fetchHuakaiCatalog(1).catch(() => ({ page: 1, pagecount: 1, total: 0, items: [] }))
+            : Promise.resolve({ page: 1, pagecount: 1, total: 0, items: [] }),
         ]);
 
         if (moviesRes.length > 0) {
@@ -318,7 +332,7 @@ export const App: React.FC = () => {
       }
     }
 
-    const results = await searchVideos(movie.title);
+    const results = await searchVideos(movie.title, undefined, undefined, huakaiEnabled);
     if (results.length > 0) {
       const best = results[0];
       if (best.sourceUrl && best.vod_id) {
@@ -639,6 +653,7 @@ export const App: React.FC = () => {
         onPlayEpisode={handlePlayEpisode}
         isFavorite={detailMovie ? watchlistIds.has(detailMovie.id) : false}
         onToggleFavorite={handleToggleFavorite}
+        huakaiEnabled={huakaiEnabled}
       />
 
       {/* Cinema Player Modal */}

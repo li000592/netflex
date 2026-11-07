@@ -5,6 +5,7 @@ export interface MediaItem {
   cover: string;
   isNew?: boolean;
   category?: string;
+  sourceCategory?: string;
   year?: string;
   remarks?: string;
   overview?: string;
@@ -21,6 +22,7 @@ export interface MediaItem {
     sourceId: string;
     sourceName: string;
     sourceUrl: string;
+    sourceCategory?: string;
     vod_id: string | number;
     remarks: string;
     playUrlRaw: string;

@@ -42,19 +42,25 @@ export const SearchPage: React.FC<SearchPageProps> = ({
 
     const timer = setTimeout(async () => {
       setLoading(true);
-      const res = await searchVideos(query, selectedSource || undefined, selectedCategory);
+      const res = await searchVideos(query, selectedSource || undefined, selectedCategory, huakaiEnabled);
       setResults(res);
       setLoading(false);
     }, 350);
 
     return () => clearTimeout(timer);
-  }, [query, selectedSource, selectedCategory]);
+  }, [query, selectedSource, selectedCategory, huakaiEnabled]);
 
   useEffect(() => {
-    if (!huakaiEnabled && selectedCategory === 'huakai') {
-      setSelectedCategory('all');
+    if (!huakaiEnabled) {
+      if (selectedCategory === 'huakai') {
+        setSelectedCategory('all');
+      }
+      const huakaiSourceIds = ['155zy', 'didi', 'yutu', 'lebo'];
+      if (huakaiSourceIds.includes(selectedSource)) {
+        setSelectedSource('');
+      }
     }
-  }, [huakaiEnabled, selectedCategory]);
+  }, [huakaiEnabled, selectedCategory, selectedSource]);
 
   const categories = [
     { id: 'all', label: t('allCategories') },
@@ -67,8 +73,20 @@ export const SearchPage: React.FC<SearchPageProps> = ({
 
   const filteredSources =
     selectedCategory === 'all'
-      ? VIDEO_SOURCES.filter((s) => s.category !== 'huakai')
+      ? huakaiEnabled
+        ? VIDEO_SOURCES
+        : VIDEO_SOURCES.filter((s) => s.category !== 'huakai')
       : VIDEO_SOURCES.filter((s) => s.category === selectedCategory);
+
+  const isHuakaiItem = (item: MediaItem) => {
+    if (item.sourceCategory === 'huakai' || item.category === 'huakai' || item.category === '花开') return true;
+    if (item.sourceId === '155zy' || item.sourceId === 'didi' || item.sourceId === 'yutu' || item.sourceId === 'lebo') return true;
+    const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
+    if (item.type_name && adultRegex.test(item.type_name)) return true;
+    return false;
+  };
+
+  const displayedResults = huakaiEnabled ? results : results.filter((m) => !isHuakaiItem(m));
 
   return (
     <div className="min-h-screen safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -140,19 +158,19 @@ export const SearchPage: React.FC<SearchPageProps> = ({
             {t('searchingFor')} 「{query}」...
           </p>
         </div>
-      ) : results.length > 0 ? (
+      ) : displayedResults.length > 0 ? (
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
               {t('searchResults')}
               <span className="text-xs bg-white/10 text-gray-300 ml-3 px-2 py-0.5 rounded-full font-mono">
-                {results.length} {t('titlesFound')}
+                {displayedResults.length} {t('titlesFound')}
               </span>
             </h2>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
-            {results.map((movie, idx) => (
+            {displayedResults.map((movie, idx) => (
               <div key={`${movie.id}_${idx}`} className="flex justify-center">
                 <MovieCard
                   movie={movie}

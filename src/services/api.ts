@@ -11,6 +11,35 @@ import {
 
 const API_BASE = ''; // Relative path, works for both localhost:3000 and Netlify
 
+export function hasValidCover(cover?: string | null): boolean {
+  if (!cover || typeof cover !== 'string') return false;
+  const trimmed = cover.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  if (
+    lower === 'nopic' ||
+    lower === 'no_pic' ||
+    lower === 'default' ||
+    lower === 'null' ||
+    lower === 'undefined' ||
+    lower.includes('nopic') ||
+    lower.includes('no_pic') ||
+    lower.includes('default.jpg') ||
+    lower.includes('default.png')
+  ) {
+    return false;
+  }
+  return /^https?:\/\//i.test(trimmed) || trimmed.startsWith('/api/proxy/image');
+}
+
+export function sortMediaByCover(items: MediaItem[]): MediaItem[] {
+  return [...items].sort((a, b) => {
+    const aHas = hasValidCover(a.cover) ? 1 : 0;
+    const bHas = hasValidCover(b.cover) ? 1 : 0;
+    return bHas - aHas;
+  });
+}
+
 function getStorageKey(baseKey: string): string {
   const user = getCurrentUser();
   if (user) {
@@ -32,7 +61,7 @@ export async function fetchDoubanCatalog(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const subjects = data.subjects || [];
-    return subjects.map((item: any) => {
+    const list: MediaItem[] = subjects.map((item: any) => {
       // Upgrade Douban cover to high-definition large poster
       const hdCover = item.cover
         ? item.cover
@@ -40,15 +69,19 @@ export async function fetchDoubanCatalog(
             .replace('/m_ratio_poster/', '/l_ratio_poster/')
         : '';
 
+      const coverUrl = hdCover ? `${API_BASE}/api/proxy/image?url=${encodeURIComponent(hdCover)}` : '';
+
       return {
         id: `douban_${item.id}`,
         title: item.title,
         rate: item.rate,
-        cover: hdCover ? `${API_BASE}/api/proxy/image?url=${encodeURIComponent(hdCover)}` : '',
+        cover: hasValidCover(coverUrl) ? coverUrl : '',
         isNew: item.is_new,
         category: type === 'movie' ? '电影' : '剧集',
       };
     });
+
+    return sortMediaByCover(list);
   } catch (err) {
     console.error('Failed to fetch Douban catalog:', err);
     return [];
@@ -64,16 +97,19 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
     
     return list.map((group: any) => {
       const weekdayName = group.weekday?.cn || group.weekday?.en || '每日更新';
-      const items: MediaItem[] = (group.items || []).map((anime: any) => ({
-        id: `bangumi_${anime.id}`,
-        title: anime.name_cn || anime.name,
-        rate: anime.rating?.score ? anime.rating.score.toFixed(1) : undefined,
-        cover: anime.images?.large || anime.images?.common || '',
-        category: '动漫',
-        overview: anime.summary || '',
-        year: anime.air_date ? anime.air_date.slice(0, 4) : '',
-      }));
-      return { day: weekdayName, items };
+      const items: MediaItem[] = (group.items || []).map((anime: any) => {
+        const cover = anime.images?.large || anime.images?.common || '';
+        return {
+          id: `bangumi_${anime.id}`,
+          title: anime.name_cn || anime.name,
+          rate: anime.rating?.score ? anime.rating.score.toFixed(1) : undefined,
+          cover: hasValidCover(cover) ? cover : '',
+          category: '动漫',
+          overview: anime.summary || '',
+          year: anime.air_date ? anime.air_date.slice(0, 4) : '',
+        };
+      });
+      return { day: weekdayName, items: sortMediaByCover(items) };
     });
   } catch (err) {
     console.error('Failed to fetch Bangumi calendar:', err);
@@ -85,16 +121,21 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
 const searchCache = new Map<string, MediaItem[]>();
 const detailCache = new Map<string, VideoDetail>();
 
-export function prefetchVideo(keyword: string): void {
+export function prefetchVideo(keyword: string, huakaiEnabled: boolean = false): void {
   if (!keyword || !keyword.trim()) return;
-  const key = `${keyword.trim().toLowerCase()}_all`;
+  const key = `${keyword.trim().toLowerCase()}_all_all_${huakaiEnabled ? 'hk1' : 'hk0'}`;
   if (searchCache.has(key)) return;
-  searchVideos(keyword).catch(() => {});
+  searchVideos(keyword, undefined, undefined, huakaiEnabled).catch(() => {});
 }
 
-export async function searchVideos(keyword: string, sourceId?: string, category?: string): Promise<MediaItem[]> {
+export async function searchVideos(
+  keyword: string,
+  sourceId?: string,
+  category?: string,
+  huakaiEnabled: boolean = false
+): Promise<MediaItem[]> {
   if (!keyword.trim()) return [];
-  const cacheKey = `${keyword.trim().toLowerCase()}_${sourceId || 'all'}_${category || 'all'}`;
+  const cacheKey = `${keyword.trim().toLowerCase()}_${sourceId || 'all'}_${category || 'all'}_${huakaiEnabled ? 'hk1' : 'hk0'}`;
   if (searchCache.has(cacheKey)) {
     return searchCache.get(cacheKey)!;
   }
@@ -106,18 +147,22 @@ export async function searchVideos(keyword: string, sourceId?: string, category?
     } else if (category && category !== 'all') {
       url += `&category=${encodeURIComponent(category)}`;
     }
+    if (huakaiEnabled) {
+      url += `&huakai=true`;
+    }
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const list = data.list || [];
-    const parsed: MediaItem[] = list.map((item: any) => ({
+    let parsed: MediaItem[] = list.map((item: any) => ({
       id: item.id,
       title: item.title,
-      cover: item.pic,
+      cover: hasValidCover(item.pic) ? item.pic.trim() : '',
       vod_id: item.vod_id,
       sourceId: item.sourceId,
       sourceName: item.sourceName,
       sourceUrl: item.sourceUrl,
+      sourceCategory: item.sourceCategory,
       remarks: item.remarks,
       actor: item.actor,
       director: item.director,
@@ -128,6 +173,23 @@ export async function searchVideos(keyword: string, sourceId?: string, category?
       groups: item.groups,
       availableSources: item.availableSources,
     }));
+
+    // Strict client-side Huakai barrier when mode is OFF
+    if (!huakaiEnabled) {
+      const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
+      parsed = parsed.filter(
+        (item) =>
+          item.sourceCategory !== 'huakai' &&
+          item.sourceId !== '155zy' &&
+          item.sourceId !== 'didi' &&
+          item.sourceId !== 'yutu' &&
+          item.sourceId !== 'lebo' &&
+          !adultRegex.test(item.type_name || '')
+      );
+    }
+
+    // Sort: titles without covers are moved to the back
+    parsed = sortMediaByCover(parsed);
 
     searchCache.set(cacheKey, parsed);
     if (searchCache.size > 100) {
@@ -158,24 +220,26 @@ export async function fetchHuakaiCatalog(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const list = data.list || [];
-    const items: MediaItem[] = list.map((item: any) => ({
-      id: item.id,
-      title: item.title,
-      cover: item.pic,
-      vod_id: item.vod_id,
-      sourceId: item.sourceId,
-      sourceName: item.sourceName,
-      sourceUrl: item.sourceUrl,
-      remarks: item.remarks,
-      actor: item.actor,
-      director: item.director,
-      year: item.year,
-      area: item.area,
-      type_name: item.type_name,
-      overview: item.content,
-      groups: item.groups,
-      category: '花开',
-    }));
+    const items: MediaItem[] = sortMediaByCover(
+      list.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        cover: hasValidCover(item.pic) ? item.pic.trim() : '',
+        vod_id: item.vod_id,
+        sourceId: item.sourceId,
+        sourceName: item.sourceName,
+        sourceUrl: item.sourceUrl,
+        remarks: item.remarks,
+        actor: item.actor,
+        director: item.director,
+        year: item.year,
+        area: item.area,
+        type_name: item.type_name,
+        overview: item.content,
+        groups: item.groups,
+        category: '花开',
+      }))
+    );
 
     return {
       page: data.page || page,

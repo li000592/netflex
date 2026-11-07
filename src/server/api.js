@@ -47,6 +47,27 @@ function parseVodPlayUrl(rawPlayUrl, rawPlayFrom) {
   return playListGroups;
 }
 
+function hasValidCover(cover) {
+  if (!cover || typeof cover !== 'string') return false;
+  const trimmed = cover.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  if (
+    lower === 'nopic' ||
+    lower === 'no_pic' ||
+    lower === 'default' ||
+    lower === 'null' ||
+    lower === 'undefined' ||
+    lower.includes('nopic') ||
+    lower.includes('no_pic') ||
+    lower.includes('default.jpg') ||
+    lower.includes('default.png')
+  ) {
+    return false;
+  }
+  return /^https?:\/\//i.test(trimmed) || trimmed.startsWith('/api/proxy/image');
+}
+
 // 1. Status API
 api.get('/api/status', (req, res) => {
   res.json({
@@ -134,7 +155,7 @@ api.get('/api/huakai', async (req, res) => {
         sourceName: '155动漫',
         sourceUrl: 'https://155api.com/api.php/provide/vod',
         title: item.vod_name,
-        pic: item.vod_pic,
+        pic: hasValidCover(item.vod_pic) ? item.vod_pic.trim() : '',
         actor: item.vod_actor || '',
         director: item.vod_director || '',
         remarks: item.vod_remarks || '',
@@ -146,6 +167,14 @@ api.get('/api/huakai', async (req, res) => {
         groups: parsedGroups,
       };
     });
+
+    // Move items without covers to the back
+    list.sort((a, b) => {
+      const aHas = hasValidCover(a.pic) ? 1 : 0;
+      const bHas = hasValidCover(b.pic) ? 1 : 0;
+      return bHas - aHas;
+    });
+
     const result = {
       page: Number(data.page) || Number(pg),
       pagecount: Number(data.pagecount) || 1,
@@ -162,27 +191,53 @@ api.get('/api/huakai', async (req, res) => {
 
 // 4. Concurrent Search Across Sources (with High-Speed Priority & 1600ms Timeout)
 api.get('/api/search', async (req, res) => {
-  const { wd, sourceId, category, limit = 40 } = req.query;
+  const { wd, sourceId, category, limit = 40, huakai } = req.query;
   if (!wd || !wd.trim()) {
     return res.status(400).json({ error: 'Keyword required' });
   }
 
+  const huakaiAllowed = huakai === 'true' || huakai === '1';
   const keyword = wd.trim();
-  const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}_${category || 'all'}`;
+  const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}_${category || 'all'}_${huakaiAllowed ? 'hk1' : 'hk0'}`;
   const cached = getCache(cacheKey, 600000); // 10 min cache
   if (cached) {
     return res.json(cached);
   }
 
   let targetSources = VIDEO_SOURCES;
-  if (sourceId) {
-    targetSources = VIDEO_SOURCES.filter((s) => s.id === sourceId);
-  } else if (category && category !== 'all') {
-    targetSources = VIDEO_SOURCES.filter((s) => s.category === category);
+  if (!huakaiAllowed) {
+    // Huakai mode is OFF: Never search huakai sources
+    if (category === 'huakai') {
+      return res.json({ total: 0, list: [] });
+    }
+    if (sourceId) {
+      const match = VIDEO_SOURCES.find((s) => s.id === sourceId);
+      if (!match || match.category === 'huakai') {
+        return res.json({ total: 0, list: [] });
+      }
+      targetSources = [match];
+    } else if (category && category !== 'all') {
+      targetSources = VIDEO_SOURCES.filter((s) => s.category === category && s.category !== 'huakai');
+    } else {
+      targetSources = VIDEO_SOURCES.filter((s) => s.category !== 'huakai');
+    }
   } else {
-    // Default search or 'all': EXCLUDE 'huakai' so 155动漫 is never mixed into other categories or general search
-    targetSources = VIDEO_SOURCES.filter((s) => s.category !== 'huakai');
+    // Huakai mode is ON:
+    if (sourceId) {
+      targetSources = VIDEO_SOURCES.filter((s) => s.id === sourceId);
+    } else if (category && category !== 'all') {
+      targetSources = VIDEO_SOURCES.filter((s) => s.category === category);
+    } else {
+      targetSources = VIDEO_SOURCES;
+    }
   }
+
+  const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
+  const isHuakaiContent = (item, sourceCat) => {
+    if (sourceCat === 'huakai' || item.sourceCategory === 'huakai' || item.category === 'huakai' || item.category === '花开') return true;
+    if (item.type_name && adultRegex.test(item.type_name)) return true;
+    return false;
+  };
 
   const searchPromises = targetSources.map(async (source) => {
     const controller = new AbortController();
@@ -207,8 +262,9 @@ api.get('/api/search', async (req, res) => {
           sourceId: source.id,
           sourceName: source.name,
           sourceUrl: source.url,
+          sourceCategory: source.category,
           title: item.vod_name,
-          pic: item.vod_pic,
+          pic: hasValidCover(item.vod_pic) ? item.vod_pic.trim() : '',
           actor: item.vod_actor || '',
           director: item.vod_director || '',
           remarks: item.vod_remarks || '',
@@ -227,39 +283,48 @@ api.get('/api/search', async (req, res) => {
   });
 
   const results = await Promise.allSettled(searchPromises);
-  const allVideos = [];
   const titleGroups = new Map();
 
   for (const r of results) {
     if (r.status === 'fulfilled' && Array.isArray(r.value)) {
       for (const item of r.value) {
-        allVideos.push(item);
+        if (!huakaiAllowed && isHuakaiContent(item, item.sourceCategory)) {
+          continue;
+        }
         const normTitle = item.title.trim().toLowerCase();
+        const sourceEntry = {
+          sourceId: item.sourceId,
+          sourceName: item.sourceName,
+          sourceUrl: item.sourceUrl,
+          sourceCategory: item.sourceCategory,
+          vod_id: item.vod_id,
+          remarks: item.remarks,
+          playUrlRaw: item.playUrlRaw,
+          groups: item.groups,
+        };
+
         if (!titleGroups.has(normTitle)) {
           titleGroups.set(normTitle, {
             primary: item,
-            sources: [
-              {
-                sourceId: item.sourceId,
-                sourceName: item.sourceName,
-                sourceUrl: item.sourceUrl,
-                vod_id: item.vod_id,
-                remarks: item.remarks,
-                playUrlRaw: item.playUrlRaw,
-                groups: item.groups,
-              },
-            ],
+            sources: [sourceEntry],
           });
         } else {
-          titleGroups.get(normTitle).sources.push({
-            sourceId: item.sourceId,
-            sourceName: item.sourceName,
-            sourceUrl: item.sourceUrl,
-            vod_id: item.vod_id,
-            remarks: item.remarks,
-            playUrlRaw: item.playUrlRaw,
-            groups: item.groups,
-          });
+          const group = titleGroups.get(normTitle);
+          group.sources.push(sourceEntry);
+
+          // If current primary has no valid cover, but this incoming item has one, update primary cover!
+          if (!hasValidCover(group.primary.pic) && hasValidCover(item.pic)) {
+            group.primary.pic = item.pic;
+          }
+          // Backfill missing metadata
+          if (!group.primary.actor && item.actor) group.primary.actor = item.actor;
+          if (!group.primary.director && item.director) group.primary.director = item.director;
+          if (!group.primary.content && item.content) group.primary.content = item.content;
+          if (!group.primary.year && item.year) group.primary.year = item.year;
+          if (!group.primary.area && item.area) group.primary.area = item.area;
+          if ((!group.primary.groups || group.primary.groups.length === 0) && item.groups && item.groups.length > 0) {
+            group.primary.groups = item.groups;
+          }
         }
       }
     }
@@ -269,6 +334,13 @@ api.get('/api/search', async (req, res) => {
     ...group.primary,
     availableSources: group.sources,
   }));
+
+  // Sort: items with valid covers first, items without covers to the back
+  aggregated.sort((a, b) => {
+    const aHas = hasValidCover(a.pic) ? 1 : 0;
+    const bHas = hasValidCover(b.pic) ? 1 : 0;
+    return bHas - aHas;
+  });
 
   const resultData = {
     total: aggregated.length,

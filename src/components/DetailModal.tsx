@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
-import { fetchVideoDetail, searchVideos, getWatchHistory } from '../services/api';
+import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover } from '../services/api';
 import { useI18n } from '../i18n';
 
 interface DetailModalProps {
@@ -11,6 +11,7 @@ interface DetailModalProps {
   onPlayEpisode: (movie: MediaItem, episode: Episode, groupIndex: number, episodeIndex: number) => void;
   isFavorite: boolean;
   onToggleFavorite: (movie: MediaItem) => void;
+  huakaiEnabled?: boolean;
 }
 
 export const DetailModal: React.FC<DetailModalProps> = ({
@@ -20,6 +21,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   onPlayEpisode,
   isFavorite,
   onToggleFavorite,
+  huakaiEnabled = false,
 }) => {
   const { t } = useI18n();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -96,18 +98,24 @@ export const DetailModal: React.FC<DetailModalProps> = ({
       }
 
       // 2. Search across sources (cached in api.ts)
-      const searchResults = await searchVideos(movie.title);
+      const searchResults = await searchVideos(movie.title, undefined, undefined, huakaiEnabled);
       if (!isMounted) return;
 
       if (searchResults.length > 0) {
         setSourceCandidates(searchResults);
         const bestMatch = searchResults[0];
 
+        const resolvedPic =
+          (hasValidCover(movie.cover) ? movie.cover : '') ||
+          (hasValidCover(bestMatch.cover) ? bestMatch.cover : '') ||
+          bestMatch.cover ||
+          movie.cover;
+
         // If bestMatch already has parsed groups from search, USE IMMEDIATELY! (Zero second delay!)
         if (bestMatch.groups && bestMatch.groups.length > 0) {
           setDetail({
             title: bestMatch.title || movie.title,
-            pic: bestMatch.cover || movie.cover,
+            pic: resolvedPic,
             actor: bestMatch.actor || '全网公映演员阵容',
             director: bestMatch.director || '精选导演',
             year: bestMatch.year || movie.year || '2024',
@@ -124,6 +132,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         if (bestMatch.sourceUrl && bestMatch.vod_id) {
           const res = await fetchVideoDetail(bestMatch.sourceUrl, bestMatch.vod_id);
           if (isMounted && res) {
+            if (!hasValidCover(res.pic) && hasValidCover(resolvedPic)) {
+              res.pic = resolvedPic;
+            }
             setDetail(res);
           }
         }
@@ -185,6 +196,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   if (!isOpen || !movie) return null;
 
   const currentGroup: EpisodeGroup | undefined = detail?.groups[activeGroupIndex];
+  const modalCover = hasValidCover(detail?.pic)
+    ? detail!.pic
+    : hasValidCover(movie.cover)
+    ? movie.cover
+    : '';
 
   return (
     <dialog
@@ -194,11 +210,18 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     >
       {/* Hero Header in Modal */}
       <div className="relative h-64 sm:h-96 w-full bg-[#141414] select-none">
-        <img
-          src={detail?.pic || movie.cover}
-          alt={movie.title}
-          className="w-full h-full object-cover filter brightness-[0.75]"
-        />
+        {modalCover ? (
+          <img
+            src={modalCover}
+            alt={movie.title}
+            className="w-full h-full object-cover filter brightness-[0.75]"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-[#2a1111] via-[#1a1a1a] to-[#111111]">
+            <span className="text-[#E50914] font-black text-6xl mb-2 opacity-80">N</span>
+            <span className="text-xl text-gray-300 font-bold max-w-md line-clamp-2">{movie.title}</span>
+          </div>
+        )}
         {/* Gradient Fades */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#181818]/80 via-transparent to-transparent" />

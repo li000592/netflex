@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Play, Info, Plus, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MediaItem } from '../types';
 import { useI18n } from '../i18n';
-import { prefetchVideo } from '../services/api';
+import { prefetchVideo, hasValidCover } from '../services/api';
 
 interface HeroBannerProps {
   movies?: MediaItem[];
