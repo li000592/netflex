@@ -1,7 +1,8 @@
 import React from 'react';
-import { X, Plus, ShieldCheck } from 'lucide-react';
+import { X } from 'lucide-react';
 import { User, UserProfile } from '../types';
 import { switchProfile } from '../services/auth';
+import { useI18n } from '../i18n';
 
 interface ProfileModalProps {
   user: User | null;
@@ -16,6 +17,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onClose,
   onSelectProfile,
 }) => {
+  const { t } = useI18n();
+
   if (!isOpen || !user) return null;
 
   const handleChoose = (p: UserProfile) => {
@@ -42,7 +45,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
         {/* Header */}
         <h1 className="text-3xl sm:text-5xl font-black text-white mb-8 sm:mb-12 tracking-wide">
-          正在使用 NETFLEX 的是谁？
+          {t('whoIsWatching')}
         </h1>
 
         {/* Profile Avatars Grid */}
@@ -69,7 +72,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   />
                   {p.isKids && (
                     <span className="absolute bottom-0 inset-x-0 bg-[#E50914] text-[10px] font-bold py-0.5 text-white">
-                      KIDS
+                      {t('kids')}
                     </span>
                   )}
                 </div>
@@ -91,7 +94,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             onClick={onClose}
             className="border border-gray-500 text-gray-400 hover:text-white hover:border-white text-xs sm:text-sm tracking-wider uppercase px-6 py-2.5 rounded font-semibold transition-colors"
           >
-            完成
+            {t('done')}
           </button>
         </div>
       </div>

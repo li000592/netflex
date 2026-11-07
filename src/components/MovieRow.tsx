@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { MediaItem } from '../types';
 import { MovieCard } from './MovieCard';
+import { useI18n } from '../i18n';
 
 interface MovieRowProps {
   title: string;
@@ -22,6 +23,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({
   watchlistIds,
   onToggleFavorite,
 }) => {
+  const { t } = useI18n();
   const rowRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -51,7 +53,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({
         <h2 className="text-lg sm:text-2xl font-bold text-white tracking-wide hover:text-[#E50914] transition-colors cursor-pointer flex items-center">
           {title}
           <span className="text-xs text-gray-400 font-normal ml-3 hidden sm:inline-block">
-            探索全部 &gt;
+            {t('exploreAll')} &gt;
           </span>
         </h2>
       </div>

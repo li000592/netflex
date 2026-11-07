@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Eye, EyeOff, Lock, Mail, User as UserIcon } from 'lucide-react';
+import { X, Sparkles, Eye, EyeOff, Mail, User as UserIcon } from 'lucide-react';
 import { login, register, quickDemoLogin } from '../services/auth';
 import { User } from '../types';
+import { useI18n, LanguageSelector } from '../i18n';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { t } = useI18n();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [account, setAccount] = useState('');
   const [username, setUsername] = useState('');
@@ -30,7 +32,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         onSuccess(res.user);
         onClose();
       } else {
-        setError(res.error || '登录失败，请检查账号密码');
+        setError(res.error || t('accountNotFound'));
       }
     } else {
       const res = register(account, username, password);
@@ -38,7 +40,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         onSuccess(res.user);
         onClose();
       } else {
-        setError(res.error || '注册失败');
+        setError(res.error || t('fillAllFields'));
       }
     }
   };
@@ -51,7 +53,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
-      {/* Blurred Backdrop with Netflix Poster Ambient */}
+      {/* Blurred Backdrop */}
       <div
         onClick={onClose}
         className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
@@ -59,22 +61,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
       {/* Netflix Sign In Box */}
       <div className="relative z-10 w-full max-w-[450px] bg-black/85 border border-white/10 rounded-xl p-8 sm:p-12 shadow-2xl backdrop-blur-xl">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors p-1"
-          aria-label="关闭"
-        >
-          <X className="w-6 h-6" />
-        </button>
+        {/* Top Controls: Language + Close */}
+        <div className="absolute top-5 right-5 flex items-center space-x-2">
+          <LanguageSelector />
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors p-1"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Logo / Header */}
-        <div className="text-center sm:text-left mb-6">
+        <div className="text-center sm:text-left mb-6 mt-2">
           <span className="text-[#E50914] font-black tracking-wider text-2xl font-sans inline-block mb-3">
             NETFLEX
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-white">
-            {mode === 'login' ? '登录' : '创建账号'}
+            {mode === 'login' ? t('authSignInTitle') : t('authSignUpTitle')}
           </h2>
         </div>
 
@@ -93,7 +98,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="用户昵称"
+                  placeholder={t('username')}
                   required
                   className="w-full bg-[#333333] text-white px-4 py-3.5 rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#E50914] focus:bg-[#404040] transition-all placeholder-gray-400"
                 />
@@ -108,7 +113,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 type="text"
                 value={account}
                 onChange={(e) => setAccount(e.target.value)}
-                placeholder={mode === 'login' ? '电子邮箱或用户名' : '电子邮箱'}
+                placeholder={mode === 'login' ? t('emailOrUsername') : t('email')}
                 required
                 className="w-full bg-[#333333] text-white px-4 py-3.5 rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#E50914] focus:bg-[#404040] transition-all placeholder-gray-400"
               />
@@ -122,7 +127,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="密码"
+                placeholder={t('password')}
                 required
                 className="w-full bg-[#333333] text-white px-4 py-3.5 rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#E50914] focus:bg-[#404040] transition-all placeholder-gray-400"
               />
@@ -141,7 +146,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             type="submit"
             className="w-full bg-[#E50914] hover:bg-[#b80710] text-white font-bold py-3.5 rounded-lg text-base transition-transform active:scale-[0.98] shadow-lg mt-2"
           >
-            {mode === 'login' ? '登 录' : '立 即 注 册'}
+            {mode === 'login' ? t('authSignInTitle') : t('authSignUpTitle')}
           </button>
 
           {/* Quick Demo Button */}
@@ -151,7 +156,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-lg text-xs sm:text-sm transition-all border border-white/20 flex items-center justify-center"
           >
             <Sparkles className="w-4 h-4 text-[#E50914] mr-2" />
-            一键体验账号登录 (无需输入)
+            {t('quickDemo')}
           </button>
 
           {/* Extra Row */}
@@ -163,10 +168,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="rounded accent-[#E50914] w-3.5 h-3.5"
               />
-              <span>记住我</span>
+              <span>{t('rememberMe')}</span>
             </label>
             <a href="#help" onClick={(e) => e.preventDefault()} className="hover:underline">
-              需要帮助？
+              {t('needHelp')}
             </a>
           </div>
         </form>
@@ -175,7 +180,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         <div className="mt-8 pt-6 border-t border-white/10 text-sm text-gray-400">
           {mode === 'login' ? (
             <p>
-              还没有 NETFLEX 账号？{' '}
+              {t('newToNetflex')}{' '}
               <button
                 onClick={() => {
                   setMode('register');
@@ -183,12 +188,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 }}
                 className="text-white hover:underline font-semibold ml-1"
               >
-                立即免费注册
+                {t('signUpNow')}
               </button>
             </p>
           ) : (
             <p>
-              已有 NETFLEX 账号？{' '}
+              {t('alreadyHaveAccount')}{' '}
               <button
                 onClick={() => {
                   setMode('login');
@@ -196,13 +201,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 }}
                 className="text-white hover:underline font-semibold ml-1"
               >
-                直接登录
+                {t('signInNow')}
               </button>
             </p>
           )}
 
           <p className="text-[11px] text-gray-500 mt-4 leading-relaxed">
-            此页面受 Google reCAPTCHA 保护，确保您不是机器人。了解更多信息。
+            {t('recaptchaNote')}
           </p>
         </div>
       </div>

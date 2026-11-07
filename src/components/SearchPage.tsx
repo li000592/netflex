@@ -4,6 +4,7 @@ import { MediaItem } from '../types';
 import { searchVideos } from '../services/api';
 import { MovieCard } from './MovieCard';
 import { VIDEO_SOURCES } from '../config/sources';
+import { useI18n } from '../i18n';
 
 interface SearchPageProps {
   initialQuery: string;
@@ -20,6 +21,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   watchlistIds,
   onToggleFavorite,
 }) => {
+  const { t } = useI18n();
   const [query, setQuery] = useState(initialQuery);
   const [selectedSource, setSelectedSource] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -47,16 +49,17 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   }, [query, selectedSource]);
 
   const categories = [
-    { id: 'all', label: '全部' },
-    { id: 'anime', label: '🌸 动漫' },
-    { id: 'netflix', label: '🔴 欧美 / 奈飞' },
-    { id: 'speed', label: '⚡ 极速专区' },
-    { id: 'general', label: '🎬 经典影视' },
+    { id: 'all', label: t('allCategories') },
+    { id: 'anime', label: t('catAnime') },
+    { id: 'netflix', label: t('catNetflix') },
+    { id: 'speed', label: t('catSpeed') },
+    { id: 'general', label: t('catClassics') },
   ];
 
-  const filteredSources = selectedCategory === 'all'
-    ? VIDEO_SOURCES
-    : VIDEO_SOURCES.filter((s) => s.category === selectedCategory);
+  const filteredSources =
+    selectedCategory === 'all'
+      ? VIDEO_SOURCES
+      : VIDEO_SOURCES.filter((s) => s.category === selectedCategory);
 
   return (
     <div className="min-h-screen pt-24 sm:pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -69,7 +72,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜索电影、电视剧、动漫、演员、导演..."
+            placeholder={t('searchTitle')}
             className="w-full bg-[#202020] text-white pl-13 pr-10 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg outline-none border border-white/10 focus:border-[#E50914] focus:ring-2 focus:ring-[#E50914]/40 transition-all placeholder-gray-500 shadow-2xl"
             autoFocus
           />
@@ -109,7 +112,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               onChange={(e) => setSelectedSource(e.target.value)}
               className="bg-[#202020] text-gray-300 text-xs rounded-lg px-3 py-1.5 border border-white/10 outline-none focus:border-[#E50914]"
             >
-              <option value="">🎯 智能优选线路</option>
+              <option value="">{t('smartRoute')}</option>
               {filteredSources.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -124,15 +127,17 @@ export const SearchPage: React.FC<SearchPageProps> = ({
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 text-gray-400">
           <Loader2 className="w-10 h-10 animate-spin text-[#E50914] mb-3" />
-          <p className="text-sm">正在全网检索「{query}」...</p>
+          <p className="text-sm">
+            {t('searchingFor')} 「{query}」...
+          </p>
         </div>
       ) : results.length > 0 ? (
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
-              搜索结果
+              {t('searchResults')}
               <span className="text-xs bg-white/10 text-gray-300 ml-3 px-2 py-0.5 rounded-full font-mono">
-                找到 {results.length} 部影片
+                {results.length} {t('titlesFound')}
               </span>
             </h2>
           </div>
@@ -153,30 +158,30 @@ export const SearchPage: React.FC<SearchPageProps> = ({
         </div>
       ) : query.trim() ? (
         <div className="text-center py-24 text-gray-400">
-          <p className="text-lg mb-2">未找到与「{query}」相关的影片</p>
-          <p className="text-sm text-gray-500">建议尝试简化搜索词，或者切换其他分类源检索。</p>
+          <p className="text-lg mb-2">
+            {t('noResults')} 「{query}」
+          </p>
+          <p className="text-sm text-gray-500">{t('noResultsSuggestion')}</p>
         </div>
       ) : (
         /* Empty Query Suggestion Billboard */
         <div className="space-y-6 pt-4">
           <div className="flex items-center space-x-2 text-gray-400">
             <Sparkles className="w-4 h-4 text-[#E50914]" />
-            <h3 className="text-sm font-semibold text-white">大家都在搜</h3>
+            <h3 className="text-sm font-semibold text-white">{t('popularSearches')}</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {[
-              '进击的巨人',
-              '奥术',
-              '三体',
-              '权力的游戏',
-              '鬼灭之刃',
-              '星际穿越',
-              '繁花',
-              '庆余年',
-              '肖申克的救赎',
-              '火影忍者',
-              '海贼王',
-              '黑袍纠察队',
+              'Arcane',
+              'Game of Thrones',
+              'Stranger Things',
+              'Interstellar',
+              'Attack on Titan',
+              'Demon Slayer',
+              'Breaking Bad',
+              'Black Mirror',
+              'One Piece',
+              'Naruto',
             ].map((keyword) => (
               <button
                 key={keyword}

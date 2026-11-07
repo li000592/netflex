@@ -15,6 +15,7 @@ import {
   Check,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
+import { useI18n, LanguageSelector } from '../i18n';
 
 interface NavbarProps {
   currentTab: NavTab;
@@ -41,6 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onSwitchProfile,
 }) => {
+  const { t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,12 +57,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const navItems: { tab: NavTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'home', label: '首页', icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
-    { tab: 'movies', label: '电影', icon: <Film className="w-4 h-4 mr-1.5" /> },
-    { tab: 'tv', label: '电视剧', icon: <Tv className="w-4 h-4 mr-1.5" /> },
-    { tab: 'anime', label: '新番动漫', icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
-    { tab: 'variety', label: '热门综艺', icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
-    { tab: 'mylist', label: '我的片单', icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
+    { tab: 'home', label: t('home'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
+    { tab: 'movies', label: t('movies'), icon: <Film className="w-4 h-4 mr-1.5" /> },
+    { tab: 'tv', label: t('tvShows'), icon: <Tv className="w-4 h-4 mr-1.5" /> },
+    { tab: 'anime', label: t('anime'), icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
+    { tab: 'variety', label: t('variety'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
+    { tab: 'mylist', label: t('myList'), icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
   ];
 
   const handleMyListClick = () => {
@@ -87,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-gray-300 hover:text-white"
-              aria-label="菜单"
+              aria-label="Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -127,21 +129,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
           </div>
 
-          {/* Right Actions: Search, Watchlist, Profile / Login */}
-          <div className="flex items-center space-x-3 sm:space-x-5">
+          {/* Right Actions: Language, Search, Watchlist, Profile / Login */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Language Switcher in Header (Desktop) */}
+            <div className="hidden md:block">
+              <LanguageSelector />
+            </div>
+
             {/* Expandable Search Input */}
             <div className="relative flex items-center">
               <div
                 className={`flex items-center transition-all duration-300 rounded-full ${
                   searchOpen || searchQuery
-                    ? 'w-44 sm:w-64 bg-black/80 border border-white/20 px-3 py-1.5'
+                    ? 'w-44 sm:w-60 bg-black/80 border border-white/20 px-3 py-1.5'
                     : 'w-10 bg-transparent'
                 }`}
               >
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
                   className="text-gray-300 hover:text-white transition-colors"
-                  aria-label="搜索"
+                  aria-label="Search"
                 >
                   <Search className="w-5 h-5" />
                 </button>
@@ -150,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => onSearch(e.target.value)}
-                    placeholder="片名、演员、导演..."
+                    placeholder={t('searchPlaceholder')}
                     autoFocus
                     className="ml-2 bg-transparent text-sm text-white placeholder-gray-400 outline-none w-full"
                   />
@@ -172,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`p-2 transition-colors relative ${
                 currentTab === 'mylist' ? 'text-[#E50914]' : 'text-gray-300 hover:text-white'
               }`}
-              title="我的片单与播放历史"
+              title={t('myList')}
             >
               <Bookmark className="w-5 h-5" />
             </button>
@@ -205,7 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="absolute right-0 mt-3 w-56 bg-black/95 border border-white/15 rounded-lg shadow-2xl py-2 z-40 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
                       {/* Current user header */}
                       <div className="px-4 py-2 border-b border-white/10">
-                        <p className="text-xs text-gray-400">已登录为</p>
+                        <p className="text-xs text-gray-400">{t('loggedInAs')}</p>
                         <p className="text-sm font-bold text-white truncate">
                           {currentProfile?.name}
                         </p>
@@ -253,7 +260,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
                         >
                           <Users className="w-3.5 h-3.5 mr-2 text-gray-400" />
-                          切换个人资料
+                          {t('switchProfile')}
                         </button>
 
                         <button
@@ -264,8 +271,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                           className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
                         >
                           <History className="w-3.5 h-3.5 mr-2 text-gray-400" />
-                          片单与观看历史
+                          {t('myList')}
                         </button>
+                      </div>
+
+                      {/* Language Switcher in dropdown */}
+                      <div className="border-t border-white/10 px-4 py-2 flex items-center justify-between">
+                        <span className="text-xs text-gray-400">{t('language')}</span>
+                        <LanguageSelector />
                       </div>
 
                       {/* Sign Out */}
@@ -278,7 +291,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           className="flex items-center w-full px-4 py-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
                         >
                           <LogOut className="w-3.5 h-3.5 mr-2" />
-                          退出登录 NETFLEX
+                          {t('signOut')}
                         </button>
                       </div>
                     </div>
@@ -290,7 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={onOpenAuth}
                 className="bg-[#E50914] hover:bg-[#b80710] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-md transition-all shadow-md hover:scale-105 active:scale-95"
               >
-                登 录
+                {t('signIn')}
               </button>
             )}
           </div>
@@ -321,6 +334,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             ))}
 
+            <div className="pt-2 flex items-center justify-between px-3 py-2 border-t border-white/10">
+              <span className="text-xs text-gray-400">{t('language')}</span>
+              <LanguageSelector />
+            </div>
+
             {!currentUser && (
               <div className="pt-2">
                 <button
@@ -330,7 +348,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className="w-full bg-[#E50914] text-white font-bold py-2 rounded-lg text-sm"
                 >
-                  登录 NETFLEX
+                  {t('signIn')}
                 </button>
               </div>
             )}
@@ -347,7 +365,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Sparkles className="w-5 h-5 mb-0.5" />
-          首页
+          {t('home')}
         </button>
         <button
           onClick={() => onSelectTab('movies')}
@@ -356,7 +374,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Film className="w-5 h-5 mb-0.5" />
-          电影
+          {t('movies')}
         </button>
         <button
           onClick={() => onSelectTab('tv')}
@@ -365,7 +383,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Tv className="w-5 h-5 mb-0.5" />
-          剧集
+          {t('tvShows')}
         </button>
         <button
           onClick={() => onSelectTab('anime')}
@@ -374,7 +392,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <PlaySquare className="w-5 h-5 mb-0.5" />
-          新番
+          {t('anime')}
         </button>
         <button
           onClick={handleMyListClick}
@@ -383,7 +401,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }`}
         >
           <Bookmark className="w-5 h-5 mb-0.5" />
-          片单
+          {t('myList')}
         </button>
       </nav>
     </>

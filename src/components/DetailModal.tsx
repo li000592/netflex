@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { X, Play, Plus, Check, Star, Layers, Film, Loader2 } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode } from '../types';
 import { fetchVideoDetail, searchVideos } from '../services/api';
+import { useI18n } from '../i18n';
 
 interface DetailModalProps {
   movie: MediaItem | null;
@@ -20,6 +21,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const { t } = useI18n();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [detail, setDetail] = useState<VideoDetail | null>(null);
   const [loading, setLoading] = useState(false);
@@ -170,7 +172,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white font-bold px-6 py-2.5 rounded-md transition-all shadow-lg hover:scale-105 disabled:opacity-50"
             >
               <Play className="w-5 h-5 mr-2 fill-white" />
-              立即播放第1集
+              {t('playEpisode1')}
             </button>
 
             {/* Watchlist Button */}
@@ -181,19 +183,19 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               {isFavorite ? (
                 <>
                   <Check className="w-5 h-5 mr-1.5 text-[#E50914]" />
-                  已在片单
+                  {t('inMyList')}
                 </>
               ) : (
                 <>
                   <Plus className="w-5 h-5 mr-1.5" />
-                  加入片单
+                  {t('addToList')}
                 </>
               )}
             </button>
 
             {/* Quality pill */}
             <span className="text-xs bg-black/60 px-2.5 py-1 rounded font-mono border border-white/20">
-              4K 杜比视界
+              4K Ultra HD
             </span>
           </div>
         </div>
@@ -205,35 +207,35 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center space-x-3 text-sm">
-              <span className="text-emerald-400 font-bold">98% 推荐匹配</span>
+              <span className="text-emerald-400 font-bold">{t('matchScore')}</span>
               <span className="text-gray-400">{detail?.year || movie.year || '2024'}</span>
               <span className="border border-white/30 text-gray-300 text-[10px] px-1.5 py-0.5 rounded">
                 16+
               </span>
-              <span className="text-gray-400">{detail?.remarks || movie.remarks || '超清完结'}</span>
+              <span className="text-gray-400">{detail?.remarks || movie.remarks || 'HD'}</span>
             </div>
 
             <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
-              {detail?.content?.replace(/<[^>]+>/g, '') || movie.overview || '暂无详细简介。'}
+              {detail?.content?.replace(/<[^>]+>/g, '') || movie.overview || t('synopsisEmpty')}
             </p>
           </div>
 
           <div className="space-y-2 text-xs text-gray-400 bg-white/5 p-4 rounded-lg border border-white/5">
             {detail?.actor && (
               <p>
-                <span className="text-gray-200 font-semibold">主演：</span>
+                <span className="text-gray-200 font-semibold">{t('cast')}</span>
                 <span className="text-gray-300">{detail.actor}</span>
               </p>
             )}
             {detail?.director && (
               <p>
-                <span className="text-gray-200 font-semibold">导演：</span>
+                <span className="text-gray-200 font-semibold">{t('director')}</span>
                 <span className="text-gray-300">{detail.director}</span>
               </p>
             )}
             {detail?.area && (
               <p>
-                <span className="text-gray-200 font-semibold">地区：</span>
+                <span className="text-gray-200 font-semibold">{t('region')}</span>
                 <span className="text-gray-300">{detail.area}</span>
               </p>
             )}
@@ -245,7 +247,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           <div className="border-t border-white/10 pt-6">
             <div className="flex items-center space-x-2 mb-3">
               <Layers className="w-4 h-4 text-[#E50914]" />
-              <h3 className="text-base font-bold text-white">播放线路切换 ({sourceCandidates.length}条可选)</h3>
+              <h3 className="text-base font-bold text-white">
+                {t('switchingLine')} ({sourceCandidates.length} {t('availableLines')})
+              </h3>
             </div>
             <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
               {sourceCandidates.map((src, idx) => (
@@ -258,7 +262,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                       : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
                   }`}
                 >
-                  ⚡ {src.sourceName || `线路 ${idx + 1}`}
+                  ⚡ {src.sourceName || `Line ${idx + 1}`}
                   {src.remarks ? ` (${src.remarks})` : ''}
                 </button>
               ))}
@@ -272,7 +276,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Film className="w-4 h-4 text-[#E50914]" />
-                <h3 className="text-base font-bold text-white">选集播放</h3>
+                <h3 className="text-base font-bold text-white">{t('episodes')}</h3>
               </div>
 
               {/* Group tabs if multiple lines in source */}
@@ -299,7 +303,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             {loading ? (
               <div className="py-12 flex justify-center items-center text-gray-400">
                 <Loader2 className="w-6 h-6 animate-spin mr-2 text-[#E50914]" />
-                加载集数中...
+                {t('loadingEpisodes')}
               </div>
             ) : currentGroup && currentGroup.episodes.length > 0 ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 max-h-72 overflow-y-auto no-scrollbar p-1">
@@ -316,7 +320,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               </div>
             ) : (
               <div className="text-sm text-gray-400 py-6 text-center">
-                当前线路暂无解析出分集，建议在上方切换其他片源。
+                {t('noEpisodes')}
               </div>
             )}
           </div>

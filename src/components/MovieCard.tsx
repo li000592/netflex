@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Plus, Check, ChevronDown, Star } from 'lucide-react';
 import { MediaItem } from '../types';
+import { useI18n } from '../i18n';
 
 interface MovieCardProps {
   movie: MediaItem;
@@ -19,6 +20,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -65,7 +67,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           <div className="absolute top-2 left-2 flex flex-col space-y-1">
             {movie.isNew && (
               <span className="bg-[#E50914] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">
-                新上线
+                {t('newBadge')}
               </span>
             )}
             {movie.remarks && (
@@ -100,7 +102,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                     onPlay(movie);
                   }}
                   className="p-1.5 sm:p-2 bg-white hover:bg-[#E50914] hover:text-white text-black rounded-full transition-colors shadow"
-                  title="立即播放"
+                  title={t('play')}
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                 </button>
@@ -110,7 +112,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                     onToggleFavorite(movie);
                   }}
                   className="p-1.5 sm:p-2 bg-black/60 hover:bg-black/90 border border-white/30 text-white rounded-full transition-colors"
-                  title={isFavorite ? '从片单移除' : '加入片单'}
+                  title={isFavorite ? t('removeFromList') : t('addToList')}
                 >
                   {isFavorite ? <Check className="w-3.5 h-3.5 text-[#E50914]" /> : <Plus className="w-3.5 h-3.5" />}
                 </button>
@@ -121,7 +123,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                   onOpenDetail(movie);
                 }}
                 className="p-1.5 sm:p-2 bg-black/60 hover:bg-black/90 border border-white/30 text-white rounded-full transition-colors"
-                title="查看详情"
+                title={t('moreInfo')}
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>

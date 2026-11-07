@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, Sparkles, User as UserIcon } from 'lucide-react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
 import { getWatchHistory, getWatchlist, clearWatchHistory } from '../services/api';
 import { MovieCard } from './MovieCard';
+import { useI18n } from '../i18n';
 
 interface MyListPageProps {
   currentUser: User | null;
@@ -25,6 +26,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   onToggleFavorite,
   onPlayEpisode,
 }) => {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<'watchlist' | 'history'>('watchlist');
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [history, setHistory] = useState<WatchHistoryItem[]>([]);
@@ -39,7 +41,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   }, [watchlistIds, currentUser, currentProfile]);
 
   const handleClearHistory = () => {
-    if (window.confirm('确定要清空当前档案的全部播放历史记录吗？')) {
+    if (window.confirm(t('confirmClearHistory'))) {
       clearWatchHistory();
       setHistory([]);
     }
@@ -54,11 +56,11 @@ export const MyListPage: React.FC<MyListPageProps> = ({
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-black text-white mb-3">
-          登录以开启专属片单与播放历史
+          {t('signInPromptTitle')}
         </h1>
 
         <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-8 leading-relaxed">
-          登录您的 NETFLEX 账号后，您在手机、平板与电脑上标记的片单与观看进度将自动无缝同步保存，支持多档案独立管理。
+          {t('signInPromptDesc')}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-xs">
@@ -66,25 +68,25 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             onClick={onOpenAuth}
             className="w-full bg-[#E50914] hover:bg-[#b80710] text-white font-bold py-3.5 px-8 rounded-lg text-base transition-transform hover:scale-105 shadow-xl"
           >
-            立即登录 / 注册
+            {t('signIn')}
           </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 max-w-3xl text-left border-t border-white/10 pt-10">
           <div className="bg-white/5 p-4 rounded-xl border border-white/5">
             <Bookmark className="w-6 h-6 text-[#E50914] mb-2" />
-            <h3 className="font-bold text-white text-sm mb-1">跨设备追剧片单</h3>
-            <p className="text-xs text-gray-400">一键收藏想看的好剧，随时随地打开接着看。</p>
+            <h3 className="font-bold text-white text-sm mb-1">{t('feature1Title')}</h3>
+            <p className="text-xs text-gray-400">{t('feature1Desc')}</p>
           </div>
           <div className="bg-white/5 p-4 rounded-xl border border-white/5">
             <History className="w-6 h-6 text-[#E50914] mb-2" />
-            <h3 className="font-bold text-white text-sm mb-1">自动续播进度</h3>
-            <p className="text-xs text-gray-400">精确记录每集看到第几分几秒，断点秒级连播。</p>
+            <h3 className="font-bold text-white text-sm mb-1">{t('feature2Title')}</h3>
+            <p className="text-xs text-gray-400">{t('feature2Desc')}</p>
           </div>
           <div className="bg-white/5 p-4 rounded-xl border border-white/5">
             <UserIcon className="w-6 h-6 text-[#E50914] mb-2" />
-            <h3 className="font-bold text-white text-sm mb-1">家庭多档案隔离</h3>
-            <p className="text-xs text-gray-400">支持创建不同家庭成员档案与少儿专区。</p>
+            <h3 className="font-bold text-white text-sm mb-1">{t('feature3Title')}</h3>
+            <p className="text-xs text-gray-400">{t('feature3Desc')}</p>
           </div>
         </div>
       </div>
@@ -102,14 +104,19 @@ export const MyListPage: React.FC<MyListPageProps> = ({
         />
         <div>
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-bold text-white">{currentProfile?.name} 的专属空间</span>
+            <span className="text-sm font-bold text-white">
+              {currentProfile?.name}
+              {t('profileSpace')}
+            </span>
             {currentProfile?.isKids && (
               <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold">
                 KIDS
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-400 mt-0.5">账号：{currentUser.email}</p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {t('account')}: {currentUser.email}
+          </p>
         </div>
       </div>
 
@@ -123,7 +130,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             }`}
           >
             <Bookmark className="w-5 h-5 mr-2" />
-            我的片单
+            {t('myList')}
             <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
               {watchlist.length}
             </span>
@@ -139,7 +146,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             }`}
           >
             <History className="w-5 h-5 mr-2" />
-            观看历史
+            {t('watchHistory')}
             <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
               {history.length}
             </span>
@@ -155,7 +162,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             className="flex items-center text-xs text-gray-400 hover:text-[#E50914] transition-colors"
           >
             <Trash2 className="w-4 h-4 mr-1" />
-            清空历史
+            {t('clearHistory')}
           </button>
         )}
       </div>
@@ -189,8 +196,8 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           ) : (
             <div className="text-center py-24 text-gray-400">
               <Bookmark className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-lg font-semibold mb-1">您的片单还是空的</p>
-              <p className="text-sm text-gray-500">浏览时点击「+ 加入片单」，精彩大片随心收藏。</p>
+              <p className="text-lg font-semibold mb-1">{t('emptyListTitle')}</p>
+              <p className="text-sm text-gray-500">{t('emptyListDesc')}</p>
             </div>
           )}
         </>
@@ -230,7 +237,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
                           {item.title}
                         </h3>
                         <p className="text-xs text-gray-400 mt-0.5 truncate">
-                          {item.episodeName} • 已看至 {percent}%
+                          {item.episodeName} • {t('watchedTo')} {percent}%
                         </p>
                         <p className="text-[11px] text-gray-500 mt-1">
                           {new Date(item.updatedAt).toLocaleDateString()} {new Date(item.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -258,7 +265,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
                       className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shadow hover:scale-105 flex-none"
                     >
                       <Play className="w-3.5 h-3.5 fill-current mr-1.5" />
-                      继续观看
+                      {t('continueWatching')}
                     </button>
                   </div>
                 );
@@ -267,8 +274,8 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           ) : (
             <div className="text-center py-24 text-gray-400">
               <History className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-lg font-semibold mb-1">暂无播放记录</p>
-              <p className="text-sm text-gray-500">播放过的影片和观影进度将自动同步记录在此档案下。</p>
+              <p className="text-lg font-semibold mb-1">{t('emptyHistoryTitle')}</p>
+              <p className="text-sm text-gray-500">{t('emptyHistoryDesc')}</p>
             </div>
           )}
         </>

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Episode, MediaItem, VideoDetail } from '../types';
 import { saveWatchHistory, fetchVideoDetail } from '../services/api';
+import { useI18n } from '../i18n';
 
 interface PlayerModalProps {
   movie: MediaItem | null;
@@ -35,6 +36,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   onClose,
   onNextEpisode,
 }) => {
+  const { t } = useI18n();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hlsRef = useRef<Hls | null>(null);
@@ -118,7 +120,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               break;
             default:
               setHasError(true);
-              setErrorMessage('视频加载失败，请尝试切换其他片源或集数');
+              setErrorMessage(t('playbackErrorMsg'));
               hls.destroy();
               break;
           }
@@ -331,7 +333,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-black/40">
           <Loader2 className="w-14 h-14 text-[#E50914] animate-spin mb-3" />
-          <span className="text-white text-sm font-semibold tracking-wider">正在缓冲 4K 流媒体...</span>
+          <span className="text-white text-sm font-semibold tracking-wider">{t('buffering')}</span>
         </div>
       )}
 
@@ -339,13 +341,13 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       {hasError && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 p-6 text-center z-40">
           <AlertCircle className="w-16 h-16 text-[#E50914] mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">播放异常</h2>
-          <p className="text-gray-400 text-sm max-w-md mb-6">{errorMessage}</p>
+          <h2 className="text-xl font-bold text-white mb-2">{t('playbackError')}</h2>
+          <p className="text-gray-400 text-sm max-w-md mb-6">{errorMessage || t('playbackErrorMsg')}</p>
           <button
             onClick={onClose}
             className="px-6 py-2 bg-[#E50914] text-white rounded-md font-bold hover:bg-[#b80710]"
           >
-            返回片源选择
+            {t('returnToSelection')}
           </button>
         </div>
       )}
@@ -416,7 +418,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             <button
               onClick={() => handleSeek(Math.max(0, currentTime - 10))}
               className="p-1 hover:text-[#E50914] transition-colors"
-              title="后退10秒"
+              title={t('rewind10s')}
             >
               <RotateCcw className="w-5 h-5" />
             </button>
@@ -425,7 +427,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             <button
               onClick={() => handleSeek(Math.min(duration, currentTime + 10))}
               className="p-1 hover:text-[#E50914] transition-colors"
-              title="前进10秒"
+              title={t('forward10s')}
             >
               <RotateCw className="w-5 h-5" />
             </button>
@@ -434,10 +436,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             <button
               onClick={() => handleSeek(Math.min(duration, currentTime + 90))}
               className="hidden sm:flex items-center text-xs font-semibold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded transition-colors"
-              title="跳过片头90秒"
+              title={`${t('skipIntro')} (+90s)`}
             >
               <FastForward className="w-3.5 h-3.5 mr-1" />
-              跳过片头
+              {t('skipIntro')}
             </button>
 
             {/* Volume Control */}
@@ -496,13 +498,13 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                 <button
                   onClick={() => setEpMenuOpen(!epMenuOpen)}
                   className="flex items-center text-xs font-semibold hover:text-[#E50914] transition-colors"
-                  title="选集"
+                  title={t('selectEpisode')}
                 >
                   <ListVideo className="w-5 h-5" />
                 </button>
                 {epMenuOpen && (
                   <div className="absolute bottom-8 right-0 bg-[#181818] border border-white/20 rounded-lg p-3 shadow-2xl w-64 max-h-80 overflow-y-auto no-scrollbar z-50">
-                    <h4 className="text-xs font-bold text-gray-400 mb-2">选集切换</h4>
+                    <h4 className="text-xs font-bold text-gray-400 mb-2">{t('selectEpisode')}</h4>
                     <div className="grid grid-cols-3 gap-2">
                       {detailData.groups[0]?.episodes.map((ep, idx) => (
                         <button

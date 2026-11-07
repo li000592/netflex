@@ -9,6 +9,7 @@ import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
+import { useI18n, LanguageSelector } from './i18n';
 import {
   fetchDoubanCatalog,
   fetchBangumiCalendar,
@@ -25,6 +26,7 @@ import {
 } from './services/auth';
 
 export const App: React.FC = () => {
+  const { t } = useI18n();
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -145,7 +147,6 @@ export const App: React.FC = () => {
 
   // Handler for direct play click
   const handleDirectPlay = async (movie: MediaItem) => {
-    // 1. If video already has sourceUrl and vod_id
     if (movie.sourceUrl && movie.vod_id) {
       const detail = await fetchVideoDetail(movie.sourceUrl, movie.vod_id);
       if (detail && detail.groups.length > 0 && detail.groups[0].episodes.length > 0) {
@@ -156,7 +157,6 @@ export const App: React.FC = () => {
       }
     }
 
-    // 2. Otherwise auto-search
     const results = await searchVideos(movie.title);
     if (results.length > 0) {
       const best = results[0];
@@ -171,7 +171,6 @@ export const App: React.FC = () => {
       }
     }
 
-    // Fallback: open detail modal so user can pick source
     setDetailMovie(movie);
     setIsDetailOpen(true);
   };
@@ -243,19 +242,19 @@ export const App: React.FC = () => {
           <div className="pt-20 sm:pt-24 pb-20">
             <div className="px-4 sm:px-6 lg:px-8 mb-6 max-w-7xl mx-auto">
               <h1 className="text-2xl sm:text-4xl font-black mb-2 flex items-center">
-                🌸 日本新番周历
+                {t('animePortalTitle')}
                 <span className="ml-3 text-xs bg-[#E50914] text-white px-2 py-0.5 rounded font-mono">
-                  每日同步更新
+                  4K Ultra HD
                 </span>
               </h1>
               <p className="text-sm text-gray-400">
-                涵盖当季最热新番，极速秒播超清无删减。
+                {t('animePortalSub')}
               </p>
             </div>
             {animeRows.map((row) => (
               <MovieRow
                 key={row.day}
-                title={`${row.day} 更新`}
+                title={`${row.day} ${t('updatedDay')}`}
                 movies={row.items}
                 onPlay={handleDirectPlay}
                 onOpenDetail={handleOpenDetail}
@@ -268,11 +267,11 @@ export const App: React.FC = () => {
           /* Movies Tab */
           <div className="pt-20 sm:pt-24 pb-20">
             <div className="px-4 sm:px-6 lg:px-8 mb-4 max-w-7xl mx-auto">
-              <h1 className="text-2xl sm:text-4xl font-black mb-2">🎬 电影殿堂</h1>
-              <p className="text-sm text-gray-400">院线大片、奈飞独播、经典影史精选</p>
+              <h1 className="text-2xl sm:text-4xl font-black mb-2">{t('moviesPageTitle')}</h1>
+              <p className="text-sm text-gray-400">{t('moviesPageSub')}</p>
             </div>
             <MovieRow
-              title="热门公映大片"
+              title={t('trendingMovies')}
               movies={hotMovies}
               onPlay={handleDirectPlay}
               onOpenDetail={handleOpenDetail}
@@ -280,7 +279,7 @@ export const App: React.FC = () => {
               onToggleFavorite={handleToggleFavorite}
             />
             <MovieRow
-              title="今日电影 Top 10"
+              title={t('top10Today')}
               movies={top10}
               isTop10
               onPlay={handleDirectPlay}
@@ -293,11 +292,11 @@ export const App: React.FC = () => {
           /* TV Shows Tab */
           <div className="pt-20 sm:pt-24 pb-20">
             <div className="px-4 sm:px-6 lg:px-8 mb-4 max-w-7xl mx-auto">
-              <h1 className="text-2xl sm:text-4xl font-black mb-2">📺 连载热播剧集</h1>
-              <p className="text-sm text-gray-400">美剧、韩剧、华语高分大剧一网打尽</p>
+              <h1 className="text-2xl sm:text-4xl font-black mb-2">{t('tvPageTitle')}</h1>
+              <p className="text-sm text-gray-400">{t('tvPageSub')}</p>
             </div>
             <MovieRow
-              title="热播剧集排行榜"
+              title={t('popularTV')}
               movies={hotTv}
               onPlay={handleDirectPlay}
               onOpenDetail={handleOpenDetail}
@@ -309,11 +308,11 @@ export const App: React.FC = () => {
           /* Variety Shows Tab */
           <div className="pt-20 sm:pt-24 pb-20">
             <div className="px-4 sm:px-6 lg:px-8 mb-4 max-w-7xl mx-auto">
-              <h1 className="text-2xl sm:text-4xl font-black mb-2">✨ 热门爆笑综艺</h1>
-              <p className="text-sm text-gray-400">中外王牌真人秀、脱口秀持续跟播</p>
+              <h1 className="text-2xl sm:text-4xl font-black mb-2">{t('varietyPageTitle')}</h1>
+              <p className="text-sm text-gray-400">{t('varietyPageSub')}</p>
             </div>
             <MovieRow
-              title="王牌热播综艺"
+              title={t('varietyShows')}
               movies={varietyShows}
               onPlay={handleDirectPlay}
               onOpenDetail={handleOpenDetail}
@@ -336,7 +335,7 @@ export const App: React.FC = () => {
             {/* Netflix Rows */}
             <div className="relative -mt-16 sm:-mt-24 z-20 space-y-2 sm:space-y-4 pb-20">
               <MovieRow
-                title="今日热播 Top 10"
+                title={t('top10Today')}
                 movies={top10}
                 isTop10
                 onPlay={handleDirectPlay}
@@ -346,7 +345,7 @@ export const App: React.FC = () => {
               />
 
               <MovieRow
-                title="公映热门电影"
+                title={t('trendingMovies')}
                 movies={hotMovies}
                 onPlay={handleDirectPlay}
                 onOpenDetail={handleOpenDetail}
@@ -355,7 +354,7 @@ export const App: React.FC = () => {
               />
 
               <MovieRow
-                title="人气热播剧集"
+                title={t('popularTV')}
                 movies={hotTv}
                 onPlay={handleDirectPlay}
                 onOpenDetail={handleOpenDetail}
@@ -365,7 +364,7 @@ export const App: React.FC = () => {
 
               {animeRows.length > 0 && (
                 <MovieRow
-                  title="🌸 日本新番热播推荐"
+                  title={t('animeWeekly')}
                   movies={animeRows[0]?.items || []}
                   onPlay={handleDirectPlay}
                   onOpenDetail={handleOpenDetail}
@@ -376,7 +375,7 @@ export const App: React.FC = () => {
 
               {varietyShows.length > 0 && (
                 <MovieRow
-                  title="爆笑高分综艺"
+                  title={t('varietyShows')}
                   movies={varietyShows}
                   onPlay={handleDirectPlay}
                   onOpenDetail={handleOpenDetail}
@@ -422,13 +421,16 @@ export const App: React.FC = () => {
         onSelectProfile={(p) => handleSwitchProfile(p.id)}
       />
 
-      {/* Netflix Footer */}
-      <footer className="border-t border-white/10 py-10 px-4 sm:px-6 lg:px-8 bg-black/60 text-gray-500 text-xs">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Netflix Footer with Language Selector */}
+      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-black/60 text-gray-500 text-xs">
+        <div className="max-w-7xl mx-auto flex flex-col space-y-6">
           <div className="flex items-center space-x-2">
             <span className="text-[#E50914] font-black text-lg">NETFLEX</span>
           </div>
-          <p>© 2024 NETFLEX, Inc. 保留所有权利。</p>
+          <div>
+            <LanguageSelector />
+          </div>
+          <p>{t('copyright')}</p>
         </div>
       </footer>
     </div>
