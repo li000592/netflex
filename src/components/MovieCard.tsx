@@ -11,6 +11,7 @@ interface MovieCardProps {
   onOpenDetail: (movie: MediaItem) => void;
   isFavorite: boolean;
   onToggleFavorite: (movie: MediaItem) => void;
+  className?: string;
 }
 
 export const MovieCard: React.FC<MovieCardProps> = ({
@@ -20,6 +21,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   onOpenDetail,
   isFavorite,
   onToggleFavorite,
+  className = '',
 }) => {
   const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
@@ -29,7 +31,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
   return (
     <div
-      className="relative flex-none select-none transition-all duration-300"
+      className={`relative select-none transition-all duration-300 ${
+        className ? className : 'flex-none'
+      }`}
       onMouseEnter={() => {
         setIsHovered(true);
         prefetchVideo(movie.title);
@@ -37,7 +41,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       onTouchStart={() => prefetchVideo(movie.title)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex items-end">
+      <div className="flex items-end w-full">
         {/* Top 10 Rank Number if provided */}
         {rank !== undefined && (
           <span className="top-10-num -mr-6 sm:-mr-8 z-0 pointer-events-none drop-shadow-lg">
@@ -48,7 +52,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         {/* Card Poster Container */}
         <div
           onClick={() => onOpenDetail(movie)}
-          className={`relative z-10 w-32 sm:w-44 md:w-52 aspect-[2/3] rounded-md overflow-hidden bg-[#202020] cursor-pointer shadow-lg transition-transform duration-300 ${
+          className={`relative z-10 ${
+            className.includes('w-full') ? 'w-full' : 'w-32 sm:w-44 md:w-52'
+          } aspect-[2/3] rounded-md overflow-hidden bg-[#202020] cursor-pointer shadow-lg transition-transform duration-300 ${
             isHovered ? 'scale-105 shadow-2xl ring-2 ring-white/30' : ''
           }`}
         >

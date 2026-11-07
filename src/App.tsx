@@ -409,6 +409,7 @@ export const App: React.FC = () => {
           /* Search Results View */
           <SearchPage
             initialQuery={searchQuery}
+            onQueryChange={(q) => setSearchQuery(q)}
             onPlay={handleDirectPlay}
             onOpenDetail={handleOpenDetail}
             watchlistIds={watchlistIds}

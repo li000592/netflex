@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { MediaItem } from '../types';
-import { fetchHuakaiCatalog } from '../services/api';
+import { fetchHuakaiCatalog, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
 import { useI18n } from '../i18n';
 
@@ -79,7 +79,7 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
       setItems((prev) => {
         const existingIds = new Set(prev.map((i) => i.id));
         const filteredNew = res.items.filter((i) => !existingIds.has(i.id));
-        return [...prev, ...filteredNew];
+        return sortMediaByCover([...prev, ...filteredNew]);
       });
       setPage(nextPage);
       setHasMore(nextPage < (res.pagecount || pageCount));

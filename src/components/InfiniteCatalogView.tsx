@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
 import { MediaItem } from '../types';
-import { fetchDoubanCatalog } from '../services/api';
+import { fetchDoubanCatalog, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
 
 interface TagOption {
@@ -78,7 +78,7 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
       setItems((prev) => {
         const existingIds = new Set(prev.map((i) => i.id));
         const filteredNew = res.filter((i) => !existingIds.has(i.id));
-        return [...prev, ...filteredNew];
+        return sortMediaByCover([...prev, ...filteredNew]);
       });
       setStart(nextStart);
       setHasMore(res.length >= PAGE_SIZE);

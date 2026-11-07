@@ -40,10 +40,14 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   const [isPaused, setIsPaused] = useState(false);
   const touchStartRef = useRef<number | null>(null);
 
-  // Normalize list of featured movies
-  const displayMovies = (movies && movies.length > 0 ? movies : movie ? [movie] : []).filter(
-    Boolean
-  ) as MediaItem[];
+  // Normalize list of featured movies - items with valid covers are prioritized first
+  const displayMovies = (movies && movies.length > 0 ? movies : movie ? [movie] : [])
+    .filter(Boolean)
+    .sort((a, b) => {
+      const aHas = hasValidCover(a.cover) ? 1 : 0;
+      const bHas = hasValidCover(b.cover) ? 1 : 0;
+      return bHas - aHas;
+    }) as MediaItem[];
 
   // Keep index in valid bounds
   const safeIndex = displayMovies.length > 0 ? currentIndex % displayMovies.length : 0;
