@@ -179,6 +179,8 @@ export const MyListPage: React.FC<MyListPageProps> = ({
                   cover: item.cover,
                   rate: item.rate,
                   remarks: item.remarks,
+                  sourceUrl: item.sourceUrl,
+                  vod_id: item.vod_id,
                 };
                 return (
                   <div key={item.id} className="flex justify-center">

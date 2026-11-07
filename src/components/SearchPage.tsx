@@ -40,13 +40,13 @@ export const SearchPage: React.FC<SearchPageProps> = ({
 
     const timer = setTimeout(async () => {
       setLoading(true);
-      const res = await searchVideos(query, selectedSource || undefined);
+      const res = await searchVideos(query, selectedSource || undefined, selectedCategory);
       setResults(res);
       setLoading(false);
     }, 350);
 
     return () => clearTimeout(timer);
-  }, [query, selectedSource]);
+  }, [query, selectedSource, selectedCategory]);
 
   const categories = [
     { id: 'all', label: t('allCategories') },
@@ -54,11 +54,12 @@ export const SearchPage: React.FC<SearchPageProps> = ({
     { id: 'netflix', label: t('catNetflix') },
     { id: 'speed', label: t('catSpeed') },
     { id: 'general', label: t('catClassics') },
+    { id: 'huakai', label: t('catHuakai') },
   ];
 
   const filteredSources =
     selectedCategory === 'all'
-      ? VIDEO_SOURCES
+      ? VIDEO_SOURCES.filter((s) => s.category !== 'huakai')
       : VIDEO_SOURCES.filter((s) => s.category === selectedCategory);
 
   return (

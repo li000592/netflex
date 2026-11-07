@@ -103,23 +103,86 @@ api.get('/api/bangumi', async (req, res) => {
   }
 });
 
+// 3.5. Huakai Dedicated Portal API (Direct 155zy catalog with pagination & subcategory filters)
+api.get('/api/huakai', async (req, res) => {
+  const { pg = 1, t: typeId, wd } = req.query;
+  const cacheKey = `huakai_catalog_${pg}_${typeId || 'all'}_${wd || 'none'}`;
+  const cached = getCache(cacheKey, 300000); // 5 min cache
+  if (cached) return res.json(cached);
+
+  try {
+    let url = `https://155api.com/api.php/provide/vod?ac=videolist&pg=${pg}`;
+    if (typeId) {
+      url += `&t=${encodeURIComponent(typeId)}`;
+    }
+    if (wd && wd.trim()) {
+      url += `&wd=${encodeURIComponent(wd.trim())}`;
+    }
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+      },
+    });
+    if (!response.ok) throw new Error(`155api returned ${response.status}`);
+    const data = await response.json();
+    const list = (data.list || []).map((item) => {
+      const parsedGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
+      return {
+        id: `155zy_${item.vod_id}`,
+        vod_id: item.vod_id,
+        sourceId: '155zy',
+        sourceName: '155动漫',
+        sourceUrl: 'https://155api.com/api.php/provide/vod',
+        title: item.vod_name,
+        pic: item.vod_pic,
+        actor: item.vod_actor || '',
+        director: item.vod_director || '',
+        remarks: item.vod_remarks || '',
+        area: item.vod_area || '',
+        year: item.vod_year || '',
+        type_name: item.type_name || '',
+        content: item.vod_content || '',
+        playUrlRaw: item.vod_play_url || '',
+        groups: parsedGroups,
+      };
+    });
+    const result = {
+      page: Number(data.page) || Number(pg),
+      pagecount: Number(data.pagecount) || 1,
+      total: Number(data.total) || list.length,
+      list,
+    };
+    setCache(cacheKey, result);
+    res.json(result);
+  } catch (err) {
+    console.error('Huakai API error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch Huakai content' });
+  }
+});
+
 // 4. Concurrent Search Across Sources (with High-Speed Priority & 1600ms Timeout)
 api.get('/api/search', async (req, res) => {
-  const { wd, sourceId, limit = 40 } = req.query;
+  const { wd, sourceId, category, limit = 40 } = req.query;
   if (!wd || !wd.trim()) {
     return res.status(400).json({ error: 'Keyword required' });
   }
 
   const keyword = wd.trim();
-  const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}`;
+  const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}_${category || 'all'}`;
   const cached = getCache(cacheKey, 600000); // 10 min cache
   if (cached) {
     return res.json(cached);
   }
 
-  const targetSources = sourceId
-    ? VIDEO_SOURCES.filter((s) => s.id === sourceId)
-    : VIDEO_SOURCES;
+  let targetSources = VIDEO_SOURCES;
+  if (sourceId) {
+    targetSources = VIDEO_SOURCES.filter((s) => s.id === sourceId);
+  } else if (category && category !== 'all') {
+    targetSources = VIDEO_SOURCES.filter((s) => s.category === category);
+  } else {
+    // Default search or 'all': EXCLUDE 'huakai' so 155动漫 is never mixed into other categories or general search
+    targetSources = VIDEO_SOURCES.filter((s) => s.category !== 'huakai');
+  }
 
   const searchPromises = targetSources.map(async (source) => {
     const controller = new AbortController();

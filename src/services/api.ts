@@ -76,9 +76,9 @@ export function prefetchVideo(keyword: string): void {
   searchVideos(keyword).catch(() => {});
 }
 
-export async function searchVideos(keyword: string, sourceId?: string): Promise<MediaItem[]> {
+export async function searchVideos(keyword: string, sourceId?: string, category?: string): Promise<MediaItem[]> {
   if (!keyword.trim()) return [];
-  const cacheKey = `${keyword.trim().toLowerCase()}_${sourceId || 'all'}`;
+  const cacheKey = `${keyword.trim().toLowerCase()}_${sourceId || 'all'}_${category || 'all'}`;
   if (searchCache.has(cacheKey)) {
     return searchCache.get(cacheKey)!;
   }
@@ -87,6 +87,8 @@ export async function searchVideos(keyword: string, sourceId?: string): Promise<
     let url = `${API_BASE}/api/search?wd=${encodeURIComponent(keyword.trim())}&limit=60`;
     if (sourceId) {
       url += `&sourceId=${encodeURIComponent(sourceId)}`;
+    } else if (category && category !== 'all') {
+      url += `&category=${encodeURIComponent(category)}`;
     }
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -120,6 +122,54 @@ export async function searchVideos(keyword: string, sourceId?: string): Promise<
   } catch (err) {
     console.error('Search failed:', err);
     return [];
+  }
+}
+
+export async function fetchHuakaiCatalog(
+  page: number = 1,
+  typeId?: number | string,
+  keyword?: string
+): Promise<{ page: number; pagecount: number; total: number; items: MediaItem[] }> {
+  try {
+    let url = `${API_BASE}/api/huakai?pg=${page}`;
+    if (typeId) {
+      url += `&t=${encodeURIComponent(typeId)}`;
+    }
+    if (keyword && keyword.trim()) {
+      url += `&wd=${encodeURIComponent(keyword.trim())}`;
+    }
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const list = data.list || [];
+    const items: MediaItem[] = list.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      cover: item.pic,
+      vod_id: item.vod_id,
+      sourceId: item.sourceId,
+      sourceName: item.sourceName,
+      sourceUrl: item.sourceUrl,
+      remarks: item.remarks,
+      actor: item.actor,
+      director: item.director,
+      year: item.year,
+      area: item.area,
+      type_name: item.type_name,
+      overview: item.content,
+      groups: item.groups,
+      category: '花开',
+    }));
+
+    return {
+      page: data.page || page,
+      pagecount: data.pagecount || 1,
+      total: data.total || items.length,
+      items,
+    };
+  } catch (err) {
+    console.error('Failed to fetch Huakai catalog:', err);
+    return { page, pagecount: 1, total: 0, items: [] };
   }
 }
 

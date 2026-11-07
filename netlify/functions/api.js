@@ -112,25 +112,90 @@ export async function handler(event) {
       return { statusCode: 200, headers, body: JSON.stringify(data) };
     }
 
+    // 3.5 Huakai Dedicated Portal API (Direct 155zy catalog)
+    if (path === '/huakai') {
+      const pg = Number(params.pg) || 1;
+      const typeId = params.t;
+      const wd = (params.wd || '').trim();
+      const cacheKey = `huakai_catalog_${pg}_${typeId || 'all'}_${wd || 'none'}`;
+      const cached = getCache(cacheKey, 300000); // 5 min cache
+      if (cached) {
+        return { statusCode: 200, headers, body: JSON.stringify(cached) };
+      }
+
+      try {
+        let url = `https://155api.com/api.php/provide/vod?ac=videolist&pg=${pg}`;
+        if (typeId) {
+          url += `&t=${encodeURIComponent(typeId)}`;
+        }
+        if (wd) {
+          url += `&wd=${encodeURIComponent(wd)}`;
+        }
+        const resp = await fetch(url, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+        });
+        if (!resp.ok) throw new Error(`155api returned ${resp.status}`);
+        const data = await resp.json();
+        const list = (data.list || []).map((item) => {
+          const parsedGroups = parseVodPlayUrl(item.vod_play_url, item.vod_play_from);
+          return {
+            id: `155zy_${item.vod_id}`,
+            vod_id: item.vod_id,
+            sourceId: '155zy',
+            sourceName: '155动漫',
+            sourceUrl: 'https://155api.com/api.php/provide/vod',
+            title: item.vod_name,
+            pic: item.vod_pic,
+            actor: item.vod_actor || '',
+            director: item.vod_director || '',
+            remarks: item.vod_remarks || '',
+            area: item.vod_area || '',
+            year: item.vod_year || '',
+            type_name: item.type_name || '',
+            content: item.vod_content || '',
+            playUrlRaw: item.vod_play_url || '',
+            groups: parsedGroups,
+          };
+        });
+        const result = {
+          page: Number(data.page) || pg,
+          pagecount: Number(data.pagecount) || 1,
+          total: Number(data.total) || list.length,
+          list,
+        };
+        setCache(cacheKey, result);
+        return { statusCode: 200, headers, body: JSON.stringify(result) };
+      } catch (err) {
+        return { statusCode: 500, headers, body: JSON.stringify({ error: 'Failed to fetch Huakai content' }) };
+      }
+    }
+
     // 4. Concurrent Search Across Sources (with Fast Cut-off & Pre-parsed Episodes)
     if (path === '/search') {
       const keyword = (params.wd || '').trim();
       const sourceId = params.sourceId;
+      const category = params.category;
       const limit = Number(params.limit) || 40;
 
       if (!keyword) {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'Keyword required' }) };
       }
 
-      const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}`;
+      const cacheKey = `search_${keyword.toLowerCase()}_${sourceId || 'all'}_${category || 'all'}`;
       const cached = getCache(cacheKey, 600000); // 10 min cache
       if (cached) {
         return { statusCode: 200, headers, body: JSON.stringify(cached) };
       }
 
-      const targetSources = sourceId
-        ? VIDEO_SOURCES.filter((s) => s.id === sourceId)
-        : VIDEO_SOURCES;
+      let targetSources = VIDEO_SOURCES;
+      if (sourceId) {
+        targetSources = VIDEO_SOURCES.filter((s) => s.id === sourceId);
+      } else if (category && category !== 'all') {
+        targetSources = VIDEO_SOURCES.filter((s) => s.category === category);
+      } else {
+        // Default or 'all': EXCLUDE 'huakai' so 155 data is never mixed into other categories or general search
+        targetSources = VIDEO_SOURCES.filter((s) => s.category !== 'huakai');
+      }
 
       const searchPromises = targetSources.map(async (source) => {
         const controller = new AbortController();

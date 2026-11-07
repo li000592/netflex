@@ -13,6 +13,7 @@ import {
   Users,
   History,
   Check,
+  Flower2,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
 import { useI18n, LanguageSelector } from '../i18n';
@@ -62,6 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { tab: 'tv', label: t('tvShows'), icon: <Tv className="w-4 h-4 mr-1.5" /> },
     { tab: 'anime', label: t('anime'), icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
     { tab: 'variety', label: t('variety'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
+    { tab: 'huakai', label: t('huakai'), icon: <Flower2 className="w-4 h-4 mr-1.5" /> },
     { tab: 'mylist', label: t('myList'), icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
   ];
 
@@ -393,6 +395,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <PlaySquare className="w-5 h-5 mb-0.5" />
           {t('anime')}
+        </button>
+        <button
+          onClick={() => onSelectTab('huakai')}
+          className={`flex flex-col items-center py-1 px-2 text-[10px] ${
+            currentTab === 'huakai' ? 'text-[#E50914]' : 'text-gray-400'
+          }`}
+        >
+          <Flower2 className="w-5 h-5 mb-0.5" />
+          {t('huakai')}
         </button>
         <button
           onClick={handleMyListClick}

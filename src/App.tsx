@@ -7,6 +7,7 @@ import { DetailModal } from './components/DetailModal';
 import { PlayerModal } from './components/PlayerModal';
 import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
+import { HuakaiPage } from './components/HuakaiPage';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
 import { useI18n, LanguageSelector } from './i18n';
@@ -82,6 +83,8 @@ export const App: React.FC = () => {
       rate: movie.rate,
       remarks: movie.remarks,
       addedAt: Date.now(),
+      sourceUrl: movie.sourceUrl,
+      vod_id: movie.vod_id,
     });
     reloadWatchlist();
   };
@@ -308,6 +311,14 @@ export const App: React.FC = () => {
               onToggleFavorite={handleToggleFavorite}
             />
           </div>
+        ) : currentTab === 'huakai' ? (
+          /* Dedicated Huakai Special Zone */
+          <HuakaiPage
+            onPlay={handleDirectPlay}
+            onOpenDetail={handleOpenDetail}
+            watchlistIds={watchlistIds}
+            onToggleFavorite={handleToggleFavorite}
+          />
         ) : currentTab === 'variety' ? (
           /* Variety Shows Tab */
           <div className="pt-20 sm:pt-24 pb-20">

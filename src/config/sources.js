@@ -2,9 +2,11 @@ export const VIDEO_SOURCES = [
   // 🌸 动漫专线
   { id: 'modu_dm', name: '魔都动漫', url: 'https://www.mdzyapi.com/api.php/provide/vod', category: 'anime', priority: 1 },
   { id: 'yinghua', name: '樱花动漫', url: 'https://m3u8.apiyhzy.com/api.php/provide/vod', category: 'anime', priority: 2 },
-  { id: '155zy', name: '155动漫', url: 'https://155api.com/api.php/provide/vod', category: 'anime', priority: 3 },
-  { id: 'uku88', name: 'U酷88', url: 'https://api.ukuapi88.com/api.php/provide/vod', category: 'anime', priority: 4 },
+  { id: 'uku88', name: 'U酷88', url: 'https://api.ukuapi88.com/api.php/provide/vod', category: 'anime', priority: 3 },
   
+  // 🌺 花开专区 (独立专属分类，不混入其他类别)
+  { id: '155zy', name: '155动漫', url: 'https://155api.com/api.php/provide/vod', category: 'huakai', priority: 1 },
+
   // 🔴 奈飞与海外专区
   { id: 'ikun', name: '奈飞海外(ikun)', url: 'https://ikunzyapi.com/api.php/provide/vod', category: 'netflix', priority: 1 },
   { id: 'modu_wai', name: '奈飞外剧(魔都)', url: 'https://caiji.moduapi.cc/api.php/provide/vod', category: 'netflix', priority: 2 },
