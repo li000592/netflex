@@ -15,6 +15,7 @@ import {
   fetchDoubanCatalog,
   fetchBangumiCalendar,
   getWatchlist,
+  getWatchHistory,
   toggleWatchlist,
   searchVideos,
   fetchVideoDetail,
@@ -154,11 +155,30 @@ export const App: React.FC = () => {
 
   // Handler for direct play click
   const handleDirectPlay = async (movie: MediaItem) => {
+    // Check if user previously watched an episode of this title
+    const historyList = getWatchHistory();
+    const movieTitle = movie.title?.trim().toLowerCase();
+    const existing = historyList.find(
+      (h) => h.id === movie.id || (movieTitle && h.title?.trim().toLowerCase() === movieTitle)
+    );
+
     if (movie.sourceUrl && movie.vod_id) {
       const detail = await fetchVideoDetail(movie.sourceUrl, movie.vod_id);
       if (detail && detail.groups.length > 0 && detail.groups[0].episodes.length > 0) {
         setPlayerMovie(movie);
-        setPlayerEpisode(detail.groups[0].episodes[0]);
+        let targetEp = detail.groups[0].episodes[0];
+        if (existing) {
+          for (const grp of detail.groups) {
+            const found = grp.episodes.find(
+              (ep) => ep.url === existing.episodeUrl || ep.name === existing.episodeName
+            );
+            if (found) {
+              targetEp = found;
+              break;
+            }
+          }
+        }
+        setPlayerEpisode(targetEp);
         setIsPlayerOpen(true);
         return;
       }
@@ -171,7 +191,19 @@ export const App: React.FC = () => {
         const detail = await fetchVideoDetail(best.sourceUrl, best.vod_id);
         if (detail && detail.groups.length > 0 && detail.groups[0].episodes.length > 0) {
           setPlayerMovie(best);
-          setPlayerEpisode(detail.groups[0].episodes[0]);
+          let targetEp = detail.groups[0].episodes[0];
+          if (existing) {
+            for (const grp of detail.groups) {
+              const found = grp.episodes.find(
+                (ep) => ep.url === existing.episodeUrl || ep.name === existing.episodeName
+              );
+              if (found) {
+                targetEp = found;
+                break;
+              }
+            }
+          }
+          setPlayerEpisode(targetEp);
           setIsPlayerOpen(true);
           return;
         }

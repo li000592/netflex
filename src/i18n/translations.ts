@@ -83,6 +83,8 @@ export const translations = {
     speed: 'Speed',
     aspectCover: 'Fill Screen',
     aspectContain: 'Original Ratio',
+    resumedFrom: 'Resumed from',
+    restart: 'Restart',
 
     // Search Page
     searchTitle: 'Search movies, TV shows, anime, directors, actors...',
@@ -235,6 +237,8 @@ export const translations = {
     speed: '倍速',
     aspectCover: '全屏填满',
     aspectContain: '原始比例',
+    resumedFrom: '已自动跳至上次观看位置',
+    restart: '从头播放',
 
     // Search Page
     searchTitle: '搜索电影、电视剧、动漫、演员、导演...',

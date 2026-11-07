@@ -232,7 +232,12 @@ export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; his
 export function saveWatchHistory(item: WatchHistoryItem): void {
   try {
     const key = getStorageKey(BASE_HISTORY_KEY);
-    const history = getWatchHistory().filter((h) => h.id !== item.id);
+    const itemTitle = item.title?.trim().toLowerCase();
+    const history = getWatchHistory().filter((h) => {
+      if (h.id === item.id) return false;
+      if (itemTitle && h.title && h.title.trim().toLowerCase() === itemTitle) return false;
+      return true;
+    });
     history.unshift(item);
     localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
 

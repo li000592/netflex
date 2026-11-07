@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown } from 'lucide-react';
-import { MediaItem, VideoDetail, EpisodeGroup, Episode } from '../types';
-import { fetchVideoDetail, searchVideos } from '../services/api';
+import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
+import { fetchVideoDetail, searchVideos, getWatchHistory } from '../services/api';
 import { useI18n } from '../i18n';
 
 interface DetailModalProps {
@@ -29,6 +29,21 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   const [sourceCandidates, setSourceCandidates] = useState<MediaItem[]>([]);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
   const [showAllLines, setShowAllLines] = useState(false);
+  const [historyRecord, setHistoryRecord] = useState<WatchHistoryItem | null>(null);
+
+  // Check if movie has watch history
+  useEffect(() => {
+    if (!movie || !isOpen) {
+      setHistoryRecord(null);
+      return;
+    }
+    const historyList = getWatchHistory();
+    const movieTitle = movie.title?.trim().toLowerCase();
+    const found = historyList.find(
+      (h) => h.id === movie.id || (movieTitle && h.title?.trim().toLowerCase() === movieTitle)
+    );
+    setHistoryRecord(found || null);
+  }, [movie, isOpen]);
 
   // Sync native <dialog> with isOpen
   useEffect(() => {
@@ -208,6 +223,23 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             <button
               onClick={() => {
                 if (currentGroup && currentGroup.episodes.length > 0) {
+                  // If user has watched an episode previously, prioritize continuing that episode
+                  if (historyRecord) {
+                    const targetIdx = currentGroup.episodes.findIndex(
+                      (ep) =>
+                        ep.url === historyRecord.episodeUrl ||
+                        ep.name === historyRecord.episodeName
+                    );
+                    if (targetIdx !== -1) {
+                      onPlayEpisode(
+                        movie,
+                        currentGroup.episodes[targetIdx],
+                        activeGroupIndex,
+                        targetIdx
+                      );
+                      return;
+                    }
+                  }
                   onPlayEpisode(movie, currentGroup.episodes[0], activeGroupIndex, 0);
                 } else if (sourceCandidates.length > 0) {
                   const candidate = sourceCandidates[0];
@@ -217,10 +249,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                 }
               }}
               disabled={loading || (!currentGroup?.episodes.length && !sourceCandidates.length)}
-              className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white font-bold px-6 py-2.5 rounded-md transition-all shadow-lg hover:scale-105 disabled:opacity-50"
+              className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white font-bold px-6 py-2.5 rounded-md transition-all shadow-lg hover:scale-105 disabled:opacity-50 cursor-pointer"
             >
               <Play className="w-5 h-5 mr-2 fill-white" />
-              {t('playEpisode1')}
+              {historyRecord?.episodeName
+                ? `${t('continueWatching')} (${historyRecord.episodeName})`
+                : t('playEpisode1')}
             </button>
 
             {/* Watchlist Button */}
@@ -386,16 +420,33 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               </div>
             ) : currentGroup && currentGroup.episodes.length > 0 ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 max-h-72 overflow-y-auto no-scrollbar p-1">
-                {currentGroup.episodes.map((ep, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => onPlayEpisode(movie, ep, activeGroupIndex, idx)}
-                    className="group relative flex flex-col items-center justify-center py-3 px-2 rounded-lg bg-white/5 hover:bg-[#E50914] hover:text-white text-gray-300 text-xs font-medium border border-white/10 transition-all hover:scale-105"
-                  >
-                    <span className="line-clamp-1">{ep.name}</span>
-                    <Play className="w-3 h-3 mt-1 opacity-0 group-hover:opacity-100 fill-current transition-opacity" />
-                  </button>
-                ))}
+                {currentGroup.episodes.map((ep, idx) => {
+                  const isCurrentHistory =
+                    historyRecord &&
+                    (ep.url === historyRecord.episodeUrl || ep.name === historyRecord.episodeName);
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => onPlayEpisode(movie, ep, activeGroupIndex, idx)}
+                      className={`group relative flex flex-col items-center justify-center py-3 px-2 rounded-lg text-xs font-medium border transition-all hover:scale-105 cursor-pointer ${
+                        isCurrentHistory
+                          ? 'bg-[#E50914]/20 border-[#E50914] text-white shadow-[0_0_12px_rgba(229,9,20,0.35)]'
+                          : 'bg-white/5 hover:bg-[#E50914] hover:text-white text-gray-300 border-white/10'
+                      }`}
+                    >
+                      <span className="line-clamp-1">{ep.name}</span>
+                      {isCurrentHistory ? (
+                        <span className="text-[10px] text-[#E50914] group-hover:text-white mt-1 font-bold flex items-center">
+                          <Play className="w-2.5 h-2.5 fill-current mr-1" />
+                          {t('continueWatching')}
+                        </span>
+                      ) : (
+                        <Play className="w-3 h-3 mt-1 opacity-0 group-hover:opacity-100 fill-current transition-opacity" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <div className="text-sm text-gray-400 py-6 text-center">

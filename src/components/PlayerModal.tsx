@@ -113,10 +113,86 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const [detailData, setDetailData] = useState<VideoDetail | null>(null);
   const [activeEp, setActiveEp] = useState<Episode | null>(episode);
 
+  // Auto-Resume State & References
+  const resumeTimeRef = useRef<number>(0);
+  const hasResumedRef = useRef<boolean>(false);
+  const [resumeToast, setResumeToast] = useState<{ show: boolean; time: number } | null>(null);
+  const resumeToastTimer = useRef<NodeJS.Timeout | null>(null);
+
   // Sync active episode
   useEffect(() => {
     setActiveEp(episode);
   }, [episode]);
+
+  // Find previously saved watch progress
+  const findSavedProgress = useCallback(
+    (currMovie: MediaItem | null, currEp: Episode | null): number => {
+      if (!currMovie) return 0;
+      const historyList = getWatchHistory();
+      const movieTitle = currMovie.title?.trim().toLowerCase();
+
+      // 1. Exact ID & episode URL
+      let match = historyList.find(
+        (h) => h.id === currMovie.id && currEp && h.episodeUrl === currEp.url
+      );
+      // 2. Exact ID & episode Name
+      if (!match && currEp) {
+        match = historyList.find(
+          (h) => h.id === currMovie.id && h.episodeName === currEp.name
+        );
+      }
+      // 3. Title & Episode Name or URL
+      if (!match && movieTitle) {
+        match = historyList.find((h) => {
+          if (h.title?.trim().toLowerCase() !== movieTitle) return false;
+          if (!currEp) return true;
+          return h.episodeName === currEp.name || h.episodeUrl === currEp.url;
+        });
+      }
+      // 4. Movie ID or Title fallback
+      if (!match) {
+        match = historyList.find(
+          (h) =>
+            h.id === currMovie.id ||
+            (movieTitle && h.title?.trim().toLowerCase() === movieTitle)
+        );
+      }
+
+      if (match && match.currentTime > 5) {
+        // If watched to near the end (> 95% or within 20s of end), start over
+        if (match.duration > 30 && match.currentTime >= match.duration - 20) {
+          return 0;
+        }
+        return match.currentTime;
+      }
+      return 0;
+    },
+    []
+  );
+
+  // Compute resume time and show Netflix-style toast
+  useEffect(() => {
+    if (!isOpen || !activeEp) {
+      resumeTimeRef.current = 0;
+      hasResumedRef.current = false;
+      setResumeToast(null);
+      return;
+    }
+
+    const saved = findSavedProgress(movie, activeEp);
+    resumeTimeRef.current = saved;
+    hasResumedRef.current = false;
+
+    if (saved > 5) {
+      setResumeToast({ show: true, time: saved });
+      if (resumeToastTimer.current) clearTimeout(resumeToastTimer.current);
+      resumeToastTimer.current = setTimeout(() => {
+        setResumeToast(null);
+      }, 4500);
+    } else {
+      setResumeToast(null);
+    }
+  }, [isOpen, activeEp, movie, findSavedProgress]);
 
   // Load detail data for full episode list if needed
   useEffect(() => {
@@ -139,6 +215,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     setHasError(false);
 
     const playUrl = activeEp.url;
+    const targetStart = resumeTimeRef.current;
 
     // Clean up previous HLS instance
     if (hlsRef.current) {
@@ -146,11 +223,23 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       hlsRef.current = null;
     }
 
+    const applyResumeSeek = () => {
+      const seekTo = resumeTimeRef.current;
+      if (seekTo > 5 && video) {
+        if (Math.abs(video.currentTime - seekTo) > 2) {
+          video.currentTime = seekTo;
+          setCurrentTime(seekTo);
+        }
+        hasResumedRef.current = true;
+      }
+    };
+
     if (Hls.isSupported() && playUrl.includes('.m3u8')) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
         backBufferLength: 90,
+        startPosition: targetStart > 5 ? targetStart : -1,
       });
       hlsRef.current = hls;
 
@@ -158,6 +247,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        applyResumeSeek();
         video.play().catch(() => setIsPlaying(false));
       });
 
@@ -182,9 +272,19 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     } else if (video.canPlayType('application/vnd.apple.mpegurl') || playUrl.endsWith('.mp4')) {
       // Native Safari / MP4 support
       video.src = playUrl;
+      const onLoaded = () => {
+        applyResumeSeek();
+        video.removeEventListener('loadedmetadata', onLoaded);
+      };
+      video.addEventListener('loadedmetadata', onLoaded);
       video.play().catch(() => setIsPlaying(false));
     } else {
       video.src = playUrl;
+      const onLoaded = () => {
+        applyResumeSeek();
+        video.removeEventListener('loadedmetadata', onLoaded);
+      };
+      video.addEventListener('loadedmetadata', onLoaded);
       video.play().catch(() => setIsPlaying(false));
     }
 
@@ -210,7 +310,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     if (!currentMovie || !currentEp) return;
 
     const video = videoRef.current;
-    const cur = explicitTime !== undefined ? explicitTime : (video ? video.currentTime : 0);
+    let cur = explicitTime !== undefined ? explicitTime : (video ? video.currentTime : 0);
+
+    // Guard against overwriting resume timestamp with 0 on player startup
+    if (!hasResumedRef.current && resumeTimeRef.current > 5 && cur < 3) {
+      cur = resumeTimeRef.current;
+    } else if (cur >= 3) {
+      hasResumedRef.current = true;
+    }
+
     const dur =
       explicitDur !== undefined && explicitDur > 0
         ? explicitDur
@@ -360,6 +468,9 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     if (!video) return;
     video.currentTime = seconds;
     setCurrentTime(seconds);
+    hasResumedRef.current = true;
+    resumeTimeRef.current = seconds;
+    saveProgress(seconds);
   };
 
   const handleRewind10s = () => {
@@ -596,6 +707,9 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           if (videoRef.current) {
             const cur = videoRef.current.currentTime;
             setCurrentTime(cur);
+            if (cur > 3) {
+              hasResumedRef.current = true;
+            }
             if (Date.now() - lastSavedRef.current > 3500) {
               saveProgress(cur);
             }
@@ -607,14 +721,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             setDuration(dur);
             setIsLoading(false);
 
-            // Auto-resume from watch history if previously watched
-            const historyList = getWatchHistory();
-            const existing = historyList.find(
-              (h) => h.id === movie?.id && h.episodeUrl === activeEp?.url
-            );
-            if (existing && existing.currentTime > 5 && existing.currentTime < dur - 15) {
-              videoRef.current.currentTime = existing.currentTime;
-              setCurrentTime(existing.currentTime);
+            if (resumeTimeRef.current > 5 && Math.abs(videoRef.current.currentTime - resumeTimeRef.current) > 2) {
+              videoRef.current.currentTime = resumeTimeRef.current;
+              setCurrentTime(resumeTimeRef.current);
+              hasResumedRef.current = true;
             }
             saveProgress();
           }
@@ -632,6 +742,29 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-black/40">
           <Loader2 className="w-14 h-14 text-[#E50914] animate-spin mb-3" />
           <span className="text-white text-sm font-semibold tracking-wider">{t('buffering')}</span>
+        </div>
+      )}
+
+      {/* 🎬 Netflix-Style Auto-Resume Notification */}
+      {resumeToast?.show && (
+        <div className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-3 bg-black/85 backdrop-blur-md border border-white/20 px-4 py-2 sm:py-2.5 rounded-full shadow-2xl transition-all animate-in fade-in zoom-in-95 duration-200 pointer-events-auto">
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse inline-block" />
+            <span className="text-white text-xs sm:text-sm font-medium whitespace-nowrap">
+              {t('resumedFrom')} <span className="font-bold text-[#E50914]">{formatTime(resumeToast.time)}</span>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSeek(0);
+              setResumeToast(null);
+            }}
+            className="text-xs bg-white/15 hover:bg-[#E50914] text-white font-bold px-3 py-1 rounded-full border border-white/15 transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+          >
+            {t('restart')}
+          </button>
         </div>
       )}
 
