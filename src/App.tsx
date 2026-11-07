@@ -12,6 +12,7 @@ import { HuakaiPage } from './components/HuakaiPage';
 import { InfiniteCatalogView } from './components/InfiniteCatalogView';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
+import { SettingsModal } from './components/SettingsModal';
 import { useI18n, LanguageSelector } from './i18n';
 import {
   fetchDoubanCatalog,
@@ -104,8 +105,29 @@ export const App: React.FC = () => {
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(() => getCurrentProfile());
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+
+  // Huakai Mode (Default: false / OFF)
+  const [huakaiEnabled, setHuakaiEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('netflex_huakai_enabled') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleHuakai = (enabled: boolean) => {
+    setHuakaiEnabled(enabled);
+    try {
+      localStorage.setItem('netflex_huakai_enabled', enabled ? 'true' : 'false');
+    } catch {}
+    if (!enabled && currentTab === 'huakai') {
+      setCurrentTab('home');
+    }
+  };
 
   // Row Data State
+  const [heroMovies, setHeroMovies] = useState<MediaItem[]>([]);
   const [heroMovie, setHeroMovie] = useState<MediaItem | null>(null);
   const [hotMovies, setHotMovies] = useState<MediaItem[]>([]);
   const [hotTv, setHotTv] = useState<MediaItem[]>([]);
@@ -201,6 +223,7 @@ export const App: React.FC = () => {
 
         if (moviesRes.length > 0) {
           setHeroMovie(moviesRes[0]);
+          setHeroMovies(moviesRes.slice(0, 6));
           setHotMovies(moviesRes.slice(1, 16));
           setTop10(moviesRes.slice(0, 10));
         }
@@ -360,8 +383,10 @@ export const App: React.FC = () => {
         currentProfile={currentProfile}
         onOpenAuth={() => setAuthModalOpen(true)}
         onOpenProfileModal={() => setProfileModalOpen(true)}
+        onOpenSettings={() => setSettingsModalOpen(true)}
         onLogout={handleLogout}
         onSwitchProfile={handleSwitchProfile}
+        huakaiEnabled={huakaiEnabled}
       />
 
       {/* Main Content Area */}
@@ -374,6 +399,7 @@ export const App: React.FC = () => {
             onOpenDetail={handleOpenDetail}
             watchlistIds={watchlistIds}
             onToggleFavorite={handleToggleFavorite}
+            huakaiEnabled={huakaiEnabled}
           />
         ) : currentTab === 'mylist' ? (
           /* My List & History View */
@@ -449,7 +475,7 @@ export const App: React.FC = () => {
             watchlistIds={watchlistIds}
             onToggleFavorite={handleToggleFavorite}
           />
-        ) : currentTab === 'huakai' ? (
+        ) : currentTab === 'huakai' && huakaiEnabled ? (
           /* Dedicated Huakai Special Zone (Infinite Scrolling) */
           <HuakaiPage
             onPlay={handleDirectPlay}
@@ -475,10 +501,11 @@ export const App: React.FC = () => {
           <>
             {/* Billboard Hero Banner */}
             <HeroBanner
+              movies={heroMovies}
               movie={heroMovie}
               onPlay={handleDirectPlay}
               onOpenDetail={handleOpenDetail}
-              isFavorite={heroMovie ? watchlistIds.has(heroMovie.id) : false}
+              watchlistIds={watchlistIds}
               onToggleFavorite={handleToggleFavorite}
             />
 
@@ -554,7 +581,7 @@ export const App: React.FC = () => {
                 />
               )}
 
-              {huakaiMovies.length > 0 && (
+              {huakaiEnabled && huakaiMovies.length > 0 && (
                 <MovieRow
                   title={t('huakaiPortalTitle')}
                   movies={huakaiMovies}
@@ -638,6 +665,14 @@ export const App: React.FC = () => {
         isOpen={profileModalOpen}
         onClose={() => setProfileModalOpen(false)}
         onSelectProfile={(p) => handleSwitchProfile(p.id)}
+      />
+
+      {/* Settings Modal (Huakai Mode, Preferences) */}
+      <SettingsModal
+        isOpen={settingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+        huakaiEnabled={huakaiEnabled}
+        onToggleHuakai={handleToggleHuakai}
       />
 
       {/* Netflix Footer with Language Selector */}

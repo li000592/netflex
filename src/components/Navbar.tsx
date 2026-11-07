@@ -14,6 +14,7 @@ import {
   History,
   Check,
   Flower2,
+  Settings,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
 import { useI18n, LanguageSelector } from '../i18n';
@@ -27,8 +28,10 @@ interface NavbarProps {
   currentProfile: UserProfile | null;
   onOpenAuth: () => void;
   onOpenProfileModal: () => void;
+  onOpenSettings: () => void;
   onLogout: () => void;
   onSwitchProfile: (profileId: string) => void;
+  huakaiEnabled: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -40,8 +43,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentProfile,
   onOpenAuth,
   onOpenProfileModal,
+  onOpenSettings,
   onLogout,
   onSwitchProfile,
+  huakaiEnabled,
 }) => {
   const { t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -63,9 +68,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     { tab: 'tv', label: t('tvShows'), icon: <Tv className="w-4 h-4 mr-1.5" /> },
     { tab: 'anime', label: t('anime'), icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
     { tab: 'variety', label: t('variety'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
-    { tab: 'huakai', label: t('huakai'), icon: <Flower2 className="w-4 h-4 mr-1.5" /> },
+    { tab: 'huakai', label: t('huakai'), icon: <Flower2 className="w-4 h-4 mr-1.5 text-pink-400" /> },
     { tab: 'mylist', label: t('myList'), icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
   ];
+
+  const visibleNavItems = navItems.filter((item) => item.tab !== 'huakai' || huakaiEnabled);
 
   const handleMyListClick = () => {
     if (!currentUser) {
@@ -111,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Desktop & Tablet Nav Links */}
             <nav className="hidden sm:flex items-center space-x-3 md:space-x-5 lg:space-x-6 text-xs md:text-sm font-medium">
-              {navItems.map((item) => (
+              {visibleNavItems.map((item) => (
                 <button
                   key={item.tab}
                   onClick={() => {
@@ -189,6 +196,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               title={t('myList')}
             >
               <Bookmark className="w-5 h-5" />
+            </button>
+
+            {/* Quick Settings Shortcut */}
+            <button
+              onClick={onOpenSettings}
+              className="p-2 text-gray-300 hover:text-white transition-colors"
+              title={t('settings')}
+              aria-label={t('settings')}
+            >
+              <Settings className="w-5 h-5" />
             </button>
 
             {/* Profile Menu or Netflix Sign In Button */}
@@ -280,6 +297,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                           <History className="w-3.5 h-3.5 mr-2 text-gray-400" />
                           {t('myList')}
                         </button>
+
+                        <button
+                          onClick={() => {
+                            setProfileDropdownOpen(false);
+                            onOpenSettings();
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
+                        >
+                          <Settings className="w-3.5 h-3.5 mr-2 text-gray-400" />
+                          {t('settings')}
+                        </button>
                       </div>
 
                       {/* Language Switcher in dropdown */}
@@ -319,7 +347,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div className="sm:hidden bg-[#141414]/98 border-b border-white/10 px-4 py-4 space-y-2 backdrop-blur-xl">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <button
                 key={item.tab}
                 onClick={() => {
@@ -340,6 +368,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {item.label}
               </button>
             ))}
+
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenSettings();
+              }}
+              className="flex items-center w-full px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-all"
+            >
+              <Settings className="w-4 h-4 mr-2 text-gray-400" />
+              {t('settings')}
+            </button>
 
             <div className="pt-2 flex items-center justify-between px-3 py-2 border-t border-white/10">
               <span className="text-xs text-gray-400">{t('language')}</span>
@@ -401,15 +440,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <PlaySquare className="w-5 h-5 mb-0.5" />
           {t('anime')}
         </button>
-        <button
-          onClick={() => onSelectTab('huakai')}
-          className={`flex flex-col items-center py-1 px-2 text-[10px] ${
-            currentTab === 'huakai' ? 'text-[#E50914]' : 'text-gray-400'
-          }`}
-        >
-          <Flower2 className="w-5 h-5 mb-0.5" />
-          {t('huakai')}
-        </button>
+        {huakaiEnabled && (
+          <button
+            onClick={() => onSelectTab('huakai')}
+            className={`flex flex-col items-center py-1 px-2 text-[10px] ${
+              currentTab === 'huakai' ? 'text-[#E50914]' : 'text-gray-400'
+            }`}
+          >
+            <Flower2 className="w-5 h-5 mb-0.5" />
+            {t('huakai')}
+          </button>
+        )}
         <button
           onClick={handleMyListClick}
           className={`flex flex-col items-center py-1 px-2 text-[10px] ${

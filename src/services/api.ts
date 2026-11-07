@@ -32,14 +32,23 @@ export async function fetchDoubanCatalog(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const subjects = data.subjects || [];
-    return subjects.map((item: any) => ({
-      id: `douban_${item.id}`,
-      title: item.title,
-      rate: item.rate,
-      cover: item.cover ? `${API_BASE}/api/proxy/image?url=${encodeURIComponent(item.cover)}` : '',
-      isNew: item.is_new,
-      category: type === 'movie' ? '电影' : '剧集',
-    }));
+    return subjects.map((item: any) => {
+      // Upgrade Douban cover to high-definition large poster
+      const hdCover = item.cover
+        ? item.cover
+            .replace('/s_ratio_poster/', '/l_ratio_poster/')
+            .replace('/m_ratio_poster/', '/l_ratio_poster/')
+        : '';
+
+      return {
+        id: `douban_${item.id}`,
+        title: item.title,
+        rate: item.rate,
+        cover: hdCover ? `${API_BASE}/api/proxy/image?url=${encodeURIComponent(hdCover)}` : '',
+        isNew: item.is_new,
+        category: type === 'movie' ? '电影' : '剧集',
+      };
+    });
   } catch (err) {
     console.error('Failed to fetch Douban catalog:', err);
     return [];

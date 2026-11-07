@@ -327,8 +327,17 @@ const imageCache = new Map();
 
 // 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)
 api.get('/api/proxy/image', async (req, res) => {
-  const { url } = req.query;
+  let { url } = req.query;
   if (!url) return res.status(400).send('URL required');
+
+  // Automatically upgrade Douban low-res thumbnails to crystal-clear HD
+  if (typeof url === 'string' && url.includes('doubanio.com')) {
+    url = url
+      .replace('/s_ratio_poster/', '/l_ratio_poster/')
+      .replace('/m_ratio_poster/', '/l_ratio_poster/')
+      .replace('/photo/s/', '/photo/l/')
+      .replace('/photo/m/', '/photo/l/');
+  }
 
   if (imageCache.has(url)) {
     const cached = imageCache.get(url);

@@ -12,6 +12,7 @@ interface SearchPageProps {
   onOpenDetail: (movie: MediaItem) => void;
   watchlistIds: Set<string>;
   onToggleFavorite: (movie: MediaItem) => void;
+  huakaiEnabled?: boolean;
 }
 
 export const SearchPage: React.FC<SearchPageProps> = ({
@@ -20,6 +21,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   onOpenDetail,
   watchlistIds,
   onToggleFavorite,
+  huakaiEnabled = false,
 }) => {
   const { t } = useI18n();
   const [query, setQuery] = useState(initialQuery);
@@ -48,13 +50,19 @@ export const SearchPage: React.FC<SearchPageProps> = ({
     return () => clearTimeout(timer);
   }, [query, selectedSource, selectedCategory]);
 
+  useEffect(() => {
+    if (!huakaiEnabled && selectedCategory === 'huakai') {
+      setSelectedCategory('all');
+    }
+  }, [huakaiEnabled, selectedCategory]);
+
   const categories = [
     { id: 'all', label: t('allCategories') },
     { id: 'anime', label: t('catAnime') },
     { id: 'netflix', label: t('catNetflix') },
     { id: 'speed', label: t('catSpeed') },
     { id: 'general', label: t('catClassics') },
-    { id: 'huakai', label: t('catHuakai') },
+    ...(huakaiEnabled ? [{ id: 'huakai', label: t('catHuakai') }] : []),
   ];
 
   const filteredSources =

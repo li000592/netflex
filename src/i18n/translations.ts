@@ -19,6 +19,10 @@ export const translations = {
     whoIsWatching: "Who's watching?",
     done: 'Done',
     kids: 'KIDS',
+    settings: 'Settings',
+    huakaiMode: 'Huakai Mode',
+    huakaiModeDesc: 'Display Huakai special zone in the top navigation bar. Disabled by default to protect privacy.',
+    privacyAndDisplay: 'Display & Privacy',
 
     // Hero Banner
     featured: 'NETFLEX SELECTION',
@@ -173,6 +177,10 @@ export const translations = {
     whoIsWatching: '正在使用 NETFLEX 的是谁？',
     done: '完成',
     kids: '少儿',
+    settings: '设置',
+    huakaiMode: '花开模式',
+    huakaiModeDesc: '开启后在顶部导航栏显示「花开」专属频道。默认关闭以保护隐私。',
+    privacyAndDisplay: '显示与隐私',
 
     // Hero Banner
     featured: 'NETFLEX 首播',

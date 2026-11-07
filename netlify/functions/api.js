@@ -341,8 +341,17 @@ export async function handler(event) {
 
     // 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)
     if (path === '/proxy/image') {
-      const url = params.url;
+      let url = params.url;
       if (!url) return { statusCode: 400, headers, body: 'URL required' };
+
+      // Automatically upgrade Douban low-res thumbnails to crystal-clear HD
+      if (typeof url === 'string' && url.includes('doubanio.com')) {
+        url = url
+          .replace('/s_ratio_poster/', '/l_ratio_poster/')
+          .replace('/m_ratio_poster/', '/l_ratio_poster/')
+          .replace('/photo/s/', '/photo/l/')
+          .replace('/photo/m/', '/photo/l/');
+      }
 
       const isDouban = url.includes('doubanio.com') || url.includes('douban.com');
       const referer = isDouban ? 'https://movie.douban.com/' : '';
