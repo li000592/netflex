@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2 } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode } from '../types';
 import { fetchVideoDetail, searchVideos } from '../services/api';
 import { useI18n } from '../i18n';
@@ -28,6 +28,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [sourceCandidates, setSourceCandidates] = useState<MediaItem[]>([]);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
+  const [showAllLines, setShowAllLines] = useState(false);
 
   // Sync native <dialog> with isOpen
   useEffect(() => {
@@ -50,8 +51,13 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     if (!movie || !isOpen) {
       setDetail(null);
       setSourceCandidates([]);
+      setActiveSourceIndex(0);
+      setShowAllLines(false);
       return;
     }
+
+    setShowAllLines(false);
+    setActiveSourceIndex(0);
 
     let isMounted = true;
     setLoading(true);
@@ -242,31 +248,62 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           </div>
         </div>
 
-        {/* 31 Source Multi-Line Selection */}
+        {/* Subtle Source Line Bar (Default: Best/First Source, Expandable) */}
         {sourceCandidates.length > 1 && (
-          <div className="border-t border-white/10 pt-6">
-            <div className="flex items-center space-x-2 mb-3">
-              <Layers className="w-4 h-4 text-[#E50914]" />
-              <h3 className="text-base font-bold text-white">
-                {t('switchingLine')} ({sourceCandidates.length} {t('availableLines')})
-              </h3>
-            </div>
-            <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
-              {sourceCandidates.map((src, idx) => (
-                <button
-                  key={`${src.id}_${idx}`}
-                  onClick={() => handleSelectSource(idx)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
-                    activeSourceIndex === idx
-                      ? 'bg-[#E50914] text-white border-[#E50914] shadow-md'
-                      : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
+          <div className="border-t border-white/10 pt-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="text-gray-400">{t('currentLine')}:</span>
+                <span className="text-white font-medium bg-white/10 px-2.5 py-1 rounded-md border border-white/10 flex items-center space-x-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
+                  <span>
+                    {sourceCandidates[activeSourceIndex]?.sourceName || `Line ${activeSourceIndex + 1}`}
+                    {sourceCandidates[activeSourceIndex]?.remarks ? ` (${sourceCandidates[activeSourceIndex]?.remarks})` : ''}
+                  </span>
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowAllLines(!showAllLines)}
+                className="text-xs text-gray-300 hover:text-white flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer"
+              >
+                <Layers className="w-3.5 h-3.5 text-[#E50914]" />
+                <span>
+                  {showAllLines ? t('collapseLines') : `${t('changeLine')} (${sourceCandidates.length})`}
+                </span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
+                    showAllLines ? 'rotate-180' : ''
                   }`}
-                >
-                  ⚡ {src.sourceName || `Line ${idx + 1}`}
-                  {src.remarks ? ` (${src.remarks})` : ''}
-                </button>
-              ))}
+                />
+              </button>
             </div>
+
+            {/* Expandable Line Selector */}
+            {showAllLines && (
+              <div className="mt-3 p-3 bg-black/40 rounded-lg border border-white/10">
+                <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
+                  {sourceCandidates.map((src, idx) => (
+                    <button
+                      key={`${src.id}_${idx}`}
+                      onClick={() => {
+                        handleSelectSource(idx);
+                        setShowAllLines(false);
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border cursor-pointer ${
+                        activeSourceIndex === idx
+                          ? 'bg-[#E50914] text-white border-[#E50914] shadow-md'
+                          : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      ⚡ {src.sourceName || `Line ${idx + 1}`}
+                      {src.remarks ? ` (${src.remarks})` : ''}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
