@@ -1,6 +1,15 @@
 import { MediaItem, VideoDetail, WatchHistoryItem, WatchlistItem } from '../types';
+import { getCurrentUser } from './auth';
 
-const API_BASE = ''; // Relative path, works for both localhost:3001 and Netlify
+const API_BASE = ''; // Relative path, works for both localhost:3000 and Netlify
+
+function getStorageKey(baseKey: string): string {
+  const user = getCurrentUser();
+  if (user) {
+    return `${baseKey}_${user.id}_${user.currentProfileId}`;
+  }
+  return `${baseKey}_guest`;
+}
 
 export async function fetchDoubanCatalog(type: 'movie' | 'tv', tag: string = '热门', limit: number = 20): Promise<MediaItem[]> {
   try {
@@ -93,11 +102,13 @@ export async function fetchVideoDetail(sourceUrl: string, id: string | number): 
   }
 }
 
-// Local Storage for Watch History
-const HISTORY_KEY = 'netflex_watch_history';
+// Storage Keys with user isolation
+const BASE_HISTORY_KEY = 'netflex_watch_history';
+const BASE_WATCHLIST_KEY = 'netflex_watchlist';
+
 export function getWatchHistory(): WatchHistoryItem[] {
   try {
-    const raw = localStorage.getItem(HISTORY_KEY);
+    const raw = localStorage.getItem(getStorageKey(BASE_HISTORY_KEY));
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -106,9 +117,10 @@ export function getWatchHistory(): WatchHistoryItem[] {
 
 export function saveWatchHistory(item: WatchHistoryItem): void {
   try {
+    const key = getStorageKey(BASE_HISTORY_KEY);
     const history = getWatchHistory().filter((h) => h.id !== item.id);
     history.unshift(item);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+    localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
   } catch (err) {
     console.error('Failed to save history:', err);
   }
@@ -116,15 +128,13 @@ export function saveWatchHistory(item: WatchHistoryItem): void {
 
 export function clearWatchHistory(): void {
   try {
-    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(getStorageKey(BASE_HISTORY_KEY));
   } catch {}
 }
 
-// Local Storage for Watchlist
-const WATCHLIST_KEY = 'netflex_watchlist';
 export function getWatchlist(): WatchlistItem[] {
   try {
-    const raw = localStorage.getItem(WATCHLIST_KEY);
+    const raw = localStorage.getItem(getStorageKey(BASE_WATCHLIST_KEY));
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -133,6 +143,7 @@ export function getWatchlist(): WatchlistItem[] {
 
 export function toggleWatchlist(item: WatchlistItem): boolean {
   try {
+    const key = getStorageKey(BASE_WATCHLIST_KEY);
     const list = getWatchlist();
     const exists = list.some((w) => w.id === item.id);
     let updated: WatchlistItem[];
@@ -141,7 +152,7 @@ export function toggleWatchlist(item: WatchlistItem): boolean {
     } else {
       updated = [item, ...list];
     }
-    localStorage.setItem(WATCHLIST_KEY, JSON.stringify(updated));
+    localStorage.setItem(key, JSON.stringify(updated));
     return !exists;
   } catch {
     return false;

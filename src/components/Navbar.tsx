@@ -1,12 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, Bookmark, History, Menu, X, Film, Tv, PlaySquare, Sparkles } from 'lucide-react';
-import { NavTab } from '../types';
+import {
+  Search,
+  Bookmark,
+  Menu,
+  X,
+  Film,
+  Tv,
+  PlaySquare,
+  Sparkles,
+  ChevronDown,
+  LogOut,
+  Users,
+  History,
+  Check,
+} from 'lucide-react';
+import { NavTab, User, UserProfile } from '../types';
 
 interface NavbarProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
   onSearch: (query: string) => void;
   searchQuery: string;
+  currentUser: User | null;
+  currentProfile: UserProfile | null;
+  onOpenAuth: () => void;
+  onOpenProfileModal: () => void;
+  onLogout: () => void;
+  onSwitchProfile: (profileId: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -14,10 +34,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectTab,
   onSearch,
   searchQuery,
+  currentUser,
+  currentProfile,
+  onOpenAuth,
+  onOpenProfileModal,
+  onLogout,
+  onSwitchProfile,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,11 +63,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     { tab: 'mylist', label: '我的片单', icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
   ];
 
+  const handleMyListClick = () => {
+    if (!currentUser) {
+      onOpenAuth();
+    } else {
+      onSelectTab('mylist');
+    }
+  };
+
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
-          isScrolled ? 'bg-[#141414]/95 backdrop-blur-md shadow-2xl border-b border-white/5' : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent'
+          isScrolled
+            ? 'bg-[#141414]/95 backdrop-blur-md shadow-2xl border-b border-white/5'
+            : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
@@ -73,7 +110,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               {navItems.map((item) => (
                 <button
                   key={item.tab}
-                  onClick={() => onSelectTab(item.tab)}
+                  onClick={() => {
+                    if (item.tab === 'mylist' && !currentUser) {
+                      onOpenAuth();
+                    } else {
+                      onSelectTab(item.tab);
+                    }
+                  }}
                   className={`transition-colors duration-200 hover:text-white ${
                     currentTab === item.tab ? 'text-white font-bold' : 'text-gray-300'
                   }`}
@@ -84,14 +127,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
           </div>
 
-          {/* Right Actions: Search, Notifications, Profile */}
+          {/* Right Actions: Search, Watchlist, Profile / Login */}
           <div className="flex items-center space-x-3 sm:space-x-5">
             {/* Expandable Search Input */}
             <div className="relative flex items-center">
               <div
                 className={`flex items-center transition-all duration-300 rounded-full ${
                   searchOpen || searchQuery
-                    ? 'w-48 sm:w-64 bg-black/80 border border-white/20 px-3 py-1.5'
+                    ? 'w-44 sm:w-64 bg-black/80 border border-white/20 px-3 py-1.5'
                     : 'w-10 bg-transparent'
                 }`}
               >
@@ -125,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Quick Watchlist Shortcut */}
             <button
-              onClick={() => onSelectTab('mylist')}
+              onClick={handleMyListClick}
               className={`p-2 transition-colors relative ${
                 currentTab === 'mylist' ? 'text-[#E50914]' : 'text-gray-300 hover:text-white'
               }`}
@@ -134,14 +177,122 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Bookmark className="w-5 h-5" />
             </button>
 
-            {/* User Profile Avatar */}
-            <div className="relative group cursor-pointer">
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
-                alt="Profile"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded object-cover border border-white/20 group-hover:border-white transition-all shadow-md"
-              />
-            </div>
+            {/* Profile Menu or Netflix Sign In Button */}
+            {currentUser ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  className="flex items-center space-x-1.5 focus:outline-none group"
+                >
+                  <img
+                    src={
+                      currentProfile?.avatar ||
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'
+                    }
+                    alt={currentProfile?.name || 'Profile'}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded object-cover border border-white/20 group-hover:border-white transition-all shadow-md"
+                  />
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-white transition-transform" />
+                </button>
+
+                {/* Netflix Profile Dropdown */}
+                {profileDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-30"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    />
+                    <div className="absolute right-0 mt-3 w-56 bg-black/95 border border-white/15 rounded-lg shadow-2xl py-2 z-40 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
+                      {/* Current user header */}
+                      <div className="px-4 py-2 border-b border-white/10">
+                        <p className="text-xs text-gray-400">已登录为</p>
+                        <p className="text-sm font-bold text-white truncate">
+                          {currentProfile?.name}
+                        </p>
+                        <p className="text-[11px] text-gray-500 truncate">{currentUser.email}</p>
+                      </div>
+
+                      {/* Profile list switch */}
+                      <div className="py-1">
+                        {currentUser.profiles.map((p) => {
+                          const isActive = p.id === currentUser.currentProfileId;
+                          return (
+                            <button
+                              key={p.id}
+                              onClick={() => {
+                                onSwitchProfile(p.id);
+                                setProfileDropdownOpen(false);
+                              }}
+                              className={`flex items-center justify-between w-full px-4 py-2 text-xs transition-colors ${
+                                isActive
+                                  ? 'bg-white/10 text-white font-bold'
+                                  : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2.5">
+                                <img
+                                  src={p.avatar}
+                                  alt={p.name}
+                                  className="w-6 h-6 rounded object-cover"
+                                />
+                                <span>{p.name}</span>
+                              </div>
+                              {isActive && <Check className="w-3.5 h-3.5 text-[#E50914]" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Action links */}
+                      <div className="border-t border-white/10 pt-1">
+                        <button
+                          onClick={() => {
+                            setProfileDropdownOpen(false);
+                            onOpenProfileModal();
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
+                        >
+                          <Users className="w-3.5 h-3.5 mr-2 text-gray-400" />
+                          切换个人资料
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setProfileDropdownOpen(false);
+                            onSelectTab('mylist');
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-xs text-gray-300 hover:bg-white/5 hover:text-white"
+                        >
+                          <History className="w-3.5 h-3.5 mr-2 text-gray-400" />
+                          片单与观看历史
+                        </button>
+                      </div>
+
+                      {/* Sign Out */}
+                      <div className="border-t border-white/10 mt-1 pt-1">
+                        <button
+                          onClick={() => {
+                            setProfileDropdownOpen(false);
+                            onLogout();
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                        >
+                          <LogOut className="w-3.5 h-3.5 mr-2" />
+                          退出登录 NETFLEX
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="bg-[#E50914] hover:bg-[#b80710] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-md transition-all shadow-md hover:scale-105 active:scale-95"
+              >
+                登 录
+              </button>
+            )}
           </div>
         </div>
 
@@ -152,7 +303,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.tab}
                 onClick={() => {
-                  onSelectTab(item.tab);
+                  if (item.tab === 'mylist' && !currentUser) {
+                    onOpenAuth();
+                  } else {
+                    onSelectTab(item.tab);
+                  }
                   setMobileMenuOpen(false);
                 }}
                 className={`flex items-center w-full px-3 py-2.5 rounded-lg text-sm transition-all ${
@@ -165,6 +320,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {item.label}
               </button>
             ))}
+
+            {!currentUser && (
+              <div className="pt-2">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenAuth();
+                  }}
+                  className="w-full bg-[#E50914] text-white font-bold py-2 rounded-lg text-sm"
+                >
+                  登录 NETFLEX
+                </button>
+              </div>
+            )}
           </div>
         )}
       </header>
@@ -208,7 +377,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           新番
         </button>
         <button
-          onClick={() => onSelectTab('mylist')}
+          onClick={handleMyListClick}
           className={`flex flex-col items-center py-1 px-2 text-[10px] ${
             currentTab === 'mylist' ? 'text-[#E50914]' : 'text-gray-400'
           }`}

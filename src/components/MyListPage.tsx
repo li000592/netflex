@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Film } from 'lucide-react';
-import { MediaItem, WatchHistoryItem, WatchlistItem, Episode } from '../types';
+import { Bookmark, History, Trash2, Play, Lock, Sparkles, User as UserIcon } from 'lucide-react';
+import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
 import { getWatchHistory, getWatchlist, clearWatchHistory } from '../services/api';
 import { MovieCard } from './MovieCard';
 
 interface MyListPageProps {
+  currentUser: User | null;
+  currentProfile: UserProfile | null;
+  onOpenAuth: () => void;
   onPlay: (movie: MediaItem) => void;
   onOpenDetail: (movie: MediaItem) => void;
   watchlistIds: Set<string>;
@@ -13,6 +16,9 @@ interface MyListPageProps {
 }
 
 export const MyListPage: React.FC<MyListPageProps> = ({
+  currentUser,
+  currentProfile,
+  onOpenAuth,
   onPlay,
   onOpenDetail,
   watchlistIds,
@@ -30,17 +36,83 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
   useEffect(() => {
     reloadData();
-  }, [watchlistIds]);
+  }, [watchlistIds, currentUser, currentProfile]);
 
   const handleClearHistory = () => {
-    if (window.confirm('确定要清空全部播放历史记录吗？')) {
+    if (window.confirm('确定要清空当前档案的全部播放历史记录吗？')) {
       clearWatchHistory();
       setHistory([]);
     }
   };
 
+  // If user is not logged in, show Netflix Sign-In Callout
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E50914]/20 border border-[#E50914]/40 flex items-center justify-center mb-6 shadow-2xl">
+          <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-[#E50914]" />
+        </div>
+
+        <h1 className="text-2xl sm:text-4xl font-black text-white mb-3">
+          登录以开启专属片单与播放历史
+        </h1>
+
+        <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-8 leading-relaxed">
+          登录您的 NETFLEX 账号后，您在手机、平板与电脑上标记的片单与观看进度将自动无缝同步保存，支持多档案独立管理。
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-xs">
+          <button
+            onClick={onOpenAuth}
+            className="w-full bg-[#E50914] hover:bg-[#b80710] text-white font-bold py-3.5 px-8 rounded-lg text-base transition-transform hover:scale-105 shadow-xl"
+          >
+            立即登录 / 注册
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 max-w-3xl text-left border-t border-white/10 pt-10">
+          <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+            <Bookmark className="w-6 h-6 text-[#E50914] mb-2" />
+            <h3 className="font-bold text-white text-sm mb-1">跨设备追剧片单</h3>
+            <p className="text-xs text-gray-400">一键收藏想看的好剧，随时随地打开接着看。</p>
+          </div>
+          <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+            <History className="w-6 h-6 text-[#E50914] mb-2" />
+            <h3 className="font-bold text-white text-sm mb-1">自动续播进度</h3>
+            <p className="text-xs text-gray-400">精确记录每集看到第几分几秒，断点秒级连播。</p>
+          </div>
+          <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+            <UserIcon className="w-6 h-6 text-[#E50914] mb-2" />
+            <h3 className="font-bold text-white text-sm mb-1">家庭多档案隔离</h3>
+            <p className="text-xs text-gray-400">支持创建不同家庭成员档案与少儿专区。</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-24 sm:pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Profile Header Badge */}
+      <div className="flex items-center space-x-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl">
+        <img
+          src={currentProfile?.avatar}
+          alt={currentProfile?.name}
+          className="w-10 h-10 rounded-lg object-cover border border-white/20"
+        />
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-bold text-white">{currentProfile?.name} 的专属空间</span>
+            {currentProfile?.isKids && (
+              <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold">
+                KIDS
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-gray-400 mt-0.5">账号：{currentUser.email}</p>
+        </div>
+      </div>
+
       {/* Tab Switcher */}
       <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-8">
         <div className="flex items-center space-x-6">
@@ -118,7 +190,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             <div className="text-center py-24 text-gray-400">
               <Bookmark className="w-16 h-16 mx-auto mb-4 text-gray-600" />
               <p className="text-lg font-semibold mb-1">您的片单还是空的</p>
-              <p className="text-sm text-gray-500">浏览时点击「+ 加入片单」，随时在此重温精彩大片。</p>
+              <p className="text-sm text-gray-500">浏览时点击「+ 加入片单」，精彩大片随心收藏。</p>
             </div>
           )}
         </>
@@ -137,7 +209,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
                     className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-[#1c1c1c] hover:bg-[#252525] border border-white/5 transition-all group"
                   >
                     <div className="flex items-center space-x-3 sm:space-x-4 overflow-hidden">
-                      {/* Thumbnail with progress indicator */}
+                      {/* Thumbnail with progress bar */}
                       <div className="relative w-20 sm:w-28 aspect-video rounded-lg overflow-hidden bg-black flex-none">
                         <img
                           src={item.cover}
@@ -196,7 +268,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
             <div className="text-center py-24 text-gray-400">
               <History className="w-16 h-16 mx-auto mb-4 text-gray-600" />
               <p className="text-lg font-semibold mb-1">暂无播放记录</p>
-              <p className="text-sm text-gray-500">播放过的影片和观影进度将自动同步记录在此。</p>
+              <p className="text-sm text-gray-500">播放过的影片和观影进度将自动同步记录在此档案下。</p>
             </div>
           )}
         </>

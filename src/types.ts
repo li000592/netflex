@@ -72,4 +72,20 @@ export interface WatchlistItem {
   addedAt: number;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  avatar: string;
+  isKids?: boolean;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  username: string;
+  profiles: UserProfile[];
+  currentProfileId: string;
+}
+
 export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'mylist';
+

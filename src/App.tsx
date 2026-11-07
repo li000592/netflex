@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavTab, MediaItem, Episode } from './types';
+import { NavTab, MediaItem, Episode, User, UserProfile } from './types';
 import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { MovieRow } from './components/MovieRow';
@@ -7,6 +7,8 @@ import { DetailModal } from './components/DetailModal';
 import { PlayerModal } from './components/PlayerModal';
 import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
+import { AuthModal } from './components/AuthModal';
+import { ProfileModal } from './components/ProfileModal';
 import {
   fetchDoubanCatalog,
   fetchBangumiCalendar,
@@ -15,10 +17,22 @@ import {
   searchVideos,
   fetchVideoDetail,
 } from './services/api';
+import {
+  getCurrentUser,
+  getCurrentProfile,
+  logout,
+  switchProfile,
+} from './services/auth';
 
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // User & Auth State
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
+  const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(() => getCurrentProfile());
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   // Row Data State
   const [heroMovie, setHeroMovie] = useState<MediaItem | null>(null);
@@ -40,13 +54,21 @@ export const App: React.FC = () => {
   const [playerEpisode, setPlayerEpisode] = useState<Episode | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
-  // Load Watchlist IDs on start
-  useEffect(() => {
+  // Reload Watchlist IDs whenever active user or profile changes
+  const reloadWatchlist = () => {
     const list = getWatchlist();
     setWatchlistIds(new Set(list.map((w) => w.id)));
-  }, []);
+  };
+
+  useEffect(() => {
+    reloadWatchlist();
+  }, [currentUser, currentProfile]);
 
   const handleToggleFavorite = (movie: MediaItem) => {
+    if (!currentUser) {
+      setAuthModalOpen(true);
+      return;
+    }
     toggleWatchlist({
       id: movie.id,
       title: movie.title,
@@ -55,8 +77,32 @@ export const App: React.FC = () => {
       remarks: movie.remarks,
       addedAt: Date.now(),
     });
-    const updated = getWatchlist();
-    setWatchlistIds(new Set(updated.map((w) => w.id)));
+    reloadWatchlist();
+  };
+
+  const handleAuthSuccess = (user: User) => {
+    setCurrentUser(user);
+    setCurrentProfile(getCurrentProfile(user));
+    reloadWatchlist();
+  };
+
+  const handleLogout = () => {
+    logout();
+    setCurrentUser(null);
+    setCurrentProfile(null);
+    if (currentTab === 'mylist') {
+      setCurrentTab('home');
+    }
+    reloadWatchlist();
+  };
+
+  const handleSwitchProfile = (profileId: string) => {
+    const updated = switchProfile(profileId);
+    if (updated) {
+      setCurrentUser({ ...updated });
+      setCurrentProfile(getCurrentProfile(updated));
+      reloadWatchlist();
+    }
   };
 
   // Initial Content Fetching
@@ -110,7 +156,7 @@ export const App: React.FC = () => {
       }
     }
 
-    // 2. Otherwise auto-search 31 sources
+    // 2. Otherwise auto-search
     const results = await searchVideos(movie.title);
     if (results.length > 0) {
       const best = results[0];
@@ -159,11 +205,14 @@ export const App: React.FC = () => {
         }}
         onSearch={(query) => {
           setSearchQuery(query);
-          if (query && currentTab !== 'home') {
-            // Keep on search page
-          }
         }}
         searchQuery={searchQuery}
+        currentUser={currentUser}
+        currentProfile={currentProfile}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        onOpenProfileModal={() => setProfileModalOpen(true)}
+        onLogout={handleLogout}
+        onSwitchProfile={handleSwitchProfile}
       />
 
       {/* Main Content Area */}
@@ -180,6 +229,9 @@ export const App: React.FC = () => {
         ) : currentTab === 'mylist' ? (
           /* My List & History View */
           <MyListPage
+            currentUser={currentUser}
+            currentProfile={currentProfile}
+            onOpenAuth={() => setAuthModalOpen(true)}
             onPlay={handleDirectPlay}
             onOpenDetail={handleOpenDetail}
             watchlistIds={watchlistIds}
@@ -197,7 +249,7 @@ export const App: React.FC = () => {
                 </span>
               </h1>
               <p className="text-sm text-gray-400">
-                涵盖魔都动漫、樱花动漫、155动漫等专线，极速秒播超清无删减。
+                涵盖当季最热新番，极速秒播超清无删减。
               </p>
             </div>
             {animeRows.map((row) => (
@@ -353,6 +405,21 @@ export const App: React.FC = () => {
         episode={playerEpisode}
         isOpen={isPlayerOpen}
         onClose={() => setIsPlayerOpen(false)}
+      />
+
+      {/* Netflix Auth Modal (Sign In / Sign Up) */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
+
+      {/* Netflix Profile Switcher Modal ("Who's watching?") */}
+      <ProfileModal
+        user={currentUser}
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        onSelectProfile={(p) => handleSwitchProfile(p.id)}
       />
 
       {/* Netflix Footer */}
