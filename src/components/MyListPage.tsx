@@ -38,7 +38,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
   useEffect(() => {
     reloadData();
-  }, [watchlistIds, currentUser, currentProfile]);
+  }, [watchlistIds, currentUser, currentProfile, activeTab]);
 
   const handleClearHistory = () => {
     if (window.confirm(t('confirmClearHistory'))) {

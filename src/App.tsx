@@ -407,7 +407,10 @@ export const App: React.FC = () => {
         movie={playerMovie}
         episode={playerEpisode}
         isOpen={isPlayerOpen}
-        onClose={() => setIsPlayerOpen(false)}
+        onClose={() => {
+          setIsPlayerOpen(false);
+          reloadWatchlist();
+        }}
       />
 
       {/* Netflix Auth Modal (Sign In / Sign Up) */}

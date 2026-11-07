@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
 import {
   Play,
@@ -18,7 +18,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Episode, MediaItem, VideoDetail } from '../types';
-import { saveWatchHistory, fetchVideoDetail } from '../services/api';
+import { saveWatchHistory, fetchVideoDetail, getWatchHistory } from '../services/api';
 import { useI18n } from '../i18n';
 
 interface PlayerModalProps {
@@ -143,31 +143,65 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     };
   }, [isOpen, activeEp]);
 
-  // Save history periodically
+  // References for reliable real-time progress saving without timer teardown bugs
+  const lastSavedRef = useRef<number>(0);
+  const movieRef = useRef(movie);
+  const epRef = useRef(activeEp);
+  movieRef.current = movie;
+  epRef.current = activeEp;
+
+  // Solid, reliable progress save function
+  const saveProgress = useCallback((explicitTime?: number, explicitDur?: number) => {
+    const currentMovie = movieRef.current;
+    const currentEp = epRef.current;
+    if (!currentMovie || !currentEp) return;
+
+    const video = videoRef.current;
+    const cur = explicitTime !== undefined ? explicitTime : (video ? video.currentTime : 0);
+    const dur =
+      explicitDur !== undefined && explicitDur > 0
+        ? explicitDur
+        : (video && !isNaN(video.duration) && video.duration > 0 ? video.duration : (cur > 0 ? cur + 60 : 1));
+
+    saveWatchHistory({
+      id: currentMovie.id,
+      title: currentMovie.title,
+      cover: currentMovie.cover,
+      sourceUrl: currentMovie.sourceUrl || '',
+      vodId: currentMovie.vod_id || '',
+      sourceName: currentMovie.sourceName,
+      episodeIndex: 0,
+      episodeName: currentEp.name,
+      episodeUrl: currentEp.url,
+      currentTime: Math.floor(cur),
+      duration: Math.floor(dur),
+      updatedAt: Date.now(),
+    });
+    lastSavedRef.current = Date.now();
+  }, []);
+
+  // Save progress when user closes or exits
+  const handleClose = () => {
+    saveProgress();
+    onClose();
+  };
+
+  // Immediate save on open + periodic background save every 4 seconds
   useEffect(() => {
     if (!isOpen || !movie || !activeEp) return;
 
-    const interval = setInterval(() => {
-      if (currentTime > 5 && duration > 0) {
-        saveWatchHistory({
-          id: movie.id,
-          title: movie.title,
-          cover: movie.cover,
-          sourceUrl: movie.sourceUrl || '',
-          vodId: movie.vod_id || '',
-          sourceName: movie.sourceName,
-          episodeIndex: 0,
-          episodeName: activeEp.name,
-          episodeUrl: activeEp.url,
-          currentTime,
-          duration,
-          updatedAt: Date.now(),
-        });
-      }
-    }, 5000);
+    // Immediately save record so it appears in history right away
+    saveProgress();
 
-    return () => clearInterval(interval);
-  }, [isOpen, movie, activeEp, currentTime, duration]);
+    const interval = setInterval(() => {
+      saveProgress();
+    }, 4000);
+
+    return () => {
+      clearInterval(interval);
+      saveProgress();
+    };
+  }, [isOpen, activeEp, saveProgress]);
 
   // Handle Controls Visibility on Idle
   const handleUserActivity = () => {
@@ -225,7 +259,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           break;
         case 'Escape':
           if (!document.fullscreenElement) {
-            onClose();
+            handleClose();
           }
           break;
       }
@@ -309,22 +343,47 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         className="w-full h-full object-contain cursor-pointer"
         onClick={togglePlay}
         playsInline
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        onPlay={() => {
+          setIsPlaying(true);
+          saveProgress();
+        }}
+        onPause={() => {
+          setIsPlaying(false);
+          saveProgress();
+        }}
         onWaiting={() => setIsLoading(true)}
         onPlaying={() => setIsLoading(false)}
         onTimeUpdate={() => {
           if (videoRef.current) {
-            setCurrentTime(videoRef.current.currentTime);
+            const cur = videoRef.current.currentTime;
+            setCurrentTime(cur);
+            if (Date.now() - lastSavedRef.current > 3500) {
+              saveProgress(cur);
+            }
           }
         }}
         onLoadedMetadata={() => {
           if (videoRef.current) {
-            setDuration(videoRef.current.duration);
+            const dur = videoRef.current.duration;
+            setDuration(dur);
             setIsLoading(false);
+
+            // Auto-resume from watch history if previously watched
+            const historyList = getWatchHistory();
+            const existing = historyList.find(
+              (h) => h.id === movie?.id && h.episodeUrl === activeEp?.url
+            );
+            if (existing && existing.currentTime > 5 && existing.currentTime < dur - 15) {
+              videoRef.current.currentTime = existing.currentTime;
+              setCurrentTime(existing.currentTime);
+            }
+            saveProgress();
           }
         }}
         onEnded={() => {
+          if (videoRef.current) {
+            saveProgress(videoRef.current.duration, videoRef.current.duration);
+          }
           if (onNextEpisode) onNextEpisode();
         }}
       />
@@ -344,7 +403,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           <h2 className="text-xl font-bold text-white mb-2">{t('playbackError')}</h2>
           <p className="text-gray-400 text-sm max-w-md mb-6">{errorMessage || t('playbackErrorMsg')}</p>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="px-6 py-2 bg-[#E50914] text-white rounded-md font-bold hover:bg-[#b80710]"
           >
             {t('returnToSelection')}
@@ -360,7 +419,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       >
         <div className="flex items-center space-x-4">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 rounded-full hover:bg-white/20 text-white transition-all hover:scale-110"
             aria-label="返回"
           >
