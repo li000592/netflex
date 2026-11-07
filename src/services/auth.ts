@@ -247,7 +247,7 @@ export function quickDemoLogin(): User {
   return demoUser;
 }
 
-export async function switchProfile(profileId: string): Promise<User | null> {
+export function switchProfile(profileId: string): User | null {
   const user = getCurrentUser();
   if (!user) return null;
   const target = user.profiles.find((p) => p.id === profileId);
@@ -256,15 +256,15 @@ export async function switchProfile(profileId: string): Promise<User | null> {
   user.currentProfileId = profileId;
   saveCurrentUser(user);
 
-  // Sync to Supabase Cloud if configured
+  // Sync to Supabase Cloud if configured (background fire-and-forget)
   const supabase = getSupabase();
   if (supabase) {
-    try {
-      await supabase
-        .from('netflex_accounts')
-        .update({ current_profile_id: profileId })
-        .eq('id', user.id);
-    } catch {}
+    supabase
+      .from('netflex_accounts')
+      .update({ current_profile_id: profileId })
+      .eq('id', user.id)
+      .then(() => {})
+      .catch((err) => console.warn('Supabase sync profile error:', err));
   }
 
   return user;

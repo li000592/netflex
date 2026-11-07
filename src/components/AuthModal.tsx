@@ -18,30 +18,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (mode === 'login') {
-      const res = login(account, password);
-      if (res.success && res.user) {
-        onSuccess(res.user);
-        onClose();
+    try {
+      if (mode === 'login') {
+        const res = await login(account, password);
+        if (res.success && res.user) {
+          onSuccess(res.user);
+          onClose();
+        } else {
+          setError(res.error || t('accountNotFound'));
+        }
       } else {
-        setError(res.error || t('accountNotFound'));
+        const res = await register(account, username, password);
+        if (res.success && res.user) {
+          onSuccess(res.user);
+          onClose();
+        } else {
+          setError(res.error || t('fillAllFields'));
+        }
       }
-    } else {
-      const res = register(account, username, password);
-      if (res.success && res.user) {
-        onSuccess(res.user);
-        onClose();
-      } else {
-        setError(res.error || t('fillAllFields'));
-      }
+    } catch (err: any) {
+      setError(err?.message || 'Authentication failed. Please check network.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,8 +93,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         {/* Error notification */}
         {error && (
-          <div className="mb-4 p-3 bg-[#E50914]/20 border border-[#E50914]/50 rounded-lg text-xs text-red-200">
-            {error}
+          <div className="mb-4 p-3 bg-[#E50914]/20 border border-[#E50914]/50 rounded-lg text-xs text-red-200 flex flex-col gap-1.5">
+            <div>{error}</div>
+            {mode === 'login' && error.includes(t('accountNotFound')) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('register');
+                  setUsername(account.split('@')[0] || account);
+                  setError('');
+                }}
+                className="text-left font-bold text-white underline hover:text-red-300 transition-colors"
+              >
+                👉 {t('signUpNow')}
+              </button>
+            )}
           </div>
         )}
 
@@ -144,9 +165,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           {/* Primary Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#E50914] hover:bg-[#b80710] text-white font-bold py-3.5 rounded-lg text-base transition-transform active:scale-[0.98] shadow-lg mt-2"
+            disabled={loading}
+            className="w-full bg-[#E50914] hover:bg-[#b80710] disabled:opacity-60 text-white font-bold py-3.5 rounded-lg text-base transition-transform active:scale-[0.98] shadow-lg mt-2 flex items-center justify-center space-x-2"
           >
-            {mode === 'login' ? t('authSignInTitle') : t('authSignUpTitle')}
+            {loading && (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            )}
+            <span>{mode === 'login' ? t('authSignInTitle') : t('authSignUpTitle')}</span>
           </button>
 
           {/* Quick Demo Button */}

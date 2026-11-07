@@ -4,6 +4,10 @@ import { WatchHistoryItem, WatchlistItem } from '../types';
 const STORAGE_URL_KEY = 'netflex_supabase_url';
 const STORAGE_KEY_KEY = 'netflex_supabase_anon_key';
 
+// Default project configuration fallback
+const DEFAULT_SUPABASE_URL = 'https://aibykoswmoyclmuotbra.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_jhuj2TVjw0F4vK3WzJEuFg_iFjFmXlI';
+
 let cachedClient: SupabaseClient | null = null;
 
 export function getSupabaseConfig(): { url: string; anonKey: string } {
@@ -14,8 +18,8 @@ export function getSupabaseConfig(): { url: string; anonKey: string } {
   const localKey = localStorage.getItem(STORAGE_KEY_KEY) || '';
 
   return {
-    url: localUrl || envUrl,
-    anonKey: localKey || envKey,
+    url: localUrl || envUrl || DEFAULT_SUPABASE_URL,
+    anonKey: localKey || envKey || DEFAULT_SUPABASE_ANON_KEY,
   };
 }
 
