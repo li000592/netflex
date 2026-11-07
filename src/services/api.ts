@@ -40,6 +40,41 @@ export function sortMediaByCover(items: MediaItem[]): MediaItem[] {
   });
 }
 
+export interface HomeCatalogCache {
+  movies: MediaItem[];
+  tv: MediaItem[];
+  bangumi: { day: string; items: MediaItem[] }[];
+  variety: MediaItem[];
+  huakai?: MediaItem[];
+  timestamp: number;
+}
+
+const HOME_CACHE_KEY = 'netflex_home_catalog_cache_v2';
+
+export function getLocalHomeCache(): HomeCatalogCache | null {
+  try {
+    const raw = localStorage.getItem(HOME_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+export function saveLocalHomeCache(data: Omit<HomeCatalogCache, 'timestamp'>): void {
+  try {
+    localStorage.setItem(
+      HOME_CACHE_KEY,
+      JSON.stringify({ ...data, timestamp: Date.now() })
+    );
+  } catch {}
+}
+
+// Client-side cache for Douban & Bangumi
+const doubanMemoryCache = new Map<string, { data: MediaItem[]; time: number }>();
+let bangumiMemoryCache: { data: { day: string; items: MediaItem[] }[]; time: number } | null = null;
+
 function getStorageKey(baseKey: string): string {
   const user = getCurrentUser();
   if (user) {
@@ -54,6 +89,27 @@ export async function fetchDoubanCatalog(
   limit: number = 24,
   start: number = 0
 ): Promise<MediaItem[]> {
+  const cacheKey = `douban_${type}_${tag}_${limit}_${start}`;
+  const now = Date.now();
+
+  // Check in-memory cache (15 min TTL)
+  const cached = doubanMemoryCache.get(cacheKey);
+  if (cached && now - cached.time < 900000) {
+    return cached.data;
+  }
+
+  // Check sessionStorage cache
+  try {
+    const sessionRaw = sessionStorage.getItem(`netflex_cache_${cacheKey}`);
+    if (sessionRaw) {
+      const parsed = JSON.parse(sessionRaw);
+      if (parsed && now - parsed.time < 900000) {
+        doubanMemoryCache.set(cacheKey, parsed);
+        return parsed.data;
+      }
+    }
+  } catch {}
+
   try {
     const res = await fetch(
       `${API_BASE}/api/douban?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&limit=${limit}&start=${start}`
@@ -81,21 +137,45 @@ export async function fetchDoubanCatalog(
       };
     });
 
-    return sortMediaByCover(list);
+    const sorted = sortMediaByCover(list);
+    doubanMemoryCache.set(cacheKey, { data: sorted, time: now });
+    try {
+      sessionStorage.setItem(`netflex_cache_${cacheKey}`, JSON.stringify({ data: sorted, time: now }));
+    } catch {}
+
+    return sorted;
   } catch (err) {
     console.error('Failed to fetch Douban catalog:', err);
+    // Return stale cache if available
+    if (cached) return cached.data;
     return [];
   }
 }
 
 export async function fetchBangumiCalendar(): Promise<{ day: string; items: MediaItem[] }[]> {
+  const now = Date.now();
+  if (bangumiMemoryCache && now - bangumiMemoryCache.time < 1800000) {
+    return bangumiMemoryCache.data;
+  }
+
+  try {
+    const sessionRaw = sessionStorage.getItem('netflex_cache_bangumi');
+    if (sessionRaw) {
+      const parsed = JSON.parse(sessionRaw);
+      if (parsed && now - parsed.time < 1800000) {
+        bangumiMemoryCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch {}
+
   try {
     const res = await fetch(`${API_BASE}/api/bangumi`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const list = await res.json();
     if (!Array.isArray(list)) return [];
     
-    return list.map((group: any) => {
+    const parsedCalendar = list.map((group: any) => {
       const weekdayName = group.weekday?.cn || group.weekday?.en || '每日更新';
       const items: MediaItem[] = (group.items || []).map((anime: any) => {
         const cover = anime.images?.large || anime.images?.common || '';
@@ -111,8 +191,16 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
       });
       return { day: weekdayName, items: sortMediaByCover(items) };
     });
+
+    bangumiMemoryCache = { data: parsedCalendar, time: now };
+    try {
+      sessionStorage.setItem('netflex_cache_bangumi', JSON.stringify({ data: parsedCalendar, time: now }));
+    } catch {}
+
+    return parsedCalendar;
   } catch (err) {
     console.error('Failed to fetch Bangumi calendar:', err);
+    if (bangumiMemoryCache) return bangumiMemoryCache.data;
     return [];
   }
 }
@@ -176,15 +264,19 @@ export async function searchVideos(
 
     // Strict client-side Huakai barrier when mode is OFF
     if (!huakaiEnabled) {
-      const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
+      const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心|写真|写真热舞|成人|做爱|内射|高潮|潮吹|迷奸|强暴|强奸|轮奸|操逼|肉棒|大胸|情趣|女优|淫乱|春药|野战|车震|黑料|门事件|SM调教|叫床|出轨约炮|私房写真|极度诱惑)/i;
+      const avCodeRegex = /\b(fc2|ppv)[-_]?\d+|\b(ssni|ipx|mide|midv|abp|snis|wanz|pred|star|stars|jul|jufe|atid|adn|hnd|dasd|cawd|fsdss|miae|ssis|juq|dldss|sone|pppd|ebod|meyd|mey|das|stars|tek|soe)[-_]?\d+/i;
       parsed = parsed.filter(
         (item) =>
           item.sourceCategory !== 'huakai' &&
+          item.category !== 'huakai' &&
           item.sourceId !== '155zy' &&
           item.sourceId !== 'didi' &&
           item.sourceId !== 'yutu' &&
           item.sourceId !== 'lebo' &&
-          !adultRegex.test(item.type_name || '')
+          !adultRegex.test(item.type_name || '') &&
+          !adultRegex.test(item.title || '') &&
+          !avCodeRegex.test(item.title || '')
       );
     }
 

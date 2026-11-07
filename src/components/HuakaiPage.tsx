@@ -3,6 +3,7 @@ import { Search, Loader2 } from 'lucide-react';
 import { MediaItem } from '../types';
 import { fetchHuakaiCatalog, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
+import { NetflixGridSkeleton } from './NetflixSkeleton';
 import { useI18n } from '../i18n';
 
 interface HuakaiPageProps {
@@ -140,20 +141,20 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
           </div>
 
           {/* Quick Search */}
-          <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80 flex items-center bg-[#202020] border border-white/10 focus-within:border-[#E50914] rounded-xl px-3 py-2 transition-all shadow-md">
+            <Search className="w-4 h-4 text-gray-400 flex-shrink-0 mr-2.5" />
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder={t('huakaiSearchPlaceholder')}
-              className="w-full bg-[#202020] text-white pl-10 pr-9 py-2.5 rounded-xl text-sm outline-none border border-white/10 focus:border-[#E50914] transition-all placeholder-gray-500 shadow-md"
+              className="flex-1 min-w-0 bg-transparent text-white text-sm outline-none placeholder-gray-500 font-medium"
             />
             {searchInput && (
               <button
                 type="button"
                 onClick={handleClearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs"
+                className="text-gray-400 hover:text-white text-xs ml-2 flex-shrink-0"
               >
                 ✕
               </button>
@@ -189,10 +190,7 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
 
       {/* Video Grid or Initial Loader */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-28 text-gray-400">
-          <Loader2 className="w-10 h-10 animate-spin text-[#E50914] mb-3" />
-          <p className="text-sm">正在加载花开专区内容...</p>
-        </div>
+        <NetflixGridSkeleton count={18} />
       ) : items.length > 0 ? (
         <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
@@ -212,9 +210,8 @@ export const HuakaiPage: React.FC<HuakaiPageProps> = ({
           {/* Infinite Scroll Sentinel & Loader */}
           <div ref={sentinelRef} className="py-10 flex justify-center items-center text-gray-500 text-xs">
             {loadingMore ? (
-              <div className="flex items-center space-x-2 text-gray-400">
-                <Loader2 className="w-5 h-5 animate-spin text-[#E50914]" />
-                <span>正在加载更多影片...</span>
+              <div className="w-full pt-4">
+                <NetflixGridSkeleton count={6} />
               </div>
             ) : hasMore ? (
               <span className="opacity-40">继续向下滑动加载更多内容</span>

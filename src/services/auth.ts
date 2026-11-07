@@ -263,8 +263,10 @@ export function switchProfile(profileId: string): User | null {
       .from('netflex_accounts')
       .update({ current_profile_id: profileId })
       .eq('id', user.id)
-      .then(() => {})
-      .catch((err) => console.warn('Supabase sync profile error:', err));
+      .then(
+        () => {},
+        (err: any) => console.warn('Supabase sync profile error:', err)
+      );
   }
 
   return user;

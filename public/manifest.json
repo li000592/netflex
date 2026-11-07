@@ -1,0 +1,20 @@
+{
+  "name": "NETFLEX",
+  "short_name": "NETFLEX",
+  "description": "NETFLEX - 4K Ultra HD Streaming & Media Hub",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#141414",
+  "theme_color": "#141414",
+  "orientation": "any",
+  "categories": ["entertainment", "video", "movies"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -133,6 +133,27 @@ input[type="range"]:hover::-webkit-slider-thumb {
   user-select: none;
 }
 
+/* Netflix Shimmer Loading Animation */
+@keyframes netflix-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.netflix-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.1) 38%,
+    rgba(255, 255, 255, 0.03) 56%
+  );
+  background-size: 300% 100%;
+  animation: netflix-shimmer 1.8s ease-in-out infinite;
+}
+
 /* iOS & iPadOS PWA / Standalone Safe Area Utilities */
 .safe-top {
   padding-top: env(safe-area-inset-top, 0px);

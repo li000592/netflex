@@ -205,9 +205,12 @@ api.get('/api/search', async (req, res) => {
   }
 
   let targetSources = VIDEO_SOURCES;
+  const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心|写真|写真热舞|成人|做爱|内射|高潮|潮吹|迷奸|强暴|强奸|轮奸|操逼|肉棒|大胸|情趣|女优|淫乱|春药|野战|车震|黑料|门事件|SM调教|叫床|出轨约炮|私房写真|极度诱惑)/i;
+  const avCodeRegex = /\b(fc2|ppv)[-_]?\d+|\b(ssni|ipx|mide|midv|abp|snis|wanz|pred|star|stars|jul|jufe|atid|adn|hnd|dasd|cawd|fsdss|miae|ssis|juq|dldss|sone|pppd|ebod|meyd|mey|das|stars|tek|soe)[-_]?\d+/i;
+
   if (!huakaiAllowed) {
     // Huakai mode is OFF: Never search huakai sources
-    if (category === 'huakai') {
+    if (category === 'huakai' || adultRegex.test(keyword) || avCodeRegex.test(keyword)) {
       return res.json({ total: 0, list: [] });
     }
     if (sourceId) {
@@ -232,10 +235,11 @@ api.get('/api/search', async (req, res) => {
     }
   }
 
-  const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
   const isHuakaiContent = (item, sourceCat) => {
     if (sourceCat === 'huakai' || item.sourceCategory === 'huakai' || item.category === 'huakai' || item.category === '花开') return true;
     if (item.type_name && adultRegex.test(item.type_name)) return true;
+    if (item.title && (adultRegex.test(item.title) || avCodeRegex.test(item.title))) return true;
+    if (item.vod_name && (adultRegex.test(item.vod_name) || avCodeRegex.test(item.vod_name))) return true;
     return false;
   };
 

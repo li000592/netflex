@@ -206,8 +206,11 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   const isHuakaiItem = (item: MediaItem) => {
     if (item.sourceCategory === 'huakai' || item.category === 'huakai' || item.category === '花开') return true;
     if (item.sourceId === '155zy' || item.sourceId === 'didi' || item.sourceId === 'yutu' || item.sourceId === 'lebo') return true;
-    const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心)/i;
+    const adultRegex = /(伦理|倫理|理论片|情色|三级|福利|里番|无码|有码|麻豆|自拍|人妻|乱伦|性爱|色情|福利姬|调教|偷拍|探花|主播秀色|巨乳|萝莉|av解说|换脸|91制片|蜜桃影像|天美传媒|精东影业|星空无限|swag|糖心|写真|写真热舞|成人|做爱|内射|高潮|潮吹|迷奸|强暴|强奸|轮奸|操逼|肉棒|大胸|情趣|女优|淫乱|春药|野战|车震|黑料|门事件|SM调教|叫床|出轨约炮|私房写真|极度诱惑)/i;
+    const avCodeRegex = /\b(fc2|ppv)[-_]?\d+|\b(ssni|ipx|mide|midv|abp|snis|wanz|pred|star|stars|jul|jufe|atid|adn|hnd|dasd|cawd|fsdss|miae|ssis|juq|dldss|sone|pppd|ebod|meyd|mey|das|stars|tek|soe)[-_]?\d+/i;
     if (item.type_name && adultRegex.test(item.type_name)) return true;
+    if (item.title && (adultRegex.test(item.title) || avCodeRegex.test(item.title))) return true;
+    if ((item as any).vod_name && (adultRegex.test((item as any).vod_name) || avCodeRegex.test((item as any).vod_name))) return true;
     return false;
   };
 
@@ -248,7 +251,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               value={query}
               onChange={(e) => handleUpdateQuery(e.target.value)}
               placeholder={t('searchTitle')}
-              className="w-full bg-transparent text-white placeholder-gray-400 text-sm sm:text-base outline-none font-medium"
+              className="flex-1 min-w-0 bg-transparent text-white placeholder-gray-400 text-sm sm:text-base outline-none font-medium"
               autoFocus
             />
             {query && (
@@ -365,16 +368,17 @@ export const SearchPage: React.FC<SearchPageProps> = ({
             {Array.from({ length: 12 }).map((_, i) => (
               <div
                 key={i}
-                className="w-full aspect-[2/3] rounded-md bg-gradient-to-br from-[#1a1a1a] via-[#242424] to-[#181818] animate-pulse border border-white/5 flex flex-col justify-between p-3 relative overflow-hidden"
+                className="w-full aspect-[2/3] rounded-md bg-[#1a1a1a] border border-white/5 flex flex-col justify-between p-3 relative overflow-hidden select-none"
               >
-                <div className="w-full flex justify-between items-center">
+                <div className="absolute inset-0 netflix-skeleton-shimmer z-10 pointer-events-none" />
+                <div className="w-full flex justify-between items-center z-20">
                   <span className="w-10 h-3 bg-white/10 rounded" />
                   <span className="w-6 h-3 bg-white/10 rounded" />
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                   <span className="text-[#E50914] font-black text-5xl">N</span>
                 </div>
-                <div className="space-y-1.5 z-10">
+                <div className="space-y-1.5 z-20">
                   <div className="w-3/4 h-3 bg-white/20 rounded" />
                   <div className="w-1/2 h-2.5 bg-white/10 rounded" />
                 </div>

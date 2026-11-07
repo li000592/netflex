@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, Airplay } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
 import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover } from '../services/api';
 import { useI18n } from '../i18n';
@@ -296,6 +296,26 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                   {t('addToList')}
                 </>
               )}
+            </button>
+
+            {/* Apple AirPlay & Cast Button */}
+            <button
+              onClick={() => {
+                if (currentGroup && currentGroup.episodes.length > 0) {
+                  onPlayEpisode(movie, currentGroup.episodes[0], activeGroupIndex, 0);
+                } else if (sourceCandidates.length > 0) {
+                  const candidate = sourceCandidates[0];
+                  if (candidate.sourceUrl && candidate.vod_id) {
+                    onPlayEpisode(candidate, { name: '正片', url: '' }, 0, 0);
+                  }
+                }
+              }}
+              disabled={loading || (!currentGroup?.episodes.length && !sourceCandidates.length)}
+              className="flex items-center bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-2.5 rounded-md border border-white/20 transition-all hover:scale-105 disabled:opacity-50 cursor-pointer"
+              title={t('castAppleEcosystem')}
+            >
+              <Airplay className="w-5 h-5 mr-1.5 text-white" />
+              <span>{t('castToTv')}</span>
             </button>
 
             {/* Quality pill */}

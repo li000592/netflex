@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { MediaItem } from '../types';
 import { fetchDoubanCatalog, sortMediaByCover } from '../services/api';
 import { MovieCard } from './MovieCard';
+import { NetflixGridSkeleton } from './NetflixSkeleton';
 
 interface TagOption {
   id: string;
@@ -154,10 +155,7 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
 
       {/* Grid Content */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-28 text-gray-400">
-          <Loader2 className="w-10 h-10 animate-spin text-[#E50914] mb-3" />
-          <p className="text-sm">正在加载精彩影视...</p>
-        </div>
+        <NetflixGridSkeleton count={18} />
       ) : items.length > 0 ? (
         <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
@@ -177,9 +175,8 @@ export const InfiniteCatalogView: React.FC<InfiniteCatalogViewProps> = ({
           {/* Infinite Scroll Sentinel */}
           <div ref={sentinelRef} className="py-12 flex justify-center items-center text-gray-500 text-xs">
             {loadingMore ? (
-              <div className="flex items-center space-x-2 text-gray-400">
-                <Loader2 className="w-5 h-5 animate-spin text-[#E50914]" />
-                <span>正在加载更多影片...</span>
+              <div className="w-full pt-4">
+                <NetflixGridSkeleton count={6} />
               </div>
             ) : hasMore ? (
               <span className="opacity-40">继续向下滑动加载更多内容</span>

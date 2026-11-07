@@ -17,6 +17,14 @@ import {
   AlertCircle,
   Loader2,
   Sun,
+  Airplay,
+  Tv,
+  Copy,
+  ExternalLink,
+  Check,
+  ChevronRight,
+  Info,
+  X,
 } from 'lucide-react';
 import { Episode, MediaItem, VideoDetail } from '../types';
 import { saveWatchHistory, fetchVideoDetail, getWatchHistory } from '../services/api';
@@ -56,6 +64,14 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Apple AirPlay & TV Cast State
+  const [isAirPlaySupported, setIsAirPlaySupported] = useState(false);
+  const [isAirPlayAvailable, setIsAirPlayAvailable] = useState(false);
+  const [isAirPlayActive, setIsAirPlayActive] = useState(false);
+  const [castMenuOpen, setCastMenuOpen] = useState(false);
+  const [copiedToast, setCopiedToast] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   // Netflix Mobile Gestures State (iPhone / iPad)
   const [brightness, setBrightness] = useState(1);
@@ -204,6 +220,76 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     }
   }, [movie, isOpen]);
 
+  // WebKit AirPlay API & Wireless Target Detection
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isOpen) return;
+
+    // Detect if WebKit AirPlay API is supported
+    const hasAirPlayAPI =
+      !!(window as any).WebKitPlaybackTargetAvailabilityEvent ||
+      typeof (video as any).webkitShowPlaybackTargetPicker === 'function';
+
+    if (hasAirPlayAPI) {
+      setIsAirPlaySupported(true);
+
+      const handleAvailabilityChanged = (event: any) => {
+        setIsAirPlayAvailable(event.availability === 'available');
+      };
+
+      const handleWirelessChanged = () => {
+        const isWireless = !!(video as any).webkitCurrentPlaybackTargetIsWireless;
+        setIsAirPlayActive(isWireless);
+      };
+
+      video.addEventListener('webkitplaybacktargetavailabilitychanged', handleAvailabilityChanged);
+      video.addEventListener('webkitcurrentplaybacktargetiswirelesschanged', handleWirelessChanged);
+
+      return () => {
+        video.removeEventListener('webkitplaybacktargetavailabilitychanged', handleAvailabilityChanged);
+        video.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', handleWirelessChanged);
+      };
+    } else {
+      setIsAirPlaySupported(false);
+    }
+  }, [isOpen]);
+
+  // Launch AirPlay picker or remote playback
+  const handleLaunchAirPlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // 1. WebKit AirPlay API (Safari on iOS / iPadOS / macOS)
+    if (typeof (video as any).webkitShowPlaybackTargetPicker === 'function') {
+      try {
+        (video as any).webkitShowPlaybackTargetPicker();
+        return;
+      } catch (err) {
+        console.warn('WebKit AirPlay picker invocation error:', err);
+      }
+    }
+
+    // 2. W3C Remote Playback API (e.g. Chrome / Edge Cast)
+    if ('remote' in video && (video as any).remote && typeof (video as any).remote.prompt === 'function') {
+      (video as any).remote.prompt().catch((err: any) => {
+        console.warn('Remote prompt failed:', err);
+      });
+      return;
+    }
+
+    // 3. Fallback: Show guide
+    setShowGuide(true);
+  };
+
+  // Copy m3u8 direct stream link
+  const handleCopyStreamLink = () => {
+    if (!activeEp?.url) return;
+    navigator.clipboard.writeText(activeEp.url).then(() => {
+      setCopiedToast(true);
+      setTimeout(() => setCopiedToast(false), 3000);
+    });
+  };
+
   // Initialize Video & HLS
   useEffect(() => {
     if (!isOpen || !activeEp || !activeEp.url) return;
@@ -234,7 +320,23 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       }
     };
 
-    if (Hls.isSupported() && playUrl.includes('.m3u8')) {
+    const isAppleSafari =
+      /Safari/i.test(navigator.userAgent) &&
+      !/Chrome|CriOS|Android/i.test(navigator.userAgent);
+    const canPlayAppleHls = video.canPlayType('application/vnd.apple.mpegurl');
+
+    // On Apple Safari (macOS & iOS/iPadOS), using native HLS playback (video.src = playUrl)
+    // is essential so Apple AirPlay can stream the actual HTTP/HLS URL directly to Apple TV / AirPlay 2 TVs.
+    // (Hls.js uses MSE Blob URLs which Apple TV cannot access across the local network).
+    if ((isAppleSafari && canPlayAppleHls) || (!Hls.isSupported() && canPlayAppleHls) || playUrl.endsWith('.mp4')) {
+      video.src = playUrl;
+      const onLoaded = () => {
+        applyResumeSeek();
+        video.removeEventListener('loadedmetadata', onLoaded);
+      };
+      video.addEventListener('loadedmetadata', onLoaded);
+      video.play().catch(() => setIsPlaying(false));
+    } else if (Hls.isSupported() && playUrl.includes('.m3u8')) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
@@ -269,15 +371,6 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           }
         }
       });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl') || playUrl.endsWith('.mp4')) {
-      // Native Safari / MP4 support
-      video.src = playUrl;
-      const onLoaded = () => {
-        applyResumeSeek();
-        video.removeEventListener('loadedmetadata', onLoaded);
-      };
-      video.addEventListener('loadedmetadata', onLoaded);
-      video.play().catch(() => setIsPlaying(false));
     } else {
       video.src = playUrl;
       const onLoaded = () => {
@@ -711,6 +804,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         style={{ filter: `brightness(${brightness})` }}
         onClick={togglePlay}
         playsInline
+        {...({
+          'x-webkit-airplay': 'allow',
+          airplay: 'allow',
+          'webkit-playsinline': 'true',
+        } as any)}
         onPlay={() => {
           setIsPlaying(true);
           saveProgress();
@@ -783,6 +881,30 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           >
             {t('restart')}
           </button>
+        </div>
+      )}
+
+      {/* 📺 Apple AirPlay Active Floating Indicator */}
+      {isAirPlayActive && (
+        <div className="absolute top-[calc(4.5rem+env(safe-area-inset-top,0px))] sm:top-[calc(5.5rem+env(safe-area-inset-top,0px))] right-4 sm:right-8 z-40 bg-black/85 backdrop-blur-md border border-[#E50914]/50 px-4 py-2 sm:py-2.5 rounded-2xl flex items-center space-x-3 shadow-2xl animate-in fade-in duration-300">
+          <div className="w-8 h-8 rounded-full bg-[#E50914]/20 flex items-center justify-center text-[#E50914]">
+            <Airplay className="w-5 h-5 animate-pulse" />
+          </div>
+          <div>
+            <div className="text-white text-xs sm:text-sm font-bold flex items-center space-x-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block animate-ping" />
+              <span>{t('airplayActive')}</span>
+            </div>
+            <p className="text-[10px] sm:text-xs text-gray-400">{t('airplayStreamingTo')}</p>
+          </div>
+        </div>
+      )}
+
+      {/* 📋 Stream Link Copied Toast */}
+      {copiedToast && (
+        <div className="absolute top-[calc(4.5rem+env(safe-area-inset-top,0px))] sm:top-[calc(5.5rem+env(safe-area-inset-top,0px))] left-1/2 -translate-x-1/2 z-50 bg-black/90 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-2 animate-in fade-in zoom-in-95 duration-200">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>{t('linkCopiedToast')}</span>
         </div>
       )}
 
@@ -1043,6 +1165,184 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                 )}
               </div>
             )}
+
+            {/* Apple AirPlay & Cast Button */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setCastMenuOpen(!castMenuOpen);
+                  setSpeedMenuOpen(false);
+                  setEpMenuOpen(false);
+                }}
+                className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                  isAirPlayActive
+                    ? 'bg-[#E50914] text-white shadow-lg ring-2 ring-[#E50914]/50 animate-pulse'
+                    : 'text-gray-300 hover:text-white hover:bg-white/10'
+                }`}
+                title={t('castAppleEcosystem')}
+                aria-label={t('castAppleEcosystem')}
+              >
+                <Airplay className={`w-4 h-4 ${isAirPlayActive ? 'text-white' : ''}`} />
+                <span className="hidden sm:inline">
+                  {isAirPlayActive ? t('airplayActive') : t('airplay')}
+                </span>
+              </button>
+
+              {/* AirPlay & Apple TV Casting Popover */}
+              {castMenuOpen && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute bottom-10 right-0 bg-[#181818]/95 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl w-80 sm:w-96 max-h-[80vh] overflow-y-auto no-scrollbar z-50 animate-in fade-in zoom-in-95"
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 rounded-md bg-[#E50914] flex items-center justify-center text-white">
+                        <Airplay className="w-3.5 h-3.5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-white tracking-wide">
+                        {t('castAppleEcosystem')}
+                      </h4>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCastMenuOpen(false)}
+                      className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-white/10 cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Primary Action: Direct AirPlay Launch */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleLaunchAirPlay();
+                    }}
+                    className="w-full mb-3 flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-[#E50914] to-[#B20710] hover:brightness-110 text-white font-bold transition-all shadow-lg hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
+                        <Airplay className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-sm font-bold flex items-center space-x-1.5">
+                          <span>{t('launchAirPlay')}</span>
+                          {isAirPlayActive && (
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          )}
+                        </div>
+                        <div className="text-[11px] text-white/80 font-normal">
+                          Apple TV / 支持 AirPlay 2 电视
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-white/70" />
+                  </button>
+
+                  {/* Secondary: Apple TV Dedicated Players (Infuse / VLC) */}
+                  <div className="space-y-2 mb-3">
+                    <div className="text-[11px] font-semibold text-gray-400 px-0.5">
+                      Apple TV 专属播放器 (极客直连)
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (activeEp?.url) {
+                            window.open(
+                              'infuse://control/open?url=' + encodeURIComponent(activeEp.url),
+                              '_blank'
+                            );
+                          }
+                        }}
+                        className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/10 hover:border-white/20 cursor-pointer"
+                        title="使用 Infuse 打开当前流媒体"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-orange-400" />
+                        <span>{t('openInInfuse')}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (activeEp?.url) {
+                            window.open('vlc://' + activeEp.url, '_blank');
+                          }
+                        }}
+                        className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all border border-white/10 hover:border-white/20 cursor-pointer"
+                        title="使用 VLC 播放器打开"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-amber-500" />
+                        <span>{t('openInVlc')}</span>
+                      </button>
+                    </div>
+
+                    {/* Copy Stream Link */}
+                    <button
+                      type="button"
+                      onClick={handleCopyStreamLink}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-white text-xs transition-all border border-white/10 cursor-pointer"
+                    >
+                      <div className="flex items-center space-x-2 truncate mr-2">
+                        {copiedToast ? (
+                          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-gray-300 shrink-0" />
+                        )}
+                        <span className="font-medium truncate">
+                          {copiedToast ? t('linkCopiedToast') : t('copyStreamLink')}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 bg-white/10 px-2 py-0.5 rounded font-mono shrink-0">
+                        .m3u8
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Cast Guide Accordion */}
+                  <div className="pt-2 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setShowGuide(!showGuide)}
+                      className="w-full flex items-center justify-between text-[11px] text-gray-400 hover:text-white transition-colors cursor-pointer"
+                    >
+                      <span className="flex items-center space-x-1.5">
+                        <Info className="w-3.5 h-3.5 text-blue-400" />
+                        <span>{t('appleEcosystemGuide')}</span>
+                      </span>
+                      <span className="text-[10px] text-gray-400 hover:underline">
+                        {showGuide ? '收起' : '查看指引'}
+                      </span>
+                    </button>
+
+                    {showGuide && (
+                      <div className="mt-2 text-[11px] text-gray-300 space-y-1.5 bg-black/40 p-3 rounded-xl border border-white/10 leading-relaxed animate-in fade-in duration-200">
+                        <div className="flex items-start space-x-1.5">
+                          <span className="text-[#E50914] font-bold">1.</span>
+                          <span>{t('guideStep1')}</span>
+                        </div>
+                        <div className="flex items-start space-x-1.5">
+                          <span className="text-[#E50914] font-bold">2.</span>
+                          <span>{t('guideStep2')}</span>
+                        </div>
+                        <div className="flex items-start space-x-1.5">
+                          <span className="text-[#E50914] font-bold">3.</span>
+                          <span>{t('guideStep3')}</span>
+                        </div>
+                        <div className="flex items-start space-x-1.5">
+                          <span className="text-[#E50914] font-bold">4.</span>
+                          <span>{t('guideStep4')}</span>
+                        </div>
+                        <div className="pt-1 text-[10px] text-gray-400 border-t border-white/10 italic">
+                          💡 {t('safariRecommended')}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Fullscreen Toggle */}
             <button

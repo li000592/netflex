@@ -13,6 +13,7 @@ import { InfiniteCatalogView } from './components/InfiniteCatalogView';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
 import { SettingsModal } from './components/SettingsModal';
+import { NetflixHomeSkeleton, NetflixRowSkeleton } from './components/NetflixSkeleton';
 import { useI18n, LanguageSelector } from './i18n';
 import {
   fetchDoubanCatalog,
@@ -24,6 +25,8 @@ import {
   searchVideos,
   fetchVideoDetail,
   syncCloudData,
+  getLocalHomeCache,
+  saveLocalHomeCache,
 } from './services/api';
 import {
   getCurrentUser,
@@ -138,16 +141,18 @@ export const App: React.FC = () => {
     }
   };
 
-  // Row Data State
-  const [heroMovies, setHeroMovies] = useState<MediaItem[]>([]);
-  const [heroMovie, setHeroMovie] = useState<MediaItem | null>(null);
-  const [hotMovies, setHotMovies] = useState<MediaItem[]>([]);
-  const [hotTv, setHotTv] = useState<MediaItem[]>([]);
-  const [top10, setTop10] = useState<MediaItem[]>([]);
-  const [animeRows, setAnimeRows] = useState<{ day: string; items: MediaItem[] }[]>([]);
-  const [varietyShows, setVarietyShows] = useState<MediaItem[]>([]);
-  const [huakaiMovies, setHuakaiMovies] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Row Data State - Instant Startup via Local Storage Cache
+  const initialCache = getLocalHomeCache();
+
+  const [heroMovies, setHeroMovies] = useState<MediaItem[]>(() => initialCache?.movies?.slice(0, 6) || []);
+  const [heroMovie, setHeroMovie] = useState<MediaItem | null>(() => initialCache?.movies?.[0] || null);
+  const [hotMovies, setHotMovies] = useState<MediaItem[]>(() => initialCache?.movies?.slice(1, 16) || []);
+  const [hotTv, setHotTv] = useState<MediaItem[]>(() => initialCache?.tv || []);
+  const [top10, setTop10] = useState<MediaItem[]>(() => initialCache?.movies?.slice(0, 10) || []);
+  const [animeRows, setAnimeRows] = useState<{ day: string; items: MediaItem[] }[]>(() => initialCache?.bangumi || []);
+  const [varietyShows, setVarietyShows] = useState<MediaItem[]>(() => initialCache?.variety || []);
+  const [huakaiMovies, setHuakaiMovies] = useState<MediaItem[]>(() => initialCache?.huakai || []);
+  const [loading, setLoading] = useState<boolean>(() => !initialCache || !initialCache.movies?.length);
 
   // Home Page Infinite Rows State
   const [homeExtraRows, setHomeExtraRows] = useState<{ id: string; title: string; movies: MediaItem[]; tab: NavTab }[]>([]);
@@ -221,18 +226,22 @@ export const App: React.FC = () => {
     }
   };
 
-  // Initial Content Fetching
+  // Initial Content Fetching (Fully parallelized with Stale-While-Revalidate caching)
   useEffect(() => {
     const loadContent = async () => {
-      setLoading(true);
+      // If we don't have cached data yet, show the Netflix skeleton placeholder
+      if (!initialCache || !initialCache.movies?.length) {
+        setLoading(true);
+      }
       try {
-        const [moviesRes, tvRes, bangumiRes, huakaiRes] = await Promise.all([
+        const [moviesRes, tvRes, bangumiRes, huakaiRes, varietyRes] = await Promise.all([
           fetchDoubanCatalog('movie', '热门', 24),
           fetchDoubanCatalog('tv', '热门', 24),
           fetchBangumiCalendar(),
           huakaiEnabled
             ? fetchHuakaiCatalog(1).catch(() => ({ page: 1, pagecount: 1, total: 0, items: [] }))
             : Promise.resolve({ page: 1, pagecount: 1, total: 0, items: [] }),
+          fetchDoubanCatalog('tv', '综艺', 16),
         ]);
 
         if (moviesRes.length > 0) {
@@ -250,12 +259,24 @@ export const App: React.FC = () => {
           setAnimeRows(bangumiRes);
         }
 
-        // Fetch high-rated variety
-        const varietyRes = await fetchDoubanCatalog('tv', '综艺', 16);
-        setVarietyShows(varietyRes);
+        if (varietyRes.length > 0) {
+          setVarietyShows(varietyRes);
+        }
 
-        if (huakaiRes && huakaiRes.items.length > 0) {
-          setHuakaiMovies(huakaiRes.items.slice(0, 18));
+        const huakaiList = huakaiRes && huakaiRes.items.length > 0 ? huakaiRes.items.slice(0, 18) : [];
+        if (huakaiList.length > 0) {
+          setHuakaiMovies(huakaiList);
+        }
+
+        // Persist to local cache for instant 0ms startup on next refresh / PWA launch
+        if (moviesRes.length > 0) {
+          saveLocalHomeCache({
+            movies: moviesRes,
+            tv: tvRes,
+            bangumi: bangumiRes,
+            variety: varietyRes,
+            huakai: huakaiList,
+          });
         }
       } catch (err) {
         console.error('Failed to load initial catalog:', err);
@@ -265,7 +286,7 @@ export const App: React.FC = () => {
     };
 
     loadContent();
-  }, []);
+  }, [huakaiEnabled]);
 
   // Home Page Lazy Infinite Row Loader
   const loadMoreHomeRow = useCallback(async () => {
@@ -513,16 +534,19 @@ export const App: React.FC = () => {
           />
         ) : (
           /* Home Netflix Stream */
-          <>
-            {/* Billboard Hero Banner */}
-            <HeroBanner
-              movies={heroMovies}
-              movie={heroMovie}
-              onPlay={handleDirectPlay}
-              onOpenDetail={handleOpenDetail}
-              watchlistIds={watchlistIds}
-              onToggleFavorite={handleToggleFavorite}
-            />
+          loading && !heroMovie ? (
+            <NetflixHomeSkeleton />
+          ) : (
+            <>
+              {/* Billboard Hero Banner */}
+              <HeroBanner
+                movies={heroMovies}
+                movie={heroMovie}
+                onPlay={handleDirectPlay}
+                onOpenDetail={handleOpenDetail}
+                watchlistIds={watchlistIds}
+                onToggleFavorite={handleToggleFavorite}
+              />
 
             {/* Netflix Rows */}
             <div className="relative -mt-16 sm:-mt-24 z-20 space-y-2 sm:space-y-4 pb-20">
@@ -631,9 +655,8 @@ export const App: React.FC = () => {
               {/* Home Page Infinite Scroll Sentinel */}
               <div ref={homeSentinelRef} className="py-8 flex justify-center items-center text-gray-500 text-xs">
                 {loadingHomeRow ? (
-                  <div className="flex items-center space-x-2 text-gray-400">
-                    <Loader2 className="w-5 h-5 animate-spin text-[#E50914]" />
-                    <span>正在为您发现更多精彩专区...</span>
+                  <div className="w-full">
+                    <NetflixRowSkeleton />
                   </div>
                 ) : homeExtraRows.length < HOME_EXTRA_ROW_DEFS.length ? (
                   <span className="opacity-40">继续向下滑动探索更多影片专区</span>
@@ -643,6 +666,7 @@ export const App: React.FC = () => {
               </div>
             </div>
           </>
+          )
         )}
       </main>
 
