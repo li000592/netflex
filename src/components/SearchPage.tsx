@@ -47,11 +47,11 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   }, [query, selectedSource]);
 
   const categories = [
-    { id: 'all', label: '全部 31 源' },
-    { id: 'anime', label: '🌸 动漫专线' },
-    { id: 'netflix', label: '🔴 奈飞海外' },
-    { id: 'speed', label: '⚡ 极速切片' },
-    { id: 'general', label: '🎬 大厂全库' },
+    { id: 'all', label: '全部' },
+    { id: 'anime', label: '🌸 动漫' },
+    { id: 'netflix', label: '🔴 欧美 / 奈飞' },
+    { id: 'speed', label: '⚡ 极速专区' },
+    { id: 'general', label: '🎬 经典影视' },
   ];
 
   const filteredSources = selectedCategory === 'all'
@@ -109,7 +109,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               onChange={(e) => setSelectedSource(e.target.value)}
               className="bg-[#202020] text-gray-300 text-xs rounded-lg px-3 py-1.5 border border-white/10 outline-none focus:border-[#E50914]"
             >
-              <option value="">🎯 全源并发检索</option>
+              <option value="">🎯 智能优选线路</option>
               {filteredSources.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -124,7 +124,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 text-gray-400">
           <Loader2 className="w-10 h-10 animate-spin text-[#E50914] mb-3" />
-          <p className="text-sm">正在全网 31 个片源库检索「{query}」...</p>
+          <p className="text-sm">正在全网检索「{query}」...</p>
         </div>
       ) : results.length > 0 ? (
         <div>

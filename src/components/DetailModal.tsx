@@ -245,7 +245,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           <div className="border-t border-white/10 pt-6">
             <div className="flex items-center space-x-2 mb-3">
               <Layers className="w-4 h-4 text-[#E50914]" />
-              <h3 className="text-base font-bold text-white">聚合片源切换 ({sourceCandidates.length}条线路)</h3>
+              <h3 className="text-base font-bold text-white">播放线路切换 ({sourceCandidates.length}条可选)</h3>
             </div>
             <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
               {sourceCandidates.map((src, idx) => (
@@ -258,7 +258,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                       : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
                   }`}
                 >
-                  ⚡ {src.sourceName || `片源 ${idx + 1}`}
+                  ⚡ {src.sourceName || `线路 ${idx + 1}`}
                   {src.remarks ? ` (${src.remarks})` : ''}
                 </button>
               ))}
