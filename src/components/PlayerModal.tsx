@@ -1173,7 +1173,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         {/* Top Right Info Badge */}
         <div className="flex items-center space-x-2">
           <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-            HLS 4K Ultra
+            HLS STREAM
           </span>
         </div>
       </div>

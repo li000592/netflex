@@ -95,5 +95,5 @@ export interface User {
   currentProfileId: string;
 }
 
-export type NavTab = 'home' | 'movies' | 'tv' | 'anime' | 'variety' | 'huakai' | 'mylist' | 'search';
+export type NavTab = 'home' | 'netflix' | 'movies' | 'tv' | 'anime' | 'variety' | 'huakai' | 'mylist' | 'search';
 

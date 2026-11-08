@@ -176,9 +176,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               ★ {activeMovie.rate}
             </span>
           )}
-          <span className="text-xs text-gray-300 bg-white/10 px-2 py-0.5 rounded font-mono">
-            {t('ultraHD')}
-          </span>
+          {activeMovie.remarks && (
+            <span className="text-xs text-gray-300 bg-white/10 px-2 py-0.5 rounded font-mono">
+              {activeMovie.remarks}
+            </span>
+          )}
         </div>
 
         {/* Title */}
@@ -190,7 +192,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         <p className="text-sm sm:text-base text-gray-300 line-clamp-3 mb-6 drop-shadow leading-relaxed">
           {activeMovie.overview ||
             activeMovie.remarks ||
-            `${activeMovie.title} - NETFLEX 精选高清热门大片，现已同步上线。`}
+            `${activeMovie.title} - NETFLEX 精选热门作品，现已同步上线。`}
         </p>
 
         {/* Action Buttons */}

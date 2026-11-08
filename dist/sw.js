@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netflex-v3';
+const CACHE_NAME = 'netflex-v4';
 const STATIC_ASSETS = ['/', '/index.html', '/favicon.svg', '/manifest.json'];
 
 // Fast installation & take control immediately

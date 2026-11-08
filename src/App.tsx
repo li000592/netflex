@@ -9,6 +9,7 @@ import { PlayerModal } from './components/PlayerModal';
 import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
 import { HuakaiPage } from './components/HuakaiPage';
+import { NetflixPage } from './components/NetflixPage';
 import { InfiniteCatalogView } from './components/InfiniteCatalogView';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
@@ -454,7 +455,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white flex flex-col">
+    <div className="min-h-[100dvh] bg-[#141414] text-white flex flex-col overflow-x-clip">
       {/* Sticky Header */}
       <Navbar
         currentTab={currentTab}
@@ -491,6 +492,14 @@ export const App: React.FC = () => {
             watchlistIds={watchlistIds}
             onToggleFavorite={handleToggleFavorite}
             huakaiEnabled={huakaiEnabled}
+          />
+        ) : currentTab === 'netflix' ? (
+          /* Official Netflix Top 10 Portal */
+          <NetflixPage
+            onPlay={handleDirectPlay}
+            onOpenDetail={handleOpenDetail}
+            watchlistIds={watchlistIds}
+            onToggleFavorite={handleToggleFavorite}
           />
         ) : currentTab === 'mylist' ? (
           /* My List & History View */

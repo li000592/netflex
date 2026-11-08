@@ -148,19 +148,44 @@ export async function handler(event) {
       };
     }
 
-    // 2. Douban Catalog API
+    // 2. Douban Catalog API (Supports legacy tags & modern multi-dimensional Sort & Filter)
     if (path === '/douban') {
       const type = params.type || 'movie';
-      const tag = params.tag || '热门';
-      const limit = params.limit || 20;
+      const tag = params.tag;
+      const sort = params.sort || 'U';
+      const genres = params.genres;
+      const countries = params.countries;
+      const year_range = params.year_range;
+      const range = params.range || '0,10';
+      const limit = params.limit || 24;
       const start = params.start || 0;
-      const cacheKey = `douban_${type}_${tag}_${limit}_${start}`;
+
+      const hasAdvancedFilters = genres || countries || year_range || sort !== 'U' || range !== '0,10';
+      const cacheKey = `douban_${type}_${tag || 'none'}_${sort}_${genres || 'all'}_${countries || 'all'}_${year_range || 'all'}_${range}_${limit}_${start}`;
       const cached = getCache(cacheKey, 600000);
       if (cached) {
         return { statusCode: 200, headers, body: JSON.stringify(cached) };
       }
 
-      const url = `https://movie.douban.com/j/search_subjects?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&page_limit=${limit}&page_start=${start}`;
+      let url;
+      if (hasAdvancedFilters || !tag) {
+        const tagsParam = type === 'tv' ? '电视剧' : '电影';
+        const q = new URLSearchParams({
+          sort: String(sort),
+          range: String(range),
+          tags: tagsParam,
+          start: String(start),
+          limit: String(limit),
+        });
+        if (genres && genres !== 'all') q.set('genres', String(genres));
+        if (countries && countries !== 'all') q.set('countries', String(countries));
+        if (year_range && year_range !== 'all') q.set('year_range', String(year_range));
+
+        url = `https://movie.douban.com/j/new_search_subjects?${q.toString()}`;
+      } else {
+        url = `https://movie.douban.com/j/search_subjects?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&page_limit=${limit}&page_start=${start}`;
+      }
+
       const resp = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)',
@@ -169,8 +194,205 @@ export async function handler(event) {
       });
       if (!resp.ok) throw new Error(`Douban returned ${resp.status}`);
       const data = await resp.json();
-      setCache(cacheKey, data);
-      return { statusCode: 200, headers, body: JSON.stringify(data) };
+
+      let subjects = [];
+      if (data.data && Array.isArray(data.data)) {
+        subjects = data.data.map((item) => ({
+          id: item.id,
+          title: item.title,
+          rate: item.rate,
+          cover: item.cover,
+          directors: item.directors,
+          casts: item.casts,
+        }));
+      } else if (data.subjects && Array.isArray(data.subjects)) {
+        subjects = data.subjects;
+      }
+
+      // Strict filter for Movie category: filter out domestic variety shows & gala specials
+      if (type === 'movie') {
+        const varietyRegex = /(综艺|真人秀|脱口秀|大侦探|明星大侦探|密室大逃脱|奔跑吧|跑男|极限挑战|王牌对王牌|乘风破浪|披荆斩棘|再见爱人|花儿与少年|五十公里桃花坞|桃花坞|向往的生活|声生不息|种地吧|喜人奇妙夜|一年一度喜剧大赛|你好星期六|快乐大本营|天天向上|这就是街舞|非诚勿扰|中餐厅|天赐的声音|中国好声音|中国新说唱|说唱新世代|萌探|萌探探探案|半熟恋人|心动的信号|奇葩说|吐槽大会|乐队的夏天|最强大脑|创造营|青春有你|偶像练习生|歌手|爸爸去哪儿|欢乐喜剧人|笑傲江湖|跨界歌王|蒙面唱将|时光音乐会|我们的歌|少年之名|中国达人秀|无限超越班|毛雪汪|女子推理社|跳进地理书的旅行|森林进化论|名侦探学院|超新星|德云斗笑社|春晚|春节联欢晚会|跨年晚会|跨年演唱会|元宵晚会|中秋晚会|第[0-9一二三四五六七八九十]+期|第[0-9一二三四五六七八九十]+季|\b20\d\d[-/年]\d+[-/月]\d+期?)/i;
+        subjects = subjects.filter((item) => {
+          if (!item || !item.title) return false;
+          if (varietyRegex.test(item.title)) return false;
+          if (item.episodes_info && /期|集/.test(item.episodes_info)) return false;
+          return true;
+        });
+      }
+
+      const result = { subjects };
+      setCache(cacheKey, result);
+      return { statusCode: 200, headers, body: JSON.stringify(result) };
+    }
+
+    // 2.5 Netflix Top 10 API (top10.netflix.com)
+    if (path === '/netflix') {
+      const mode = params.mode || 'weekly';
+      const category = params.category || 'all';
+      const cacheKey = `netflix_top10_${mode}_${category}`;
+      const cached = getCache(cacheKey, 1800000);
+      if (cached) {
+        return { statusCode: 200, headers, body: JSON.stringify(cached) };
+      }
+
+      const NETFLIX_TITLE_MAP = {
+        'Wednesday': '星期三',
+        'Squid Game': '鱿鱼游戏',
+        'Stranger Things': '怪奇物语',
+        'Red Notice': '红色通缉令',
+        'The Queen\'s Gambit': '后翼弃兵',
+        'Money Heist': '纸钞屋',
+        'Lupin': '绅士怪盗',
+        'Bridgerton': '布里奇顿',
+        'Don\'t Look Up': '不要抬头',
+        'The Adam Project': '亚当计划',
+        'Bird Box': '蒙上你的眼',
+        'Leave the World Behind': '断讯',
+        'Troll': '山怪巨魔',
+        'Under Paris': '巴黎深渊',
+        'Society of the Snow': '绝境盟约',
+        'The Platform': '饥饿站台',
+        'Nowhere': '无处逢生',
+        'Animals': '动物',
+        'Carry-On': '随身行李',
+        'Back in Action': '重返行动',
+        'War Machine': '战争机器',
+        'Exterritorial': '治外法权',
+        'The Great Flood': '大洪水',
+        'Counterattack': '反击',
+        'Adolescence': '青春期',
+        'DAHMER': '达莫',
+        'The Diplomat': '头号外交官',
+        'Nobody Wants This': '没人想要这个',
+        'Below': '下层',
+        'Love Is Blind': '盲婚试爱',
+        'Ice Age': '冰川时代',
+        'Return to Sender': '退件',
+        'Surviving Hurricane Otis': '幸存奥蒂斯飓风',
+        'Collision Course': '碰撞轨迹',
+        'East of Eden': '伊甸之东',
+        'From': '梦魇绝镇',
+        'KPop Demon Hunters': '猎魔女团',
+      };
+
+      if (mode === 'popular') {
+        const resp = await fetch('https://top10.netflix.com/data/most-popular.tsv', {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+        });
+        if (!resp.ok) throw new Error(`Netflix responded ${resp.status}`);
+        const text = await resp.text();
+        const lines = text.split(/\r?\n|\r/).filter(Boolean);
+        const items = [];
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split('\t');
+          if (cols.length >= 7) {
+            const rawCat = cols[0].trim();
+            const rank = parseInt(cols[1], 10);
+            const showTitle = cols[2].trim();
+            const seasonTitle = cols[3].trim() === 'N/A' ? '' : cols[3].trim();
+            const hours = Number(cols[4]) || 0;
+            const runtime = Number(cols[5]) || 0;
+            const views = Number(cols[6]) || 0;
+
+            let catKey = 'other';
+            if (rawCat.includes('Films') && rawCat.includes('English') && !rawCat.includes('Non-English')) catKey = 'films_en';
+            else if (rawCat.includes('Films') && rawCat.includes('Non-English')) catKey = 'films_non_en';
+            else if (rawCat.includes('TV') && rawCat.includes('English') && !rawCat.includes('Non-English')) catKey = 'tv_en';
+            else if (rawCat.includes('TV') && rawCat.includes('Non-English')) catKey = 'tv_non_en';
+
+            if (category === 'all' || category === catKey) {
+              const cnName = NETFLIX_TITLE_MAP[showTitle] || '';
+              const displayTitle = cnName ? `${showTitle} (${cnName})` : showTitle;
+              const viewsStr = views >= 100000000 ? `${(views / 100000000).toFixed(2)}亿次` : `${(views / 10000).toFixed(0)}万次`;
+              const hoursStr = hours >= 100000000 ? `${(hours / 100000000).toFixed(2)}亿小时` : `${(hours / 10000).toFixed(0)}万小时`;
+
+              items.push({
+                id: `netflix_pop_${catKey}_${rank}`,
+                rank,
+                title: displayTitle,
+                originalTitle: showTitle,
+                cnTitle: cnName,
+                season: seasonTitle,
+                category: rawCat.includes('Films') ? '电影' : '剧集',
+                netflixCategory: rawCat,
+                catKey,
+                hours,
+                runtime,
+                views,
+                hoursFormatted: hoursStr,
+                viewsFormatted: viewsStr,
+                remarks: `总观看 ${viewsStr}`,
+              });
+            }
+          }
+        }
+        const result = { mode, category, total: items.length, items };
+        setCache(cacheKey, result);
+        return { statusCode: 200, headers, body: JSON.stringify(result) };
+      } else {
+        const resp = await fetch('https://top10.netflix.com/data/all-weeks-global.tsv', {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+        });
+        if (!resp.ok) throw new Error(`Netflix responded ${resp.status}`);
+        const text = await resp.text();
+        const lines = text.split(/\r?\n|\r/).filter(Boolean);
+        let latestWeek = '';
+        if (lines.length > 1) {
+          latestWeek = lines[1].split('\t')[0].trim();
+        }
+        const items = [];
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split('\t');
+          if (cols.length >= 9) {
+            const week = cols[0].trim();
+            if (week !== latestWeek) break;
+            const rawCat = cols[1].trim();
+            const rank = parseInt(cols[2], 10);
+            const showTitle = cols[3].trim();
+            const seasonTitle = cols[4].trim() === 'N/A' ? '' : cols[4].trim();
+            const hours = Number(cols[5]) || 0;
+            const runtime = Number(cols[6]) || 0;
+            const views = Number(cols[7]) || 0;
+            const cumulativeWeeks = parseInt(cols[8], 10) || 1;
+
+            let catKey = 'other';
+            if (rawCat.includes('Films') && rawCat.includes('English') && !rawCat.includes('Non-English')) catKey = 'films_en';
+            else if (rawCat.includes('Films') && rawCat.includes('Non-English')) catKey = 'films_non_en';
+            else if (rawCat.includes('TV') && rawCat.includes('English') && !rawCat.includes('Non-English')) catKey = 'tv_en';
+            else if (rawCat.includes('TV') && rawCat.includes('Non-English')) catKey = 'tv_non_en';
+
+            if (category === 'all' || category === catKey) {
+              const cnName = NETFLIX_TITLE_MAP[showTitle] || '';
+              const displayTitle = cnName ? `${showTitle} (${cnName})` : showTitle;
+              const viewsStr = views >= 100000000 ? `${(views / 100000000).toFixed(2)}亿次` : `${(views / 10000).toFixed(0)}万次`;
+              const hoursStr = hours >= 100000000 ? `${(hours / 100000000).toFixed(2)}亿小时` : `${(hours / 10000).toFixed(0)}万小时`;
+
+              items.push({
+                id: `netflix_week_${catKey}_${rank}`,
+                rank,
+                title: displayTitle,
+                originalTitle: showTitle,
+                cnTitle: cnName,
+                season: seasonTitle,
+                category: rawCat.includes('Films') ? '电影' : '剧集',
+                netflixCategory: rawCat,
+                catKey,
+                week,
+                hours,
+                runtime,
+                views,
+                cumulativeWeeks,
+                hoursFormatted: hoursStr,
+                viewsFormatted: viewsStr,
+                remarks: `周观看 ${viewsStr} • 在榜 ${cumulativeWeeks} 周`,
+              });
+            }
+          }
+        }
+        const result = { mode, category, week: latestWeek, total: items.length, items };
+        setCache(cacheKey, result);
+        return { statusCode: 200, headers, body: JSON.stringify(result) };
+      }
     }
 
     // 3. Bangumi Calendar API

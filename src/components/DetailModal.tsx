@@ -117,7 +117,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
           director: movie.director || t('defaultDirector'),
           year: movie.year || '2024',
           area: movie.area || t('defaultArea'),
-          remarks: movie.remarks || t('defaultRemarks'),
+          remarks: movie.remarks || '',
           content: movie.overview || `${movie.title} - ${t('defaultOverview')}`,
           groups: movie.groups,
         });
@@ -148,7 +148,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             director: bestMatch.director || t("defaultDirector"),
             year: bestMatch.year || movie.year || '2024',
             area: bestMatch.area || movie.area || '全球',
-            remarks: bestMatch.remarks || movie.remarks || t("defaultRemarks"),
+            remarks: bestMatch.remarks || movie.remarks || '',
             content: bestMatch.overview || movie.overview || `${movie.title} - ${t("defaultOverview")}`,
             groups: bestMatch.groups,
           });
@@ -435,10 +435,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               <span>{t('castToTv')}</span>
             </button>
 
-            {/* Quality pill */}
-            <span className="text-xs bg-black/60 px-2.5 py-1 rounded font-mono border border-white/20">
-              4K Ultra HD
-            </span>
+            {/* Source Remarks pill if provided by source */}
+            {(detail?.remarks || movie.remarks) ? (
+              <span className="text-xs bg-black/60 px-2.5 py-1 rounded font-mono border border-white/20">
+                {detail?.remarks || movie.remarks}
+              </span>
+            ) : null}
           </div>
         </div>
       </div>
@@ -454,7 +456,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               <span className="border border-white/30 text-gray-300 text-[10px] px-1.5 py-0.5 rounded">
                 16+
               </span>
-              <span className="text-gray-400">{detail?.remarks || movie.remarks || 'HD'}</span>
+              {(detail?.remarks || movie.remarks) ? (
+                <span className="text-gray-400">{detail?.remarks || movie.remarks}</span>
+              ) : null}
             </div>
 
             <p className="text-sm sm:text-base text-gray-300 leading-relaxed">

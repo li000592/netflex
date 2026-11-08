@@ -83,13 +83,36 @@ function getStorageKey(baseKey: string): string {
   return `${baseKey}_guest`;
 }
 
+export interface DoubanFilterOptions {
+  type?: 'movie' | 'tv';
+  tag?: string;
+  sort?: string; // 'U' (热门), 'T' (高分), 'S' (最新), 'R' (最多评价)
+  genres?: string;
+  countries?: string;
+  year_range?: string;
+  range?: string;
+  limit?: number;
+  start?: number;
+}
+
 export async function fetchDoubanCatalog(
-  type: 'movie' | 'tv',
-  tag: string = '热门',
-  limit: number = 24,
-  start: number = 0
+  typeOrOptions: 'movie' | 'tv' | DoubanFilterOptions = 'movie',
+  tagArg: string = '热门',
+  limitArg: number = 24,
+  startArg: number = 0
 ): Promise<MediaItem[]> {
-  const cacheKey = `douban_${type}_${tag}_${limit}_${start}`;
+  const isOptions = typeof typeOrOptions === 'object';
+  const type = isOptions ? typeOrOptions.type || 'movie' : typeOrOptions;
+  const tag = isOptions ? typeOrOptions.tag : tagArg;
+  const sort = isOptions ? typeOrOptions.sort || 'U' : 'U';
+  const genres = isOptions ? typeOrOptions.genres : undefined;
+  const countries = isOptions ? typeOrOptions.countries : undefined;
+  const year_range = isOptions ? typeOrOptions.year_range : undefined;
+  const range = isOptions ? typeOrOptions.range || '0,10' : '0,10';
+  const limit = isOptions ? typeOrOptions.limit ?? 24 : limitArg;
+  const start = isOptions ? typeOrOptions.start ?? 0 : startArg;
+
+  const cacheKey = `douban_${type}_${tag || 'none'}_${sort}_${genres || 'all'}_${countries || 'all'}_${year_range || 'all'}_${range}_${limit}_${start}`;
   const now = Date.now();
 
   // Check in-memory cache (15 min TTL)
@@ -111,12 +134,34 @@ export async function fetchDoubanCatalog(
   } catch {}
 
   try {
-    const res = await fetch(
-      `${API_BASE}/api/douban?type=${encodeURIComponent(type)}&tag=${encodeURIComponent(tag)}&limit=${limit}&start=${start}`
-    );
+    const q = new URLSearchParams({
+      type,
+      sort,
+      range,
+      limit: String(limit),
+      start: String(start),
+    });
+    if (tag) q.set('tag', tag);
+    if (genres && genres !== 'all') q.set('genres', genres);
+    if (countries && countries !== 'all') q.set('countries', countries);
+    if (year_range && year_range !== 'all') q.set('year_range', year_range);
+
+    const res = await fetch(`${API_BASE}/api/douban?${q.toString()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    const subjects = data.subjects || [];
+    let subjects = data.subjects || [];
+
+    // Filter domestic variety shows out of Movie category
+    if (type === 'movie') {
+      const varietyRegex = /(综艺|真人秀|脱口秀|大侦探|明星大侦探|密室大逃脱|奔跑吧|跑男|极限挑战|王牌对王牌|乘风破浪|披荆斩棘|再见爱人|花儿与少年|五十公里桃花坞|桃花坞|向往的生活|声生不息|种地吧|喜人奇妙夜|一年一度喜剧大赛|你好星期六|快乐大本营|天天向上|这就是街舞|非诚勿扰|中餐厅|天赐的声音|中国好声音|中国新说唱|说唱新世代|萌探|萌探探探案|半熟恋人|心动的信号|奇葩说|吐槽大会|乐队的夏天|最强大脑|创造营|青春有你|偶像练习生|歌手|爸爸去哪儿|欢乐喜剧人|笑傲江湖|跨界歌王|蒙面唱将|时光音乐会|我们的歌|少年之名|中国达人秀|无限超越班|毛雪汪|女子推理社|跳进地理书的旅行|森林进化论|名侦探学院|超新星|德云斗笑社|春晚|春节联欢晚会|跨年晚会|跨年演唱会|元宵晚会|中秋晚会|第[0-9一二三四五六七八九十]+期|第[0-9一二三四五六七八九十]+季|\b20\d\d[-/年]\d+[-/月]\d+期?)/i;
+      subjects = subjects.filter((item: any) => {
+        if (!item || !item.title) return false;
+        if (varietyRegex.test(item.title)) return false;
+        if (item.episodes_info && /期|集/.test(item.episodes_info)) return false;
+        return true;
+      });
+    }
+
     const list: MediaItem[] = subjects.map((item: any) => {
       // Upgrade Douban cover to high-definition large poster
       const hdCover = item.cover
@@ -134,6 +179,8 @@ export async function fetchDoubanCatalog(
         cover: hasValidCover(coverUrl) ? coverUrl : '',
         isNew: item.is_new,
         category: type === 'movie' ? '电影' : '剧集',
+        director: Array.isArray(item.directors) ? item.directors.join(', ') : item.director,
+        actor: Array.isArray(item.casts) ? item.casts.join(', ') : item.actor,
       };
     });
 
@@ -202,6 +249,71 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
     console.error('Failed to fetch Bangumi calendar:', err);
     if (bangumiMemoryCache) return bangumiMemoryCache.data;
     return [];
+  }
+}
+
+export interface NetflixCatalogItem extends MediaItem {
+  rank: number;
+  season?: string;
+  originalTitle?: string;
+  cnTitle?: string;
+  netflixCategory?: string;
+  catKey?: string;
+  week?: string;
+  hours?: number;
+  runtime?: number;
+  views?: number;
+  cumulativeWeeks?: number;
+  hoursFormatted?: string;
+  viewsFormatted?: string;
+}
+
+const netflixMemoryCache = new Map<string, { data: { week?: string; total: number; items: NetflixCatalogItem[] }; time: number }>();
+
+export async function fetchNetflixCatalog(
+  mode: 'weekly' | 'popular' = 'weekly',
+  category: string = 'all'
+): Promise<{ week?: string; total: number; items: NetflixCatalogItem[] }> {
+  const cacheKey = `netflix_${mode}_${category}`;
+  const now = Date.now();
+  const cached = netflixMemoryCache.get(cacheKey);
+  if (cached && now - cached.time < 1800000) {
+    return cached.data;
+  }
+
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/netflix?mode=${encodeURIComponent(mode)}&category=${encodeURIComponent(category)}`
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const items: NetflixCatalogItem[] = (data.items || []).map((it: any) => ({
+      id: it.id,
+      title: it.title,
+      rank: it.rank,
+      season: it.season,
+      originalTitle: it.originalTitle,
+      cnTitle: it.cnTitle,
+      category: it.category,
+      netflixCategory: it.netflixCategory,
+      catKey: it.catKey,
+      week: it.week,
+      hours: it.hours,
+      runtime: it.runtime,
+      views: it.views,
+      cumulativeWeeks: it.cumulativeWeeks,
+      hoursFormatted: it.hoursFormatted,
+      viewsFormatted: it.viewsFormatted,
+      remarks: it.remarks,
+      cover: it.cover || '',
+    }));
+    const result = { week: data.week, total: data.total || items.length, items };
+    netflixMemoryCache.set(cacheKey, { data: result, time: now });
+    return result;
+  } catch (err) {
+    console.error('Failed to fetch Netflix catalog:', err);
+    if (cached) return cached.data;
+    return { total: 0, items: [] };
   }
 }
 

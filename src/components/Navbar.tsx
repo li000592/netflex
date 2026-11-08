@@ -15,9 +15,10 @@ import {
   Check,
   Flower2,
   Settings,
+  Flame,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
-import { useI18n, LanguageSelector } from '../i18n';
+import { useI18n } from '../i18n';
 
 interface NavbarProps {
   currentTab: NavTab;
@@ -64,6 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems: { tab: NavTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'home', label: t('home'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
+    { tab: 'netflix', label: t('tabNetflix'), icon: <Flame className="w-4 h-4 mr-1.5 text-[#E50914]" /> },
     { tab: 'movies', label: t('movies'), icon: <Film className="w-4 h-4 mr-1.5" /> },
     { tab: 'tv', label: t('tvShows'), icon: <Tv className="w-4 h-4 mr-1.5" /> },
     { tab: 'anime', label: t('anime'), icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
@@ -143,13 +145,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
           </div>
 
-          {/* Right Actions: Language, Search, Watchlist, Profile / Login */}
+          {/* Right Actions: Search, Watchlist, Settings, Profile / Login */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Language Switcher in Header (Desktop & Mobile) */}
-            <div className="flex items-center">
-              <LanguageSelector />
-            </div>
-
             {/* Search Navigation Button */}
             <button
               onClick={() => {
@@ -290,12 +287,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </button>
                       </div>
 
-                      {/* Language Switcher in dropdown */}
-                      <div className="border-t border-white/10 px-4 py-2 flex items-center justify-between">
-                        <span className="text-xs text-gray-400">{t('language')}</span>
-                        <LanguageSelector />
-                      </div>
-
                       {/* Sign Out */}
                       <div className="border-t border-white/10 mt-1 pt-1">
                         <button
@@ -360,11 +351,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               {t('settings')}
             </button>
 
-            <div className="pt-2 flex items-center justify-between px-3 py-2 border-t border-white/10">
-              <span className="text-xs text-gray-400">{t('language')}</span>
-              <LanguageSelector />
-            </div>
-
             {!currentUser && (
               <div className="pt-2">
                 <button
@@ -383,7 +369,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       </header>
 
       {/* Mobile Bottom Navigation Bar for Native App Feel */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#141414]/95 backdrop-blur-lg border-t border-white/10 px-2 py-1.5 flex justify-around">
+      <nav
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#141414]/95 backdrop-blur-lg border-t border-white/10 px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom,0px))] flex justify-around shadow-2xl"
+        style={{
+          transform: 'translate3d(0, 0, 0)',
+          WebkitTransform: 'translate3d(0, 0, 0)',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+          willChange: 'transform',
+        }}
+      >
         <button
           onClick={() => onSelectTab('home')}
           className={`flex flex-col items-center py-1 px-2 text-[10px] ${
@@ -392,6 +387,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <Sparkles className="w-5 h-5 mb-0.5" />
           {t('home')}
+        </button>
+        <button
+          onClick={() => onSelectTab('netflix')}
+          className={`flex flex-col items-center py-1 px-2 text-[10px] ${
+            currentTab === 'netflix' ? 'text-[#E50914]' : 'text-gray-400'
+          }`}
+        >
+          <Flame className="w-5 h-5 mb-0.5 text-[#E50914]" />
+          Netflix
         </button>
         <button
           onClick={() => onSelectTab('movies')}

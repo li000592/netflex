@@ -4,6 +4,7 @@ export const translations = {
   en: {
     // Navigation
     home: 'Home',
+    tabNetflix: 'Netflix',
     movies: 'Movies',
     tvShows: 'TV Shows',
     anime: 'Anime',
@@ -33,7 +34,7 @@ export const translations = {
     inMyList: 'In My List',
     addToList: 'Add to My List',
     removeFromList: 'Remove from List',
-    ultraHD: '4K Ultra HD',
+    ultraHD: 'HD',
     ratingBadge: '16+ High Rating',
     matchScore: '98% Match',
 
@@ -46,9 +47,23 @@ export const translations = {
     exploreAll: 'Explore All',
     newBadge: 'NEW',
 
+    // Netflix Portal
+    netflixPortalTitle: '🔴 Netflix Global Top 10',
+    netflixPortalSub: 'Weekly Top 10 and all-time most popular titles officially published by Netflix.',
+    weeklyTop10: 'Weekly Top 10',
+    mostPopularAllTime: 'All-Time Most Popular',
+    filmsEn: 'Films (English)',
+    filmsNonEn: 'Films (Non-English)',
+    tvEn: 'TV (English)',
+    tvNonEn: 'TV (Non-English)',
+    weeksInTop10: 'Weeks in Top 10',
+    viewsCount: 'Views',
+    hoursViewed: 'Hours Viewed',
+    officialNetflixData: 'Netflix Official Public Data',
+
     // Anime Page
     animePortalTitle: '🌸 Weekly Anime Calendar',
-    animePortalSub: 'Daily synchronized updates with high speed 4K streaming.',
+    animePortalSub: 'Daily synchronized updates with high speed streaming.',
     updatedDay: 'Updates',
 
     // Movies & TV Page
@@ -58,6 +73,24 @@ export const translations = {
     tvPageSub: 'US Series, K-Dramas, and top-rated global television.',
     varietyPageTitle: '✨ Top Variety & Comedy',
     varietyPageSub: 'Reality shows, comedy, and top trending entertainment.',
+
+    // Sort & Filter
+    sortAndFilter: 'Sort & Filter',
+    filterBy: 'Filter',
+    sortBy: 'Sort By',
+    allGenres: 'All Genres',
+    allRegions: 'All Regions',
+    allYears: 'All Years',
+    allRatings: 'All Ratings',
+    sortPopular: 'Popular',
+    sortRating: 'Top Rated',
+    sortLatest: 'Latest',
+    sortReviews: 'Most Reviewed',
+    ratingOver9: '9.0+ Masterpieces',
+    ratingOver8: '8.0+ High Rating',
+    ratingOver7: '7.0+ Recommended',
+    clearFilters: 'Reset',
+    activeFilters: 'Active',
 
     // Detail Modal
     episodes: 'Episodes',
@@ -84,7 +117,7 @@ export const translations = {
     skipIntro: 'Skip Intro',
     rewind10s: 'Rewind 10s',
     forward10s: 'Forward 10s',
-    buffering: 'Buffering 4K Stream...',
+    buffering: 'Buffering Stream...',
     playbackError: 'Playback Error',
     playbackErrorMsg: 'Stream playback failed. Please try switching lines or episodes.',
     returnToSelection: 'Go Back',
@@ -108,7 +141,7 @@ export const translations = {
     guideStep1: 'Ensure Apple TV / AirPlay 2 TV and this device are on the same Wi-Fi.',
     guideStep2: 'Tap "Launch AirPlay" in Safari to stream directly to TV.',
     guideStep3: 'Or pull down iOS / macOS Control Center and tap Screen Mirroring.',
-    guideStep4: 'For Apple TV 4K, paste m3u8 link into Infuse or VidHub for best 4K HDR playback.',
+    guideStep4: 'For Apple TV users, paste m3u8 link into Infuse or VidHub for high-fidelity playback.',
     safariRecommended: 'Safari is recommended for native 1-click AirPlay.',
     copied: 'Copied',
 
@@ -134,7 +167,7 @@ export const translations = {
     sortByDefault: 'Default',
     sortByRating: 'Top Rated',
     sortByLatest: 'Latest',
-    searchingNodes: 'Aggregating ultra HD streams across 30+ nodes...',
+    searchingNodes: 'Aggregating streaming lines across 30+ nodes...',
     exploreGenres: '🎬 Browse by Mood & Genre',
     noResultsSuggestionsTitle: 'Suggestions:',
     noResultsTip1: 'Check for typos or try more general keywords',
@@ -249,7 +282,7 @@ export const translations = {
     simulcastMonSun: 'Synchronized daily updates Monday - Sunday',
 
     // Player Extras
-    ultraFastLine: 'Ultra HD Fast Line',
+    ultraFastLine: 'High-Speed Line',
     castAppleTvSupport: 'Apple TV & AirPlay 2 Smart TVs',
     appleTvDedicatedPlayer: 'Apple TV Dedicated Players (Direct)',
     collapseGuide: 'Collapse',
@@ -267,7 +300,7 @@ export const translations = {
     defaultCast: 'Full Ensemble Cast',
     defaultDirector: 'Featured Director',
     defaultArea: 'Global',
-    defaultRemarks: '1080P/4K Ultra HD',
+    defaultRemarks: '',
     defaultOverview: 'Trending stream content. Click play or switch backup sources.',
 
     // Settings
@@ -281,7 +314,7 @@ export const translations = {
     rankTrigger: 'Trigger Studio',
     catCardDouban: '🍿 Douban Acclaimed Classics',
     catCardDoubanDesc: 'Timeless masterworks and critically acclaimed cinema',
-    catCardHollywood: '💥 4K Hollywood Blockbusters',
+    catCardHollywood: '💥 Hollywood Blockbusters',
     catCardHollywoodDesc: 'Action spectacles and sci-fi visual masterpieces',
     catCardAnime: '🌸 Popular Anime Simulcast',
     catCardAnimeDesc: 'Weekly synchronized Japanese anime updates',
@@ -295,6 +328,7 @@ export const translations = {
   zh: {
     // Navigation
     home: '首页',
+    tabNetflix: 'Netflix',
     movies: '电影',
     tvShows: '电视剧',
     anime: '新番动漫',
@@ -324,7 +358,7 @@ export const translations = {
     inMyList: '已在片单',
     addToList: '加入片单',
     removeFromList: '从片单移除',
-    ultraHD: '4K 超高清',
+    ultraHD: '高画质',
     ratingBadge: '16+ 全网高分甄选',
     matchScore: '98% 推荐匹配',
 
@@ -337,9 +371,23 @@ export const translations = {
     exploreAll: '探索全部',
     newBadge: '新上线',
 
+    // Netflix Portal
+    netflixPortalTitle: '🔴 Netflix 官方全球榜单',
+    netflixPortalSub: '根据 Netflix 官方 Tudum 公开数据，实时呈现每周热播与历史最火榜单。',
+    weeklyTop10: '最新热门周榜',
+    mostPopularAllTime: '历史最火榜',
+    filmsEn: '全球英语电影',
+    filmsNonEn: '全球非英语电影',
+    tvEn: '全球英语剧集',
+    tvNonEn: '全球非英语剧集',
+    weeksInTop10: '在榜周数',
+    viewsCount: '观看次数',
+    hoursViewed: '播放时长',
+    officialNetflixData: 'Netflix 官方公开数据',
+
     // Anime Page
     animePortalTitle: '🌸 日本新番周历',
-    animePortalSub: '每日同步连载更新，涵盖当季最热新番，极速秒播超清无删减。',
+    animePortalSub: '每日同步连载更新，涵盖当季最热新番，极速秒播无删减。',
     updatedDay: '更新',
 
     // Movies & TV Page
@@ -349,6 +397,24 @@ export const translations = {
     tvPageSub: '美剧、韩剧、华语高分大剧一网打尽',
     varietyPageTitle: '✨ 热门爆笑综艺',
     varietyPageSub: '中外王牌真人秀、脱口秀持续跟播',
+
+    // Sort & Filter
+    sortAndFilter: '筛选与排序',
+    filterBy: '筛选',
+    sortBy: '排序方式',
+    allGenres: '全部分类',
+    allRegions: '全部地区',
+    allYears: '全部门代',
+    allRatings: '全部评分',
+    sortPopular: '近期热门',
+    sortRating: '评分最高',
+    sortLatest: '最新上映',
+    sortReviews: '评价最多',
+    ratingOver9: '9.0+ 影史神作',
+    ratingOver8: '8.0+ 高分甄选',
+    ratingOver7: '7.0+ 推荐好片',
+    clearFilters: '重置',
+    activeFilters: '已选条件',
 
     // Detail Modal
     episodes: '选集播放',
@@ -375,7 +441,7 @@ export const translations = {
     skipIntro: '跳过片头',
     rewind10s: '后退10秒',
     forward10s: '前进10秒',
-    buffering: '正在缓冲 4K 流媒体...',
+    buffering: '正在缓冲流媒体...',
     playbackError: '播放异常',
     playbackErrorMsg: '视频加载失败，请尝试切换其他播放线路或集数',
     returnToSelection: '返回重试',
@@ -399,7 +465,7 @@ export const translations = {
     guideStep1: '确保 Apple TV 或支持 AirPlay 2 的智能电视与当前设备在同一个 Wi-Fi 网络。',
     guideStep2: '在 Safari 中点击上方「立即唤起 AirPlay 投屏」，选择电视即可无线同屏。',
     guideStep3: '也可在 iPhone/Mac 下拉控制中心，点击「屏幕镜像」直接投射整屏。',
-    guideStep4: '对于 Apple TV 4K 用户，推荐在 Infuse 或 VidHub 中打开直链，享受高规格画质与空间音频。',
+    guideStep4: '对于 Apple TV 用户，推荐在 Infuse 或 VidHub 中打开直链，享受高品质画质与空间音频。',
     safariRecommended: '推荐使用 Safari 浏览器以体验原生一键 AirPlay 投屏。',
     copied: '已复制',
 
@@ -425,7 +491,7 @@ export const translations = {
     sortByDefault: '智能排序',
     sortByRating: '高分优先',
     sortByLatest: '最新上映',
-    searchingNodes: '正在聚合 30+ 流媒体线路超清源...',
+    searchingNodes: '正在聚合 30+ 流媒体线路...',
     exploreGenres: '🎬 精选特色专题探索',
     noResultsSuggestionsTitle: '搜索建议：',
     noResultsTip1: '检查是否存在错别字，或尝试精简关键词',
@@ -436,7 +502,7 @@ export const translations = {
 
     // Huakai Page
     huakaiPortalTitle: '🌺 花开专区',
-    huakaiPortalSub: '独家专属分类，超清高速秒播，与其他分类独立隔离。',
+    huakaiPortalSub: '独家专属分类，高速秒播，与其他分类独立隔离。',
     huakaiSearchPlaceholder: '在花开专区中专属搜索...',
     prevPage: '上一页',
     nextPage: '下一页',
@@ -540,7 +606,7 @@ export const translations = {
     simulcastMonSun: '周一至周日同步连载',
 
     // Player Extras
-    ultraFastLine: '超清极速专线',
+    ultraFastLine: '极速专线',
     castAppleTvSupport: 'Apple TV / 支持 AirPlay 2 电视',
     appleTvDedicatedPlayer: 'Apple TV 专属播放器 (极客直连)',
     collapseGuide: '收起',
@@ -558,7 +624,7 @@ export const translations = {
     defaultCast: '全网公映演员阵容',
     defaultDirector: '精选导演',
     defaultArea: '全球',
-    defaultRemarks: '1080P/4K超清',
+    defaultRemarks: '',
     defaultOverview: '当前热门流媒体内容。请点击播放或切换备用线路。',
 
     // Settings
@@ -572,7 +638,7 @@ export const translations = {
     rankTrigger: 'Trigger 燃作',
     catCardDouban: '🍿 豆瓣高分经典',
     catCardDoubanDesc: '历年殿堂级口碑电影与剧集',
-    catCardHollywood: '💥 4K 震撼好莱坞大片',
+    catCardHollywood: '💥 震撼好莱坞大片',
     catCardHollywoodDesc: '科幻视觉特效与动作视听盛宴',
     catCardAnime: '🌸 日本连载人气新番',
     catCardAnimeDesc: '每周日系动漫同步极速追更',

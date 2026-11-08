@@ -28,14 +28,20 @@ iframe[src*="netlify"] {
   --netflix-card: #181818;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 100%;
   background-color: #141414;
   color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom Netflix sleek scrollbars */
