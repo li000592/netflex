@@ -9,6 +9,8 @@ export interface MediaItem {
   year?: string;
   remarks?: string;
   overview?: string;
+  backdrop?: string;
+  logo?: string;
   actor?: string;
   director?: string;
   area?: string;

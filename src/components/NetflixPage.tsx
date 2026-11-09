@@ -21,6 +21,7 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
   const { t } = useI18n();
   const [mode, setMode] = useState<'weekly' | 'popular'>('weekly');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'landscape' | 'portrait'>('landscape');
   const [items, setItems] = useState<NetflixCatalogItem[]>([]);
   const [week, setWeek] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,25 +113,55 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
         </div>
       </div>
 
-      {/* Category Filter Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-4 mb-6">
-        {categories.map((cat) => {
-          const isActive = selectedCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer ${
-                isActive
-                  ? 'bg-white text-black font-extrabold shadow-md scale-105'
-                  : 'bg-[#1e1e1e] hover:bg-[#282828] text-gray-300 hover:text-white border border-white/10'
-              }`}
-            >
-              {cat.icon}
-              {cat.label}
-            </button>
-          );
-        })}
+      {/* Category Filter Chips & View Mode Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-6">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`flex items-center px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 whitespace-nowrap cursor-pointer ${
+                  isActive
+                    ? 'bg-white text-black font-extrabold shadow-md scale-105'
+                    : 'bg-[#1e1e1e] hover:bg-[#282828] text-gray-300 hover:text-white border border-white/10'
+                }`}
+              >
+                {cat.icon}
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 16:9 Landscape vs 2:3 Portrait Aspect Ratio Switcher */}
+        <div className="flex items-center self-end sm:self-auto space-x-1.5 bg-[#181818] p-1 rounded-xl border border-white/10 flex-shrink-0">
+          <button
+            onClick={() => setViewMode('landscape')}
+            title="宽屏海报 (16:9)"
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center transition-all cursor-pointer ${
+              viewMode === 'landscape'
+                ? 'bg-[#E50914] text-white shadow-md font-bold'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <Film className="w-3.5 h-3.5 mr-1.5" />
+            16:9 宽屏
+          </button>
+          <button
+            onClick={() => setViewMode('portrait')}
+            title="竖版海报 (2:3)"
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center transition-all cursor-pointer ${
+              viewMode === 'portrait'
+                ? 'bg-[#E50914] text-white shadow-md font-bold'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <Tv className="w-3.5 h-3.5 mr-1.5" />
+            2:3 竖版
+          </button>
+        </div>
       </div>
 
       {/* Main Grid Content */}
@@ -144,14 +175,21 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
           <p className="text-base">{t('noCategoryContent')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10">
-          {items.map((item, index) => {
+        <div
+          className={
+            viewMode === 'landscape'
+              ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'
+              : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10'
+          }
+        >
+          {items.map((item) => {
             const isFav = watchlistIds.has(item.id);
             return (
               <div key={item.id} className="flex flex-col space-y-2">
                 <MovieCard
                   movie={item}
                   rank={item.rank}
+                  aspectRatio={viewMode === 'landscape' ? 'video' : 'poster'}
                   onPlay={onPlay}
                   onOpenDetail={onOpenDetail}
                   isFavorite={isFav}
@@ -179,6 +217,13 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
                         <span className="ml-1.5 text-gray-500">• 在榜 {item.cumulativeWeeks} 周</span>
                       )}
                     </div>
+                  )}
+
+                  {/* Synopsis snippet in landscape mode */}
+                  {viewMode === 'landscape' && item.overview && (
+                    <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed pt-0.5">
+                      {item.overview}
+                    </p>
                   )}
                 </div>
               </div>

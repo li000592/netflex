@@ -7,6 +7,7 @@ import { prefetchVideo, hasValidCover } from '../services/api';
 interface MovieCardProps {
   movie: MediaItem;
   rank?: number;
+  aspectRatio?: 'poster' | 'video';
   onPlay: (movie: MediaItem) => void;
   onOpenDetail: (movie: MediaItem) => void;
   isFavorite: boolean;
@@ -17,6 +18,7 @@ interface MovieCardProps {
 export const MovieCard: React.FC<MovieCardProps> = ({
   movie,
   rank,
+  aspectRatio = 'poster',
   onPlay,
   onOpenDetail,
   isFavorite,
@@ -53,8 +55,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         <div
           onClick={() => onOpenDetail(movie)}
           className={`relative z-10 ${
-            className.includes('w-full') ? 'w-full' : 'w-32 sm:w-44 md:w-52'
-          } aspect-[2/3] rounded-md overflow-hidden bg-[#202020] cursor-pointer shadow-lg transition-transform duration-300 ${
+            className.includes('w-full') ? 'w-full flex-1 min-w-0' : 'w-32 sm:w-44 md:w-52'
+          } ${
+            aspectRatio === 'video' ? 'aspect-[16/9]' : 'aspect-[2/3]'
+          } rounded-md overflow-hidden bg-[#202020] cursor-pointer shadow-lg transition-transform duration-300 ${
             isHovered ? 'scale-105 shadow-2xl ring-2 ring-white/30' : ''
           }`}
         >

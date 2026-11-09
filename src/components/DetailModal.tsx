@@ -126,7 +126,18 @@ export const DetailModal: React.FC<DetailModalProps> = ({
       }
 
       // 2. Search across sources (cached in api.ts)
-      const searchResults = await searchVideos(movie.title, undefined, undefined, huakaiEnabled);
+      let searchResults: MediaItem[] = [];
+      const parenMatch = movie.title.match(/^(.*?)\s*\((.*?)\)$/);
+      if (parenMatch) {
+        const engTitle = parenMatch[1].trim();
+        const cnTitle = parenMatch[2].trim();
+        searchResults = await searchVideos(cnTitle, undefined, undefined, huakaiEnabled);
+        if (searchResults.length === 0 && engTitle) {
+          searchResults = await searchVideos(engTitle, undefined, undefined, huakaiEnabled);
+        }
+      } else {
+        searchResults = await searchVideos(movie.title, undefined, undefined, huakaiEnabled);
+      }
       if (!isMounted) return;
 
       if (searchResults.length > 0) {

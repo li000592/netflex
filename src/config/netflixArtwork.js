@@ -1,0 +1,1851 @@
+// Auto-generated Netflix official artwork mapping
+export const NETFLIX_ARTWORK = {
+  "updatedAt": "2026-11-09T02:18:50.613Z",
+  "weekly": {
+    "films_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABblD_FaWkwlpXxe-Iqa8fPMYFAFX17GEWziINzvQPs55EGSGxx-avogRhitiXhuvOwvQzgXJT7XOC8Jw214WIejLtPFJ62ZRSj5J.jpg?r=154",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYqnynJ5fRfm5n1mIRLwCbJtlwnqyxyUi9lB299FR5hl9b_5c7dwlDCwY4DeV0pI52q1TS40m0lo6D1BHsh1OHpY9wy-YUAL3-w.jpg?r=169",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQZW9toTO0f2jHFImvf1HhpoSHvTJVkE0676RPTKQivJyQIu5GtVcoCas-iNMIsVYIvTqEw7Lyb7iPqTeNupEMHtP8jy3B0n4w9WA1Dz4nY.png?r=0d5",
+      "synopsis": "When their son is kidnapped, an LA mayoral candidate and his wife scramble to raise the ransom while making choices that could tear their world apart.",
+      "title": "Animals",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "R"
+    },
+    "films_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUuSYVYAWHwXoqfhPyLbkB_IuRallG65nTcWF94jDBYxmdJwxsC9uclGmvanhm4fYbvDEz4D9V88Gwfc2fjmX84EzkPYrQzgMw4O.jpg?r=62a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeFGo6zcUsloHcqzNAKbGl52lNbYnYxwsnSHml5ANQgr4NH6zLIISB-sGRpMg7EM9vfl_O7jK4QHhLmwVt6eoGGKpH2L8VZrmuQ.jpg?r=02b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRyp_HD8wJ_PFMw6r1HkBFzbPyDILkH5hRRaonUhfu4TglzSAl6cZz5KL7DAgu8W-sOgm2182M2Dd0EGKw_aKTO3QQFZVNztGmi24OiC7b8.png?r=a32",
+      "synopsis": "After surviving an assault in her own home, a nurse seeking closure writes to her attacker in prison and forges a strange relationship with him.",
+      "title": "Return to Sender",
+      "parentTitle": "",
+      "year": 2015,
+      "rating": "TV-MA"
+    },
+    "films_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABeKUv0SD_U6cZTjamXsfkdCqOJ5I0Tm0gQBHIxXe1zerjb5vqEHrSnwGaOyCGobgkUr_rk4zwadhQc8EXar20dGutosyCJmpMcOE.jpg?r=983",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUyw-0qkeSjJ3rY7ieKr9qFTB6pydFtSeB0RlNX658KtF4YDhMW3fkvnQR3uecwgKedJNQd-vkg8eXqym1cLzj5Adqti1f6ODtM.jpg?r=d64",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZWSzsAkjgBk9AaFX808aLhPEYmACvc9wolKMtxdad5NB39oDTNbkMmC_aoLEGN0zIFTtlPkr0dVgpJUU22VoG72CK0F8y8F2anweqRDN8k.png?r=77d",
+      "synopsis": "When K-pop superstars Rumi, Mira and Zoey aren't selling out stadiums, they're using their secret powers to protect their fans from supernatural threats.",
+      "title": "KPop Demon Hunters",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "PG"
+    },
+    "films_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQR7VzTUomJnDxAfC-j-FL-Fo1jTRpbcRePcEegmWb9qR1tex9DCek1WEl-DRhctCnB8YtS2AtOiqSmXtaU5pIuIxTCRMGaA-Kr-.jpg?r=1e4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABex2L6OsLnINJBXGRF3ypyPFO2XBAGFLbhh6ZpE62HK3_5LBjzRl7PrAWbQrPUK16SdkJy6r-YUypEqAAvbJuvPt6lGmJRDY5I0.jpg?r=ac9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYQxJYiiidKMtfzLinwAV1XEw1wtGZ8NHJDA22Yt2jc0AyV4Xz0lUuV_t7dhS20WIZfLkPOBXgp5Wyb5wxARZS7aMiM1PZh5EOeshQzLR9Y.png?r=2f3",
+      "synopsis": "When a giant T-Rex threatens Hot Wheels City, it's up to Coop and his friends to race to the rescue and save the day.",
+      "title": "Hot Wheels Let's Race: Attack of the T-Rex",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-Y7"
+    },
+    "films_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABedNRrGnDfxSER-iRFDz7uwCg7lVMCSYQ6q7VgUKpg6F3pXcg2nSY8EneSP_DGLE1MQwvrRkBKIQ7J4xQHdnFavERATNo3ulae4X.jpg?r=479",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYCeydTjlLD-277DgKCqdrSXxOvIN_HIt3GCkEbJiiNO3UF5qLGfp6bfuU5VC4h9ksvEM926FttW9t1ICBMddXKwNVBBkLyEeQ4.jpg?r=ca9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVPw3yLcIcltTnBzNiU_15Nc6hK1s33rXAVJUY6FjNIfUeRW-4ylebweGDZhDRDGazm4EIiFaHTNHjB14359qJ_YRsxYWFhaw0U09ETqJ-w.png?r=4a8",
+      "synopsis": "The Ice Age series tacks on a fourth act when unexpected events set the continent in motion, sending Manny, Diego and Sid into the open sea.",
+      "title": "Ice Age 4: Continental Drift",
+      "parentTitle": "",
+      "year": 2012,
+      "rating": "PG"
+    },
+    "films_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcbPFpvudh4x0y-bk9E1VOe1kuX4sRvVetMV0AfEDCHYPCwO_SkqdsnEZq1MYYDncLjlDgpmgBIl9qzUpJLwZ53ceMCTyt48seOo.jpg?r=3bf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXAZGqsf8zC3ZL4N6YTVZfvTvPnGPSZ7FJyTCsfSSnUJTPIFsq4v-Z06e1dsDxwsH-_VO0g9_G1OMx9G3xiXXZK-4IxypOAtlDA.jpg?r=749",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbcIeq_qeNvBKCesNr0BaPgm0XcnJ9m63XMkoxYjiRxwXE551RltTp3NuZHNACJCu-lbstZgWenrCcjGynrDwlHU7SgrvnKmApHw61bNiHs.png?r=3a9",
+      "synopsis": "Times are changing for moody mammoth Manny, motormouthed sloth Sid and crafty saber-toothed tiger Diego.",
+      "title": "Ice Age: Dawn of the Dinosaurs",
+      "parentTitle": "",
+      "year": 2009,
+      "rating": "PG"
+    },
+    "films_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQIQAUITT5H0LMI4fwLGpZY25FbFAV30cfskaZ5q8-yIBIyyVHweUsQ-qaBOfuznO6sFTS7GlvJQUgMZ-OM7qikFg3vcAzJ0mqYx.jpg?r=bc6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWUrnuclVM_mhJHYy6KK4E2Hh6klu0yvkemu6ll_UoEJsNBXgxeDVF-I_MCRAMwWiSMRvh2w4ONczExVDJrCK2zld87t56cMYsY.jpg?r=095",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXaAAQvXr52yR5qUF4AC0ayqXFtcgTxEHKvM147vYZydHu-P0yIZnPY7yPlv_b1F_cx2arWdOKdsKkP8jNBwl3dR0VjxLo3FtbXdWOr5TiI.png?r=a02",
+      "synopsis": "The herd lands in extraterrestrial hot water when Scrat's wild quest to bury his acorn triggers a cosmic event putting all of Earth in jeopardy.",
+      "title": "Ice Age 5: Collision Course",
+      "parentTitle": "",
+      "year": 2016,
+      "rating": "PG"
+    },
+    "films_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfBNIGvTd3fDYwVRRmc0bBlr9DxTUGlZyXnrXLhmtTRwiHu3OO5o-d4X8Lu-kr65Ym89S1iX7s9AK3LEfIpZtzvgkqfpc7oPf75p.jpg?r=4e1",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWvGunELMKLSSt7lxkY6inOh3T3u0uOCrBfOarE9nYjU8OuFwY2xsDW9A2DAhF2AtxYh5TTtAssoM_OFgqKdutUl4XxE1owouM0.jpg?r=379",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdisajhp1cZWhrw-1SmItPVY4xv1HW6v8V9W5ZR54FVn8RdSZra0Jl54O39aG46SXXO15cRXNGtKzNC1ICv2UmFDGoVeDaBZcK7koRu4aWI.png?r=4e3",
+      "synopsis": "With the undead roaming the streets, five teenagers seek refuge in a school. Soon, they discover they aren't alone — and that may be a problem.",
+      "title": "This Is Not a Test",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "16+"
+    },
+    "films_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTbvJ6ZhoJKmIYXRyY7JJTNw9gjY6qEpXzsgv_DPO71NOr_rRFZW03YlLMaJ4v6m2-Det-liJFsJiUnxzFd3KKUYcoz_C8jhgy7k.jpg?r=62d",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQsrxlnLU7JIg91KqYr5UygHw9cuN4cWn4GvBVo9BUsC97ih-e4V9MXDRFVUWDujeBA19ZLoJ4TS3WPdDwHuA1ZcvrP4hJ5tDFY.jpg?r=179",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRI6RzwEryq2MicFGEozDLvsx9kGjZGoMMLn2-rVlx-oQMIi_jQbcoJBBYHZ1Rfnp1uPohVM_S5MNxqQ5hTrr4g2kwlQDPcgwFxnV5he5gg.png?r=850",
+      "synopsis": "With the ice age almost upon them, a trio of prehistoric critters finds a lost infant and decides to return the baby to its human parents.",
+      "title": "Ice Age",
+      "parentTitle": "",
+      "year": 2002,
+      "rating": "PG"
+    },
+    "films_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABRoweNuZSX4ok00a9jvjJcxdXAqydf-yeL7E9lUMOMNpVrvbFETy8-bmptbvmlZAxslCWjjAqxmSJ63bxARlakJF8iRQmdZ6Y0pG.jpg?r=e61",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ3N0Gbu9spR9FRHHB3GDilBD5qtTxoml0MY7NRfZmyg89VhfBGEmwuhdG8OB21uo0e93VZnm8VAL1BNeCjnWkxjMjEBozVRJIA.jpg?r=907",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfi4euxxdY5hr6o-06KTTkh6KjTtHrcKB0gjEgKTSVlGCGX3DMQyf00Yu0bVNzdw5m3HZn96-CkperXuzBMgLtZ_EwBCKuoaweqQ_A6s_y4.png?r=ea0",
+      "synopsis": "After finding a crew of crafty aliens camping out in the attic of their family vacation rental, the Pearson kids must pull together to save humanity.",
+      "title": "Aliens in the Attic",
+      "parentTitle": "",
+      "year": 2009,
+      "rating": "PG"
+    },
+    "films_non_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTcaI3doK0WYeeh8VFGETCYTW_ykXow27oQ7B_mSP4NCARtvcw6D4LD5I5zQH3DmK6KMUFzAWGQ5HU8kKbUALqd1C8H3wuMyAplL.jpg?r=b64",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbWgcWHNNqZq_Jz1nqXtA_rriw0AmN2s0ejfZFDo3ZN65KhQ3kWH2bNhF3k1UKVIvUuu00qYp6Z9O9ryxjOX7RJpMdz_B8N_jFc.jpg?r=c87",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUgm9cAv6Zdz40z0ZPvI2n0-fOOVkeSnqnRmovCtEYwPJ4AiyoCbCfl-UwBsEZgo5-jZ1CK3D_88mkQ70vLSaOIpVO9SkVdzAE2gt2mg82s.png?r=4f1",
+      "synopsis": "Two estranged brothers struggle to survive Hurricane Otis in Acapulco, where their bond and courage turn adversity into hope. Inspired by a true story.",
+      "title": "Surviving Hurricane Otis",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQAmwO3LH4S_uDeW9e8TZW6j4zrOaknikG2M23wVqDd9xh7KR7Lc2K5vu4s4yH7mYlN4HcWYf00802bLDIA10UePVbmUmIRKJaZP.jpg?r=14a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSGg0G2D8PitOAPpaTbB3TDKFRhKJkQBj8DgBStMgYQ0IURUTfonBnqj6CT55oDGfDKpaApTjbwxSNtbl7UdvYNkJW0jFkc12dM.jpg?r=38c",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABV_K_Q67Cneva2xawZJblhbiWJZPIgPHIGBipSABxHPNA6MIMaIa86M6hXkg5rV_XU8LKXsrVBuiI2C4lM616Cwf0eReyDHPEgyIpmSQ12o.png?r=69d",
+      "synopsis": "Spain, 2013. After robbing a bank, a getaway crash reveals the hidden side of each thief, exposing betrayals and lies that began long before the heist.",
+      "title": "Collision Course",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXVHk2qVWrWevF-TkstdWzgtLNmHbm7nRoCkRmtspWCz-Nwa_gD7uVB0HBWG1z6VgUaY90ZRWKY-ETI0-bTuqrd15hOmbvZmFKnN.jpg?r=858",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABV1DBxbWUyjEeEyO6bN3oujgvOrtT_26L-dgFpBl314EAcCUVk6dZRvr6VAG9mwt-xVMjPWi6-l39DsHZdIESMgSCR9aZULx4mA.jpg?r=50d",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdqDCO3PPbBIvgXhUGGjzix-BLF89RmIQsnjWv40CY4hOE2AbeuqZWxtR8hmbTY_69bsmhGxEgun_PhyRUL9upBWYZ6u6NsCO_UPJKItERA.png?r=353",
+      "synopsis": "A cop's reluctant compassion for an injured woman exposes a conspiracy at the highest levels — trapping him in a deadly game across a single night.",
+      "title": "Gajab Raat",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfADTI1VKqU_C-vpHRhldIdvl-aqSYEFHwIPfoiuaEb226RoaHx0clF2pMVfTlj-VCRehBO5A_7ISrPxrTUROoYGmwIBwnpHIQ-t.jpg?r=18f",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABaCNqN0M7xAm7oku4mtP_Us63EUB2PC8m5sZquC6asyGy4uTE4tcFc_ch-a88Juux0ciDi2lkRcafQsUAbwtIFzZlWbtTUK3uNY.jpg?r=f20",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXtqPE6p86Tt_1p3I1HfNR2AFBDBb30Nf7PVyIG_fPiRjXG01XJ3J0aBc6pMUh6ExsEtbS2q1yvbyLsDK5ep0z8LBmdHEKAdL4an3i0BxCk.png?r=4e5",
+      "synopsis": "In 1986 Madras, a timid boy accidentally traps a feared gangster in a school restroom, where an unlikely friendship brings out new sides of them both.",
+      "title": "Baththa",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "films_non_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABST0EWJt5yjKqNcDyxl88u9SoKxI2v-n49YcEH56s9GgZRz-zDMpma53SiX6DALbOYGW1pAbZ6i54zXE7pBJaP0_gm74ghT8TSl5.jpg?r=b60",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ3MpCRqK-IqAkHo-6Wp2Ywoorlob1dEQjGiye5AgzLAf6iTK5JrgAoyTQIWoI5BvwkYTZDxnT8Li8i9biS3yKHlHglCHHqH3Sw.jpg?r=a11",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABeu_Q96WJiREd-Q0TygU4qOAvYEt5l2I0ZsKn_FkV6OSvFu2Bv7M_W8KZnN3zO69BmzCNFMwbd3ZnZN_5fmS2h1nGARdCPZWWVOwOsSw3M4.png?r=300",
+      "synopsis": "In 1980s India, a reluctant hero leads a marginalized community to fight against their oppressors for citizenship and dignity.",
+      "title": "The Paradise",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABZSLiPfCye058HnSlFv4OqYbTiKF8Z1FLJwaZq7PgW2nmgCRVfiuWty2v61uU2j1_C5D1ehq1h_opruUA2KRmAwGVX-NM4kH6NWl.jpg?r=569",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ39APRbYiLE-v1y9zYI9TUGuSgrhfrwLEpV3K1lY6ci6BjxZa2Zf8Vainncb9BTWY-7-VBE0SJeDwPkK5uPe4YU5aZL7_UO_zc.jpg?r=0aa",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUy9S5LUVdI17HqI45WzOKymnM5PmVphUx6iRAhrtIE2ZnmuegJsMq3tR-cKXkIv_oMK6shvPpBD1xRRcapP9JiIDDzCJ6tK9TjMG3aXXd8.png?r=01e",
+      "synopsis": "When a free-spirited woman and a family-minded man pursue adoption, their opposing backgrounds and world views put their love to the test.",
+      "title": "You, Me, Us",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABRC42duAKx6t6qwbX4xysLb6VaC37hWUKmXMlJ1FyY0hZhZpdXxdJRkvBMWF8SgUNjUvOjMlMDdCqt7Ohbcb2aWq6w9NbPB_YDFJ.jpg?r=d85",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSUEZs-wLRsKuWbx6mvM1GmQ5HWS65WT_ky5s7qzUW3vF_5V0EhInJNU6YyApEnrrM3Cvo5eweGXaHXNMdv4dGj5qoH8PfAO9sQ.jpg?r=763",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWXWaBzhgGh2tjbER4-W9WmU3vvve4TC3qgL831lPC_MyIwvtEjahnsxSCGJN_8j-xcokWtmNzTaxxIx_5ZnkCI3pHp3rSZlL63nn9U9id8.png?r=d22",
+      "synopsis": "In a village shaped by toxic masculinity, the arrival of Dorothy — a woman who challenges social norms — upends the worldviews of two longtime friends.",
+      "title": "Dorothy",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWIdEYmL9iTfTMXDi6r0BPXS8B-5UEGmJE-bnQYgOlxIImXnmw5aszq5czXdNVXVFMYHYqL7NqWdxUn8jMff9amPNXBzzb-2HvX4.jpg?r=722",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXRm4qvWxuVSsT2lFVst5ZQeJQW1po57sXQMErVMDaV9Orgl5EKlVwBwYoBRHElQkDpPbYQrvUWlJ9e9Xljdg70Etd5_xR0auPw.jpg?r=1cf",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQR86ellGLtVs18Gpy02EnOlESegHOJ6IvvbiwdSUNe5mVLEsPEYgaR7K0gtfwjq470rG8ZenjTpSwh5mN60HwhS_sPzzUnSvTnT0DWMeBQ.png?r=142",
+      "synopsis": "A neatly curated children's birthday goes off the rails when an iffy gift and unruly guests launch world-view quarrels, family drama and amusing chaos.",
+      "title": "The Birthday Gift",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "films_non_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXFh6bNSO2ssCjOMDeY8oCal1f5GbQSOVjPw6_488HdOkY43aqSIO19Ttmzdw_KX3e0Rg0T9O5XMfmS3_ODbuL40h9wgCanhsJkf.jpg?r=9f9",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdMMM2tOTNicY4kdAb5WcB9QEU2UdySFVqMg-2dVW1rRdrvNrkcznM1xYnIRpa7KNo6HhRq4vu3TKbdYOiHpPZylWFF3yhR4ADo.jpg?r=326",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWAjRuJgDepbqu9nvJ6DMqVQRshB8Fd0RKqbkQKweAjki1uq4i7cXhbfOU_6SGwTByJZB0vAZSKBZxBsnlqQWpxfO4cZFJtsq0SwwEK5L58.png?r=e95",
+      "synopsis": "After dreaming of his own death, Kuttan wakes on his wedding day to find himself stuck in a time loop, reliving the events of his nightmare.",
+      "title": "Dhoomakethu",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "films_non_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQbqztHiEun-I0zUbwLsL4-p0_sdxRPag7oy1znXd8_x2dL3Vo8_L2f8atdQQ6StQsipT0qGGhWP-twSjh8226m4595EOL8deAyk.jpg?r=40d",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeWrpLjWFINe3npLyXkaA22rqhBJhFHEFwZeypRw3k8XbI7f9idJ3KiPvFZYUU035YpT8Kf5jRC7SkuGkVGwIhtfYzQ1iYgRNG4.jpg?r=b65",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRr4UlpaQr8jgNm9RcTv8sHtjrHDRNIJQNCgpQDQFxqYik48f9R-OLoM601-9gYBmhzoYC0-foJ6xgUWjwnUYeB1Fl8_5BV1GMW1CwGl5e4.png?r=f16",
+      "synopsis": "After discovering she has a family and a shipping empire, a woman with amnesia returns to a wealthy and seemingly perfect past to uncover why she left.",
+      "title": "The Secret Woman",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "tv_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVmHALrDtMjJyjmObLLRbhUMMhR8v64CmkyahP1-RWFFInDoi11uz8nt85W9czfVnFSEo9ohIRAlRK8q7GkTkgz3co9jBFLOq14q.jpg?r=e8b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWBQfrVnXdZWZq6qfWEFDpxNdELA3ryIRE6KYTHgShFZdxKxvoNOsUOjxX50HQjnn546pI4AfnEQrTtqZ1JBxNrxDIH5xP0SyH0.jpg?r=853",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQB8kvkIYBbgUcc4AHM3IB2sABH2i7OfGa0AXBhmQC7pcKMpDRghuhe921e_2_rTqx5n5s_m4oSh1pv-xfYIuiJtTKzLi0XaIz8wZuq4UV4.png?r=982",
+      "synopsis": "This documentary series chronicles the Hollywood success, outspoken advocacy and tragic death of the beloved \"Friends\" star, as told by his inner circle.",
+      "title": "The One About Matthew Perry: Season 1",
+      "parentTitle": "The One About Matthew Perry",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVRJ45FhjoCGe9DQ9Mx_R4YULf1dOM-D70t4N0WP5twRPnItAEcyx6smaj1JybNfEuTB4HdKeXcb1U4xWqy2JTWqCUs00m8LfmBI.jpg?r=3c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeYMYTe-Gi-njBii-FeBkqi4FVTnAGCEXlAs8cPouLKd8xe1Xt4QO0fy_Tt6ln83s6SDiIfn7hHmZopJPxRy2JdVcx81GF8mfcI.jpg?r=18c",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABe8b-vxzTbgL9GEme-lc_K5UVw3Vra35y6wAtFVoSwOCHGIjUslTUiHKo-yaOFDo3Jj08FWOFmh6CPGN7pb9edlG2iujCMcrprglbASt-no.png?r=a91",
+      "synopsis": "Joanne and Noah take their relationship to the next level amid sibling drama, maternal meddling and one giant leap of faith.",
+      "title": "Nobody Wants This: Season 3",
+      "parentTitle": "Nobody Wants This",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQfUcSsl7int4Hu-uKXulSMhLgRSojXmIScP_wdNJW9Oy6WkrZv1cb2-jK83scxifbUBFrsCp2Nm-pskjuwiCe6DW0xXrtcTjFoW.jpg?r=eaf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABT3-A6m2lamZwquGv5AuX78m23jKerEdjrKSp7rITnJIBMv7J-vefHhFhKHmKIWlsTnIFsYCC9WYZJK_V1HLEWSwmm65I1Pymbg.jpg?r=8cb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXwsGGWYr1eq7chWBWhmdUjQ8nB6XtERAYWUWDWamc4kpbYyH3jlu2_v0riilwSmm0o9TpsDsEA2ulJL4eremswTvnAxmAQb_k7DKbQEpdQ.png?r=f75",
+      "synopsis": "When a mysterious sea creature starts terrorizing a coastal town, a fisherman must fight to protect his family and his community's vanishing way of life.",
+      "title": "Below: Limited Series",
+      "parentTitle": "Below",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTjlBNod49e0MTiHb64DfXbggneiaOC3bTWJURogtNz9hQJGFYoSWGe59qK2QAJoJ3Wv66836MewKtfVV7rXWrEyyC_7ycrfNJzo.jpg?r=74f",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZmvUvyYwdH9mEBDQyYMT4_rg8uQh5mZSkFGuWLT4xa-t3FpSDI62ZjN_HJ6ZsUfWbvc5ZqdYN-VOWQacBsgdBdAcsM7P1toYyM.jpg?r=4b9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTN3V25GGFC-nHE-sLfhAcs4epX3xUVPP8oGjWJjT5I7P55kQiz8q_-It7-1_huTXXIM7EvE3GMI3iZauHzNwGes_vV-xdOdcxKFsY9dSbs.png?r=19f",
+      "synopsis": "One catastrophic moment shatters the fragile peace Kate Wyler has brokered between the US and UK — and the crumbling marriage she's trying to save.",
+      "title": "The Diplomat: Season 4",
+      "parentTitle": "The Diplomat",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbI6jLkH1hrepLXXq07o3mf-_sVW8FI4-9-z87Ak1LvFeXXtA6MgkfmDB9QFBBi6NAyva85JlMEJ0sgfKnzU2B3qqf4jcj-PfBYU.jpg?r=2b7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYGSaJP9tyNUBjr7Y9qElALK4l7YdnlWueWlQnJ64ByM_sevIuDVRI8zs3mwmjcOUw-ZZf82u4zYvPWgmRHnXBPgboeax_hXTNg.jpg?r=141",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSPcD-dD3CajEyWfKFsGQjFWqVIBNAYFmsHlFNJSARAatG6_0O_VpOfKnF01OvM8Z0HPBdrrqOWk23eONsPXm20C91nM255-4Su2zXnl-3w.png?r=281",
+      "synopsis": "Boston singles enter the pods to find their soulmates and get engaged sight unseen. Will they walk down the aisle or will looks get in the way of love?",
+      "title": "Love Is Blind: S11: Boston",
+      "parentTitle": "Love Is Blind",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfSgTDPB5-XM_qxURbmqww4EH1wFxSmREU6p4Ki1Tfuf8AMXXLk9Ybkkb-L1zji4sRXa2dvlyGwpqoqHso1KAk5C2T4nKt7PnVyh.jpg?r=633",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf0v8WmKbwPfJP-ybQyrHnVgA0w3FDIOdmKmXRFLpBCRD51-4Fp7ngFzas3eENo62ZK73YuEKi6iCAycCCNj1KyCCIB3LVOVxiM.jpg?r=bae",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTftEihvkDXJiZCVL2_hdxhBYXOPIMZ_3e6Re1SmqpT41Uo_cn03CKUhdyyZgqBr0Pv4mK-pJLkhWR6EfTzeb97vdW5QuNeEWuYt_muksSs.png?r=a4a",
+      "synopsis": "Teens struggle to run a local pizzeria while juggling school, a manic boss and minimum wage in this series based on the hit social media shorts.",
+      "title": "Minimum Wage: Season 1",
+      "parentTitle": "Minimum Wage",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "tv_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcAQwGLvQJIZZgewqdTP66d01C4XRsgoWXdRZl___AVczefY5vKXePCmMcWtfJ_PeLngrfvmfcIHjVp9garP-pd1IMH31mEwhlZa.jpg?r=957",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABRC8vlkr18Ff-RYajWoDUKNSNJMz5_UdSA7ASQrJsSFKTNRlmXjP92tcf6UOjguOWOPLRWInizj3eUxshCMZ_0PxFk1SYs0fwT8.jpg?r=208",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbFLPRLeHEHEqtXx1fxm7NhDLT0MSNKX8cKDavVneiAVYm5uTic0vxk-uryHEMAMAQHi5FMfsfihNVFmtFc1jNFPTv52_p_eyzzvcJMwbOU.png?r=45f",
+      "synopsis": "Former friends turned foes collide as Bayley and Lyra Valkyria square off in a No Disqualification Match.",
+      "title": "Raw: 2026 - October 26, 2026",
+      "parentTitle": "Raw: 2026",
+      "year": 2026,
+      "rating": "TV-PG"
+    },
+    "tv_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABabTLrFj8LGGUrAsLjxIVVGSnBPCWaCEQgiljrBAUOsxLAP3XNg7bo5jFTYzhMUh0Ush84AGNQEFg6Y06O8zNne-qnkLTr2XhO3B.jpg?r=fad",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABR7PfRSFm7ytS1lQysO1w5spNJ_0GfGapZCno1s-ij4f5OlLRVnntirBcEv9sbBvMJSMzBuapHhFhAfbO9A948TrRSxR-hOf54Q.jpg?r=ee5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbNwxPM9RVhCrtKDqrXT787yq2O_zwm3-aCWbrr5Zt_J-YUr4XiuJOfpJYfpA4P5yzuOLJ3wYylbWTEXa6xI8-CHFMsMU62jzm_ZDnNlJqs.png?r=5c8",
+      "synopsis": "Disoriented travelers find themselves trapped in a mysterious town with no exit, where malevolent forces toy with their minds and hunt them by night.",
+      "title": "From: Season 1",
+      "parentTitle": "From",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "tv_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfaEkve_u_fxwTUyUDdQi7Pl83gl13sl2jgBJmcxgYXaSXVq2D9BknfQLZowYfmxAfutjBYVgiVnSNuve3f_cmpUJlBCUd4W07mI.jpg?r=3d1",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbZ1N7gHhmMcoZWv6H64NJVNR9tle0gpeIyAcYyQRdlb3boJ3IBWBUL32UXfoG6wweHcfudBvuVb_fzZv2_r2ihqXzka4M-T_ak.jpg?r=071",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX-k7PFMDNnPWyFODkCHhE9ujVGHVs6_1FIjicdtN8gt8v9vByQ6IW2Kxylrpehqo4P7fuO3yJkUU-uYWJjLYdTpk0VuQdJsZiQE7xyKSls.png?r=76a",
+      "synopsis": "In the early 1900s, a fiercely independent woman drives a rift between two brothers, igniting a saga that unfolds across two generations.",
+      "title": "East of Eden: Limited Series",
+      "parentTitle": "East of Eden",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSE3qMXp8XDdmp9w9tvrYd5WQRMUv_M2lmSN8O0j7qhBwt1EaDQGU5S3FVc84aynIrx6jnW6N6PDpb9Mmv96O1UgVUOQNg_O8hKW.jpg?r=2bb",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdDOkwzvScFg9wpS2b5Z2HlNNQWoKIcQc9jFwP5ln8JfDSv3OvRdErK_PpxhGXz2ApwiZraWGlHT3G-SaXHbEHtLsc0W6nXs8_c.jpg?r=1c1",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABU8K0P2fiAS5u6uQxDYvIKLsG9jYcTd_nEcuYxYXEWZT3k7RP6bJOp-OuTE2SF7iK2UMFLj9b5jQ5HwbAznNqbpbafb1yZldAgZ-xVupveE.png?r=b4a",
+      "synopsis": "Instadocs goes inside the rape investigation and Jane Doe lawsuit at Cornell University, with the student journalists at the forefront of the story.",
+      "title": "Instadocs: Jane Doe v. Cornell",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQ348H0FqhirMK5gMthWHdLrPGv-TahsMLpmIBz_aULOddFYEzEQxNr5nbtHEGBLL_2o4GBBmdJ3fDNAkTQ0ggRUw4NAYlQ1WQ_S.jpg?r=7df",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSQIqZsIQCjPuCzXFy535u_CH0cNvO_fykDnuT4sCB8u4VpYWEqFO4M8L5liEZmO_zNMTHyu_Z9v5Dh4Z_E7L82Nkl_VyE3RB0E.jpg?r=c7f",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "After four years behind bars, Assane is ready to leave his past behind and start over, until a copycat forces him to become Lupin once again.",
+      "title": "Lupin: Part 4",
+      "parentTitle": "Lupin",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABc42_ammCSFqlP1G601eg97RXX62YyiQp1o51UJXSh8iyL8RswrRkvvsVIg_vtB0H015R0V92UxrRwkvjwdUwDW-wM7bSXbmz63a.jpg?r=49a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVf8f38D20WmJnf7oQ0T-XynsyaIkk0ai-1hoKUGD8mbp_zqYqJWkdm0Bk5IJmYr0ZPoLh7NyvrTHO4nAom3Vucu11k6sYdpVRM.jpg?r=a75",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Inspired by the adventures of Arsène Lupin, gentleman thief Assane Diop sets out to avenge his father for an injustice inflicted by a wealthy family.",
+      "title": "Lupin: Part 1",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVwOMhKMkoKIfsqiWIvR-am6LWaPrCYEaQ6o7Cw0ohiemIVsFLqlZFghbGOegJwHZo0RToipTMES9VF9TQwddKU26WjrmlOfzMY5.jpg?r=88a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUepRcQadZKrEKLInL1D9MTSwA7WVi_lUEQdp0FsD8kT0p3dr8RMq0coPHyFrtEEogGPB3UMYIAlQr0dtBkf-s6EMNHR02mtdpY.jpg?r=854",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABayxcrHrwsusGCuTaCKb2CQbWvkJv8vvg3JiPAU-8DgSwsIT1cCpEm2dm5sgTwzSivSywXMqfLkRZ8SbGniMB1bA5-VX2LLIA5A3Y5ZEHbs.png?r=2dc",
+      "synopsis": "The story of El Mayo Zambada, kingpin and shadowy partner of El Chapo Guzmán in the Sinaloa cartel, his capture and the mystery of who betrayed him.",
+      "title": "The Fall of El Mayo: Limited Series",
+      "parentTitle": "The Fall of El Mayo",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWdx2YHO-1NNsdSrymg4kklO9Dpeo2QpdTBxUF_qf1xpzQmGS-WXezjqsRdtQr7cVHKlb2-QTwXUC21t7FXi7iCDGRQoMTEpnPAX.jpg?r=962",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdGXjDE-mxvPbUuoDnntf82l8IfIyuJFR5DDmYZAV91pjZ9S6NFcDVPuJBMafYVDjNXJW5cobj-rj6zz_9SI8WGRuVKiBvoRHRU.jpg?r=1bb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVYOQYt_TxXFZ0WBOuuEvVEL7zDSbhG_dcfZ6Ki7Z-E-OfMYxQOpIki4NEpQEJaD1Xjjr9AckBAJWSIlsBMFOBU10UCtodYOfE_kmlNGAEM.png?r=7bc",
+      "synopsis": "Drowning in debt, a young man takes lucrative part-time jobs from a mysterious agency — only to find his hustle for more money turning nightmarish.",
+      "title": "Dead-End Job: Limited Series",
+      "parentTitle": "Dead-End Job",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQqDhGMtNM4TuI4BjjVJxb8HDg8mvXRgOsXljPWXbnWCQnFKqYNsMvLAslS_3NzjwZu0lHw1y0LaHjn61dWUMWM7sbWXU4LwQz0m.jpg?r=1b4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWa2rbmHw9RhbcM7lMQlNrjkajsTax7TgRO1U9pnPNt0QlIBD4qhgtJbiY7NCQ0O3ZppIHc2Q3KZQCwiZqHKBzKSv7J17-XJz9w.jpg?r=25a",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZAYPuv975Y1o0klR24Qn3CuPn2Ix3cv3TprwMrnF87RHDikENYrihkk3QYPWQ5BQKAqCcYiNV5l8sX7H4pStfjVUAV4zod9xxSdnX5uOvY.png?r=b66",
+      "synopsis": "In a hospital dominated by ego and corruption, an enigmatic but brilliant surgeon arrives — taking on seemingly impossible cases amid fierce opposition.",
+      "title": "Doctor X: Mafia in White: Limited Series",
+      "parentTitle": "Doctor X: Mafia in White",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfzHBRII55jGq_YHQiFnRgRi7RGwYfcnu_6alvFKivDk6ASSA_3krQ_n02JTZrtHK9NRpXq6I98aBaxuoKLT7ir5jlrI9uD2bDZ-.jpg?r=e47",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVb9MIgH3LIaYNFErAiXv5f7PGFdl0XJOXWxQvVX6ni4Vaa63d4K8odKGoYATp8tQo-s25kG2YUIrBSF-aRS1XdG2GK-sGHlJw4.jpg?r=a03",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Pursued by Hubert and his henchmen, Assane scrambles to find Raoul and wins an unlikely new ally as he draws up a grand plan to reveal Hubert's crimes.",
+      "title": "Lupin: Part 2",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXIGxXNJk5uxnCDWihwD07I4Q8KMBFZfb4kRI-P8z1inNmOt6JtpuxhFpxbLnlwCAv3v-3TJ2rV3L-IMZ9--TB_sfoK0UUgFTcB5.jpg?r=492",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWnWdunVpBPdSrWfzblMg1xaEQmiqh0GLwkSah5mS1KNQ2lBtz4-9pFGn3euexBr9a93Hu-oIYe0OvDK7k_Xemp1z4TWKfFAqgA.jpg?r=60b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTGiJPbYpEI4lLY-_p4xQsjmBW_FW3BRqZW1EUVayXQy61g5z_RQoYRHSIPzd92q6olxeD_YJ0pXkr1KKRAZx3mk2gr-jof63Dg4bkuyUa8.png?r=3ed",
+      "synopsis": "A seemingly idyllic home swap between Sicily and Stockholm turns toxic as two wealthy couples go to extremes to protect themselves — and their secrets.",
+      "title": "A Couple of Lies: Limited Series",
+      "parentTitle": "A Couple of Lies",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWye3m18Ti_a8SekxAoJnojc621NgjheLrU-LVWq2pP7lA7y_Suktj4WKVuOzK4x8xE6Tkv8TxNgM5ZuU2nKbkcYmOV04IOSfNk2.jpg?r=796",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABX5QuhQ2TPMobvaI_r0W8OJPkHGg8DCcC8aGUY20Nhm0jhAFpcrn-woLfY-F5V6ANt4n-WWwU1HSIrbvT690BYmAgEe4k3dsdYY.jpg?r=0e0",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "As the media and police look to Claire and Raoul, an on-the-run Assane schemes to protect them from afar — but old foes are eager to thwart his plans.",
+      "title": "Lupin: Part 3",
+      "parentTitle": "Lupin",
+      "year": 2023,
+      "rating": "TV-14"
+    },
+    "tv_non_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABatyDyLvoATUJJ41Z98gA62nAtEFD8yayxmL__cA1jWN5OHieZxlDfpxtT0xiED-4pW8GOFnzEHTPtQ4SngjEMp_VPsXoSc97tNw.jpg?r=733",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeQXPYrDsHMdTy4k5JVxrjElc7xb_XyZaB_T50hTqMXqI2X_oEFCal0f4KQPQb4KWfNQcePoOpIcOJziUvcfkU97j_WPNpUBPyM.jpg?r=1ac",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABaehQtJA9pCG__wXDRz4465_xTIEoiVYNJHXCJkiqFOgN6bsc5lMmzekUZxsULc5jFzl1msAaUsbbNtHZ5huoRz3k6ObZw_tPRNTrKQm8RI.png?r=4dc",
+      "synopsis": "An uncanny resemblance to a wealthy heiress leads humble A-Chou to marry a gravely ill noble in her place — but her new life is a dangerous one to keep.",
+      "title": "Where the Mask Ends: Season 1",
+      "parentTitle": "Where the Mask Ends",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABX6NBPvnvwtvoBBZKKYkKHVB2hAFx5KG5N6aPPWq6bJFYgsTdkZ0XxZvsxoIXbVFPD0l104FL9TTSbTYm_oCkfiHlGPZExaVosnM.jpg?r=6a6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXF3m1fKRCNMOrr8lfZVKSW0HGa9SzeMOKKdTjdeqqHBlvbgGVBq65JLfQhDDzdH6P3xK4cOJ3wwlv5oCrmidhONnNsz5XEelMc.jpg?r=1f7",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRRC8gMWcKAh4gKH6oeD8cfJmQsbc4MZdUapaYmRnU0FT6EnS6Gi9_iOpVFl3L8oH5d_yx_xbCINJAu4AVAgV6zIu76ZLh6aD_Et6LB1HFo.png?r=361",
+      "synopsis": "A multi-million dollar art heist unearths dangerous secrets as it pits a controlling mother, her daughter and a seasoned swindler against each other.",
+      "title": "The Gift of Deceit: Season 1",
+      "parentTitle": "The Gift of Deceit",
+      "year": 2026,
+      "rating": "TV-MA"
+    }
+  },
+  "popular": {
+    "films_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABeKUv0SD_U6cZTjamXsfkdCqOJ5I0Tm0gQBHIxXe1zerjb5vqEHrSnwGaOyCGobgkUr_rk4zwadhQc8EXar20dGutosyCJmpMcOE.jpg?r=983",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUyw-0qkeSjJ3rY7ieKr9qFTB6pydFtSeB0RlNX658KtF4YDhMW3fkvnQR3uecwgKedJNQd-vkg8eXqym1cLzj5Adqti1f6ODtM.jpg?r=d64",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZWSzsAkjgBk9AaFX808aLhPEYmACvc9wolKMtxdad5NB39oDTNbkMmC_aoLEGN0zIFTtlPkr0dVgpJUU22VoG72CK0F8y8F2anweqRDN8k.png?r=77d",
+      "synopsis": "When K-pop superstars Rumi, Mira and Zoey aren't selling out stadiums, they're using their secret powers to protect their fans from supernatural threats.",
+      "title": "KPop Demon Hunters",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "PG"
+    },
+    "films_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcTjLPcpQ64KXwtzYPxMlSUvuAaY9CRVtEu6PePgx03LR166kPa7Ftgmgn-NnKzKdazDrlGDK6FppBdX2KjBaVgeuFmAs0D4JovH.jpg?r=afe",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABV_Rz79-ek1myi-jqy9IePZ-DB7_akgNxrGgvOACPIFqc92eOYD3fKWPNmQcBO4pi9fdQSDrI_zcwhZxQayXplBjsQpkcvxKsgY.jpg?r=347",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSd8UO67769E0hkMwMzwGNBsPIb7Tpoh5VOHnaf16LwfWJUpw4zGe94W5eLoprMPwTP3eBZZxBCRR3OEVyOlcBQnkqXnAZCsV18yu04u9PE.png?r=4db",
+      "synopsis": "An FBI profiler pursuing the world's most wanted art thief becomes his reluctant partner in crime to catch an elusive crook who's always one step ahead.",
+      "title": "Red Notice",
+      "parentTitle": "",
+      "year": 2021,
+      "rating": "PG-13"
+    },
+    "films_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQP_EO3UpNJN7cegE76sUggZTgdPSku0kareoeJFGS-GFDe5vrWSsdYOXzTKiqYYN24lahPuQ3aIZrXv2ALDuB2mLBKMIKBnHzmw.jpg?r=8e4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWfPBoEZnhTP_QMSYnCDPr4K9kJljL-VNVzF1_sGB7HBLAcylTYZ5psWfsA3ZsmjBRYazYNBlC2cUsU0OJZHOagFwXov-WWbv5M.jpg?r=f44",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABcdwH-BtVf48cWOZwjcYW5YSmc7BRzaw-Kenk60-fFno-ZocSjLYcc0e6qJC5S46nHFM4MAUbABeB7Ngr4D7YPMuQftd3P0Lbmg_Vic_5BU.png?r=507",
+      "synopsis": "An airport security officer races to outsmart a mysterious traveler forcing him to let a dangerous item slip onto a Christmas Eve flight.",
+      "title": "Carry-On",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "PG-13"
+    },
+    "films_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_K1B0XMBH1HmwsDha4PtLICYWwW5Ex-BQrJ4FBmDvCoYu8zOAueEsCyRakQN8r6_VMQ7JSSH2S6H5cuAuVRLkrKXAWS0GpGizS.jpg?r=7c6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeNULe-gSfKjwz78FMOtLoUr_oA0bZoUlXuiID6mbGclr7CvsRXPYGd2M383S1GmlhKVY6Wp-hpO1b3cONiKrpqA1PnQrRcUXuU.jpg?r=116",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfArEaaaHpQyUPEVR0KRIOyISOga2zOXDMTRCazH-ZkN6RvvjlhtHIoxPLvRDJiJ5iKQkISlAHBOGz0576txoD8eDXl6ZlfGqxkttZjiWSQ.png?r=1a5",
+      "synopsis": "Two astronomers go on a media tour to warn humankind of a planet-killing comet hurtling toward Earth. The response from a distracted world: Meh.",
+      "title": "Don't Look Up",
+      "parentTitle": "",
+      "year": 2021,
+      "rating": "R"
+    },
+    "films_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYSa-r7gheYYMUPpVDYd2y4_WaqLwJkTiOWh1wufBuCGR1AFmSAkbEfliVAx4bNOezoxa73xk2lKkw_4xJcmJY1Ai8esvRMdGgdz.jpg?r=909",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTgz94-dpAkms9zVaJzDcKcloRnJX_MiAhRaml4DRmzPjArhglt-L7hVEALsmAIQYkgyKGSGgg7FLXnIUARIJJsFFGMNKsxdWLY.jpg?r=3db",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABcdDryk6AKjCr3Tw-qnCT-C5LBp7UOOmfEOwQYxVMeKjeLGSDkb1MHXiAH9-287tWC4wlJZqAoUJOgdGMSX3PGHWb2UuwM2AZgu6Vhcs8yw.png?r=e03",
+      "synopsis": "After accidentally crash-landing in 2022, time-traveling fighter pilot Adam Reed teams up with his 12-year-old self on a mission to save the future.",
+      "title": "The Adam Project",
+      "parentTitle": "",
+      "year": 2022,
+      "rating": "PG-13"
+    },
+    "films_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYkGg2IP_8p82tXX8upcKbHUiHR9iPD7Vmz3QrihKsTT79SjMu09O_L2gr7FB-IZC_mNiILqGVFJmnb0N-j-B13jCbQs2yNW0v4F.jpg?r=7b2",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdD57V7pj-T7fsqpJ4X9evGjJdTiUPs-xxBQKSUQ6SUtKG7LdiRvfcS9MGuY2ql2Rxp7cgVA-0mYII-HJCFdPj68R_DflDISqgg.jpg?r=ca8",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVn3vDAw24pEEu8GYGdPFy-t_ON9A0XUnY-HvCgQaB4CoG7alc0WawIYbxmcsJZvTFwK-yw8-eUmBleV0kpwba8Fqe4wbshgo-PMDdRDel0.png?r=cf0",
+      "synopsis": "Five years after an ominous unseen presence decimates society, a survivor and her two children make a desperate bid to reach safety.",
+      "title": "Bird Box",
+      "parentTitle": "",
+      "year": 2018,
+      "rating": "R"
+    },
+    "films_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABY5hL3cy40HaQO0mC7AJv0g8MFi9bURymf9du7G1Iv3kN5xW_N_T0sBVicqWYVYUnGAWgPVL1DIOBoezMlhYpTxIqUXKyOc5LdVd.jpg?r=39e",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbozRHocMwtqg53bVR_xqaF54W1Gn6S_QWYiYGQbEZ9UWjhHLQu0pwy53u2oVA1yQj6ozQw_CoG7aPcmTcBrH09IGG93nGcoNSI.jpg?r=a12",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSyJdF6THa7icv3frrnDX8UJleAPz4DeNBwn3Rk8KO5K_Of6sXun085lvtxEcMSTL0UC4xvp_4-8_A9HyAgDnsR_LtiMKOISrgcDd1oueSA.png?r=cec",
+      "synopsis": "Fifteen years after vanishing from the CIA to start a family, elite spies Matt and Emily jump back into the world of espionage when their cover is blown.",
+      "title": "Back in Action",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "PG-13"
+    },
+    "films_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABY93n8wGBJUM7lzbRYKQ2FsUMK6ewam_L0hbjhhX2Qp4ntkC1LkYUVSvV6Ua_LAKjq_QMbARoNHS4THyiGOnSzZHhx8t_vZj2A9N.jpg?r=f82",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYbaWlX9Rwa1DBfsmw8W5ctIhC73kcyQh_KwceP6uFn-Cqq5OuRzMcpfvfgDtjGtAaWCKHcmujOCq6XTxmStr6R3S1xWLF05VNU.jpg?r=9a5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABaFPtBiQgLMjEuqJJ0JGQWxoTef4EhAh0Nje2JRGirHoi-XAgFvPUrQkSLg3weg4HIpn4qNhDmras6v5Ki5BmQ2szW-DJ_RbJ4i-nbIThmU.png?r=b20",
+      "synopsis": "A tiny woodland creature and a majestic bird suddenly swap bodies, forcing them to team up to survive the wildest adventure of their lives.",
+      "title": "Swapped",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "PG"
+    },
+    "films_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcl5-dF5UjI7wx0Djj51vYJZHcUEqRPSAEWNEUKhw7BOIRhwCgL-5lbK8vrpCXVKetfKMq5s7TzC_HPQVmtgqVg9uZUyGcQB1tBp.jpg?r=3e0",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTlPPsqym50kgVT7WoQaBgX9gk1srtsI5OOoh0tak-nDlK1c6A-1BbfhwhHW5jAZtS-Yl35f_nl66yzoKpGAV1FSc9rSpyA5BpQ.jpg?r=a50",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYZLSbbZuovX7gu2y0MyAlSNk5Z2WUtowaR03gJ2usrxjZORNKLInQqwXs3VU8rV_ns9bP9DEO6zPswOPZXLDQmKdGWBpIFFOu9D5bPxxDI.png?r=1d7",
+      "synopsis": "A family's getaway to a luxurious rental home takes an ominous turn when a cyberattack knocks out their devices — and two strangers appear at their door.",
+      "title": "Leave the World Behind",
+      "parentTitle": "",
+      "year": 2023,
+      "rating": "R"
+    },
+    "films_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXmx9SsD93PrYjxKCHw8C-XTWw1PTZ881B-CM6kD55yKQ2GNP5Wj2Ef0e4mYUJT-rFFx09zD7hEBasUbpsq3BA_IHQ05Nd3glms7.jpg?r=211",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQpNRPbYsv_5GIgwUkSE3EvaF2ylNwiUcNQvByQkO_TZEiR0vVS2e5PzofCBt4pbqZ-reMwGaMUwGsGbO2rb1VftvQ-jISmXjsQ.jpg?r=9ed",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXmlrd6kcgs4Kl_v3ipJSFlxwzMwUPIPAmBhFzdK9uOZasKXDGmQz5IXRh56ZieeB-I4DQ-Nr8bUpEVAs7goFjZM3MytgN8wSUso6jzLuyM.png?r=96d",
+      "synopsis": "On one last grueling mission during Army Ranger training, a combat engineer must lead his unit in a fight against a giant otherworldly killing machine.",
+      "title": "War Machine",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "R"
+    },
+    "films_non_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUwNLPh_XwAdi58dEC2hzbMyKg0sygDh2dBQV-BdWHUC5lnMge7D0T5rMcAJ2Aq3uB_qKhS-umbLp12aqngv22PeqOgtlkphqH3E.jpg?r=52e",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUdue7uMyt5-Kh-FRFbLZkNcGYramyo_38m7QX5_kx-dsc8HaoqtS-Mmq_qejQOj1HLM5Ezezf4_CE5BsfbFDspZwkJf5O2rfeQ.jpg?r=e16",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABb6vsEk_J17aA9ui2L1GB0M71KuWXrtbHBWyfXqFhGbBYDplostCv6ty-XOBLa5QbwMsEX7dEh_ggCE8oXId7SkemTpitMrysNmP8JHkdlc.png?r=0e7",
+      "synopsis": "When an explosion in the Norwegian mountains awakens an ancient troll, officials appoint a fearless paleontologist to stop it from wreaking deadly havoc.",
+      "title": "Troll",
+      "parentTitle": "",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "films_non_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUgT0vMBRcRHKgeU8s7Anp7qyHm992V1IAUUxHcJdQoUsK98Z5zAkfn_rU4eLkl-VJu3tz_HF59dNQ5rMU8L2rCXLGsMnnAglvuL.jpg?r=7bf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABfLm64m9fD0ZKgvWL9KOyFTnMbHf9QkYwjzdr0R3ZTKbOonttF4hcpnU5orPavp-cxigOvNpBUoGiAhYtwTNaLPV2OCARPyRXh8.jpg?r=868",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYOjs6-cXok-wP6TS-IWKXoodT-TfUyd8RNg8cAI1y5ojzSQ0rV-XttAbIZGXRcy9_dAwOGDxcyl4p_EW1u4uuromBOHLkL3djQbT3x9ljg.png?r=f96",
+      "synopsis": "In order to save Paris from an international bloodbath, a grieving scientist is forced to face her tragic past when a giant shark appears in the Seine.",
+      "title": "Under Paris",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "films_non_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABe793oSkcdJg1eMRtHPOR3feR_JnyaVYD2Huk1dUF414GChzJxGjNJPEhAnSciGrglNqT4MiVv_BC_eLZFAZHeYQvDhdKWb0nnAa.jpg?r=393",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeUHucMASYTHu7MDVkYbJ-WjncG6Nh3MvdSh1PE4V-xozoFdYCcyqiCEjvQs3ggd8Xtzm26i4RL6UQCiR6P46p8EVj8D5jeSDi8.jpg?r=e61",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZ0JwS6V28lVE22SAUrT2Kb89ejAhNeRtMLsRNqrOElOOg542G8ck2xORVdYYTzssnzLctGhUBsKPcu4h-2THN9AgKoA6hTATkDaoYCL3sg.png?r=289",
+      "synopsis": "Following a plane crash in the remote heart of the Andes, survivors join forces and become each other's best hope as they navigate their way back home.",
+      "title": "Society of the Snow",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "R"
+    },
+    "films_non_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQSJcl1CCMAHa3PbRsbU38sIMwg6LYEcNA_R-ziu6RA7IaIAUluSWBaomuKUYRL8qL1a9RFkRyp2uVvQyejruLqCJmxmPF61ldaJ.jpg?r=cbd",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABfOCikeJ5QOE8mIS2f4xAzjB_vKVee8muTjAYsWYZEDwWdsCzoKQ40YcHPTJ1V-4t-CAhuU0fPTin0Khi97w6kHin6dE4b552PA.jpg?r=76e",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfZachaFzwy1Y3wfksf2IjbZN5h3a8r0nswZ2u-qGE0wyv1noqTgCtrgvcu9PM1MpFyMJNzR_y0tDum4EKY70rAbYpjZufHvseHgCh0k66E.png?r=fac",
+      "synopsis": "When her son vanishes inside a US consulate, ex-special forces soldier Sara does everything in her power to find him — and uncovers a dark conspiracy.",
+      "title": "Exterritorial",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "films_non_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXYkCRZ16jZL8qqsJuJo89bDMeM6VtVvZ9nwsnaKkQlP2YE0iurkPfP2oXZhpP4-tOjLLPuhwuXiSXoa7_8QMSnLtXyTe8Gg6Gie.jpg?r=a1a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTxjQEYB52SeqrsZVNWf7MVIkNfl4Ue0hPhQSfDWZCnas4gPB6BF8eqQchDn74iMq7Du2iWi0tL9STJxVO6_Wmo28yby4wROBd8.jpg?r=4c1",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfHYxgmOcG8cBKKVhEhlSc9sy5dA4ATxIdcVHun-d3559xqkmgI4N3cs68CZ_BCVlyY6jJnwXbYwWlPUQbr18r7q33wET5qHlI2UaWWUsBo.png?r=1b8",
+      "synopsis": "When a raging flood traps a researcher and her young son, a call to a crucial mission puts their escape — and the future of humanity — on the line.",
+      "title": "The Great Flood",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "films_non_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTpuzE0DAd_imHQbsvUV9TjERAQ7r1GZoPxXnobdXruwQxlmdNo7jnHNKH7v6L045AAP0pbM1W-UCOtLXLCEZIf4FoQmRAMAhilT.jpg?r=493",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABcEA49TvEX0m7wlFNWkuRf2OPqWsy3xH_6bLTv4rdaVlLGFoEZuFH6j71G20jBQLeyXjc3c9OXUVdD1bMccbRdhgKA6YsHEuM3g.jpg?r=4f8",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABV9y01Os2_bKZOQpvdzW-uFkfkTsTV4c6vVeqc0ly82A0LgETNv_OYr4KAZ8JCYCB02zzIQ470MVk2kYbp0ONV1OobyKeDomzSXO2-Z702g.png?r=45a",
+      "synopsis": "Pregnant, alone and drifting in the sea, a woman trapped in a shipping container tries to survive after fleeing a devastated totalitarian country.",
+      "title": "Nowhere",
+      "parentTitle": "",
+      "year": 2023,
+      "rating": "TV-MA"
+    },
+    "films_non_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfYmDgVLt7dxNEge72muf_kQqecfbMeNsDkAnjIkz_Hqs2m1ZCYHpa1L-U-d4Drhxe7jpoFk9yu7OB8tXKafvLDM5-0ZkrRLHKPO.jpg?r=0fa",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUoYfHfrCmWJVbAnSQcMGkMP5rWNm_ehiA_yJFG7_0T0Vdc74AQDeqbb5uWXUtIj0vAKQ84h4c5kgKS9wrzx3yB6yqArVWWhkZI.jpg?r=60e",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbNWWDN7DcusVYNqfWVCzhidC3ekyzUtHljN7SKDY8xCvr5_kY8RTC78-vdv9Mh6hT0LutitAjiDf5iGiFxEayQoAoEQvoIUOPETz1bRZkA.png?r=280",
+      "synopsis": "A slab of food descends down a vertical facility. The residents above eat heartily, leaving those below starving and desperate. A rebellion is imminent.",
+      "title": "The Platform",
+      "parentTitle": "",
+      "year": 2019,
+      "rating": "TV-MA"
+    },
+    "films_non_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSSkFtHFtbG5m3nGzLuLJPuLmFKsXU-icDKqEArgFuuWT05qrClHnBufHVVKbJlRR2hJnYh0QNBN8TYNVNYeJomRxiGmFqNv_BO0.jpg?r=651",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABULn_UYaDLlHeK4B0obqlSy1d8__-3_tBTP4dnafzYze0ymtu6qNWQmDEfL6CgVFUKLoFvEqqKknaTCIij5wIJXVILumhaZ6f8U.jpg?r=73b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWVM4PXxKoMwb0Nx-NNKSs--ADCYRZy0bjene0h9x5LdrC7VIXOpABRTdR1a0dSP8DCWGj59tp7hfMvOCcddFYKn_sQg85H8lCdY9H0EKHc.png?r=d3d",
+      "synopsis": "When a hostage rescue mission creates a new enemy, Capt. Guerrero and his elite soldiers must face an ambush by a criminal group.",
+      "title": "Counterattack",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "films_non_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWhg9iOt3f1fTZVBDS7VojqkGzGLx7s7SpnbYMTTlaoLzRdRpV78bpkKaGqoJgB3SVCjMpA_1ERorQv_M9JsgYJA0oOwhxqNXm1-.jpg?r=8f8",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf2Nhiv_XS8osXpmbbhrQwkw0TZc6IObV2xNUKQdm_YzqnO2M3x_wGBwcg2RGZrpmIz9HpJJkdTy6OHQu9iGqcK1I-QaU2QeZRA.jpg?r=7c2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa_M4yGUiazmz2GRnoCwG-OztRadeEvfFNM10wsdk7XMXE-dtytM1WHl-m-C9O_-z1OB_1rdlzwtQXpesUijWashshzlV1yfvfmsf1K0qbs.png?r=8bc",
+      "synopsis": "When he and his pregnant wife are attacked in their home, a former elite agent becomes trapped in a deadly manhunt tied to his own painful past.",
+      "title": "Ad Vitam",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "films_non_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfrEjhYJOT_y0STYIF-q1QJriS66P_qlCNUOHz8WBOuOlGDDPTE6bSEQNsOrW-bBv4qTrhpyrH3-M6srcdvj3MramO5aKzu6v-TO.jpg?r=807",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeO3RnpP9UWMod9QnWnXalnQdDN4-wdEtpyG-Gq9q4gtX35HJtMekMknJMJYaTmFFLDRq45DOK24SCaRYejSbhjRj9svXTfERHQ.jpg?r=511",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZSCEVbMuYiYiYhCmpQ2AVqIywkKMFKvzTHWGIKXF38bUJWf1OViPsiP4B6QTHKWaOs_xnmYuvxEm9euMTkfv8B7t9sMh-glyl5NWqspYGk.png?r=2af",
+      "synopsis": "When a mysterious brick wall encloses their apartment building overnight, Tim and Olivia must unite with their wary neighbors to get out alive.\n",
+      "title": "Brick",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "tv_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWu3yLC_h4YnQ2jlZhvhKuYdGi8rl6YJHeforrlpsq_3gs4wWR4ZLmvBoE2ASNm05DYZ3fnXeiyb5nZwotSgxDhNwumquixbOxdF.jpg?r=570",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQzwPOJZECRup8dSNYHsp6yFX2wz3s9PETLkvLUoab4TeOwi7W1_QMGG-hrmTCgjUaNQNf7WlI3tQNl7ZNPoE6LJn8UJgEXdhbg.jpg?r=082",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWHz6C60YqKeAnURPkvxDEURGdTqmep3Ud0DLuo7GSWz1UIa9tsLACMGXsftz0CG8AOmJTqoOePaUG3ECz5PqMKkBqEH7ehYBq2FJvMuU54.png?r=166",
+      "synopsis": "Smart, sarcastic and a little dead inside, Wednesday Addams investigates a murder spree while making new friends — and foes — at Nevermore Academy.",
+      "title": "Wednesday: Season 1",
+      "parentTitle": "Wednesday",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "tv_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWZHB3sXiJecf3V_R5D5vsFSH4C2iK0CzlVU2HyNE-NsNXn1h_l3MLEIDGuhn08nQENHwkaG_eNtrpjC0Fu4bC5-yHLHpEHDGbyO.jpg?r=0c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABX39OvycOmzhFLzFerx7GHuQ-i-eBGSYDlCL2TXwjyJxSZetNIpnLh6KCznPkSQd7JIy1aOYU1DrLttJej6-DzeC2jezRJI-JJ8.jpg?r=204",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdmEIsHN25ugXvSCzfj_QJMJQjMx9t98_uDXIy5RHFS_VoxPV5zidzhkiDdqnmqcXbxFy059lIbSief_70yc5jK5rZL6rybS57iMH5PmmRw.png?r=b66",
+      "synopsis": "When a 13-year-old is accused of the murder of a classmate, his family, therapist and the detective in charge are all left asking: what really happened?",
+      "title": "Adolescence: Limited Series",
+      "parentTitle": "Adolescence",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "tv_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABaNeUcpwO2JirpMHb6WJugLqDAgzWFGjr-Zyvd3ppzo3trrc2wE5U_zBVhJI89FlxVg5ZPGPeUY8mXAipDMZ1Va1fzGLZ7BEzwda.jpg?r=b45",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABR0mKXC1M8aYlDWeoG41pcjEp1iS6qmz3mWIzFNt6XxWMmmrfSsXUcPZJFnMHjMnwtfg2Usi5dOv_QhgNZJc0x8pstEf9ykZ8qE.jpg?r=c68",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSODcG6DSxuQLY2pWcHNCwLMudm77yPGcFe5HUZEMtGDvUV7EHK0vOOLBDxJal-Plm3GNq6YwEDMQ8DwpICuqOXe5Ybo_rh3VyBf6pq27ns.png?r=931",
+      "synopsis": "Darkness returns to Hawkins just in time for spring break, igniting fresh terror, disturbing memories — and an ominous new threat.",
+      "title": "Stranger Things 4",
+      "parentTitle": "Stranger Things",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "tv_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbQXh30Pa01GIqx2uAPe0O5RavTuNkaoFs_TcQJearYHk4eI_BoZC9ZWYU9YCK-nkiMdDn9DtUxTqpFHV15BjEGvJeTxO9ezEZVx.jpg?r=1d9",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeLe7rw6nRT4FxhdDqLshPQSoi-I9i-sXL2nMS7A_p5WLImc1EeacV6L28hTG5z2WHmRcTe-DqUhOjTRlbvRRnm9ITpX47YIVwE.jpg?r=dce",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSODcG6DSxuQLY2pWcHNCwLMudm77yPGcFe5HUZEMtGDvUV7EHK0vOOLBDxJal-Plm3GNq6YwEDMQ8DwpICuqOXe5Ybo_rh3VyBf6pq27ns.png?r=931",
+      "synopsis": "With Hawkins under lockdown, El in hiding and danger lurking at every turn, the entire party unites with a single goal: to hunt and kill Vecna.",
+      "title": "Stranger Things 5",
+      "parentTitle": "Stranger Things",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "tv_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUxBpw7pn1tqK7C9pe7eQgswjy1hcf726pNaNXGKyEkiyqk_Jhe00ekBi0Beqy_NPe_Zbs0IYTFZteHr9pXThgIlOW8nLDSYuoZv.jpg?r=e31",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeIPOvzMYJkkwC3VcY04P4it2p6c5lHwQ3epSmzkRu5rLBugSTghHI2poIdw2pVqUOEi_oJWkSQoa1fjme18XPDNnFYavGUX-GU.jpg?r=33b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQo_wPklu2WP7IxfOiStnOsGvsehE4DOGP4-gEPJ0o4E_BoGj7pwNk7kzOwzsZqimpEER9eMGKwilp5fuAS4YPLCLqiuP6yYFFJWZ26sd38.png?r=387",
+      "synopsis": "Wrongfully imprisoned for murdering his own son, a father sets out on a desperate rescue mission after learning the boy may still be alive.",
+      "title": "I Will Find You: Limited Series",
+      "parentTitle": "I Will Find You",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "tv_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfRVm_e-dJQu7tw2OB4l4Vmn5S0y687a8NfkhAQsBCsEV9jmBX_Gx2iH8jsAITtLrv05e-midL9rxTnywCyW8cdT-rpMh2dMsdrF.jpg?r=af7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQLa87bKO5RaLZckaPw8-z-YEzQHavPeUUuPMuvWKq_YE0gjYt_GBViCnoSKjn6h5ZYTyyGhCq-7phZs_-zoj-w96bkj05v15Rw.jpg?r=433",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWHz6C60YqKeAnURPkvxDEURGdTqmep3Ud0DLuo7GSWz1UIa9tsLACMGXsftz0CG8AOmJTqoOePaUG3ECz5PqMKkBqEH7ehYBq2FJvMuU54.png?r=166",
+      "synopsis": "When her psychic powers falter, Wednesday must fight to regain them — or face deadly consequences for Enid and others at Nevermore.",
+      "title": "Wednesday: Season 2",
+      "parentTitle": "Wednesday",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "tv_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbdtIoa_V951u5Jsqgd98oqw_BWVVz76odSN2dX2HUqvPMQbyvJsscqxUqHf0WzKij3syRzdqG6VixFh75nXzUI8RR-9BuhjK1TV.jpg?r=864",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf5TGW_zOgkT1HDX-WzcqlpNwNkMGSxAttjfksljQjta_jU1ACHwaVCgRnjAnm5tPNUCqRSRnUM2xGH9k9yEgjX_o-jbSXn-zdc.jpg?r=385",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXMBzCLVS5b5zZ6ziITBDX50af9J1gnbiZafsfD3O66Kd946XObmVAF8HvSd0RXwciRnVN2xh9rxf0VPeAT18WrGm7y8jC70crJ4iPnEMcE.png?r=151",
+      "synopsis": "Across more than a decade, 17 teen boys and young men were murdered by convicted killer Jeffrey Dahmer. How did he evade arrest for so long?",
+      "title": "DAHMER: Monster: The Jeffrey Dahmer Story",
+      "parentTitle": "DAHMER",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "tv_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABaEnpeQW5tgVwkDrCo95-TGnPtibp2Z6NEzheUH9-UoRKzqDhL78bvf3SLt2e0H5Qo-CemEu2Wwj3-sm_O9nNvJpLuRMGjOEMURk.jpg?r=c70",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABcso2U852_-brO_cOwiPqqEf2ir92LgQXOVc8NkmHjmrZ9wbpyr_CNOXSnt0jdGqfjWIDf8Uz3Ii1BoC37Xhiwg73xno_BSPjOc.jpg?r=3a0",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX4f-S8RAt3SCQIe7Qcsu0D8jjvycNG6HllCJqmbRK9PfHtoQA51m7CbmRBUBPPyCt4S6De_pKi2ZojfrA3BUNuHYPycVV4OIy6wmFs8_SQ.png?r=eb8",
+      "synopsis": "The eight close-knit siblings of the Bridgerton family look for love and happiness in London high society. Inspired by Julia Quinn's bestselling novels.",
+      "title": "Bridgerton: Season 1",
+      "parentTitle": "Bridgerton",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "tv_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSK5lmNR7RSrSX4h2NAH_Z6RgncYMrFfCUCobWldi_ftN7hIZUKVlbKXH4FjBjuZvsDenf541-WtEHUolgn3gAf_Ck9Jaj4i_V9P.jpg?r=736",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbysNLYaxBzFMU3znnKKwy6UvJ22Fl9OULMEcdV0sdVWranL4gETxTzDtdRonYmXI5g3hdsN9e3zRjuqLBysYrwW2L3xm7DTkiU.jpg?r=069",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUzZjtVShRjUTcjapNDFwOXCqT4UXZ9ysVIsAZTryQpV0R82JYYUlpG8Y0UfP11Hq6oaMlgtDfnLhVWlYNKfwKvjOR8aEjAK35x7YjFe7l8.png?r=373",
+      "synopsis": "In a 1950s orphanage, a young girl reveals an astonishing talent for chess and begins an unlikely journey to stardom while grappling with addiction.",
+      "title": "The Queen's Gambit: Limited Series",
+      "parentTitle": "The Queen's Gambit",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "tv_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABa-KqhNuciG4MtX0cGVe7Pl77lFy73RypCeY2fWf1_P5jk-13t8NbfOEMdxDiAuATOTIU63GNll-Ksgu_yrp6PXNJhCHz0Pd62_5.jpg?r=036",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVSIJEbhITFZa3ONZoUnfdRGbv_37yAhK98Tja9pySDNzYLaBsMMmUTrYxrlhQWSXDFFEIqTtLFg7USgZRSj85QrIUbJCzjAi5E.jpg?r=5e5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX4f-S8RAt3SCQIe7Qcsu0D8jjvycNG6HllCJqmbRK9PfHtoQA51m7CbmRBUBPPyCt4S6De_pKi2ZojfrA3BUNuHYPycVV4OIy6wmFs8_SQ.png?r=eb8",
+      "synopsis": "As a new crop of debutantes yearns to become the brightest of the ball, a wallflower with a double life finds her light amid secrets and surprises.",
+      "title": "Bridgerton: Season 3",
+      "parentTitle": "Bridgerton",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcLaEOs_lxVRDkGymPc0ZSiEPszCyFbMYNlwWc3zK0FXKM6I-5KCSvxKhC7ms86vsAbiQ7Eh_Lv_PEg03M_4FP374hUerHVAHY-F.jpg?r=002",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVhbr1dcTgqdSSTBYlr0kWnVQg7vtpoMAq5wC0Xp4CIF8IuWjOBHbYnAMjqpMBg6i8UlXTgvDhxg535hW2rA1nfjN4Z92oQjc8c.jpg?r=853",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits — with deadly high stakes.",
+      "title": "Squid Game: Season 1",
+      "parentTitle": "Squid Game",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXva7UMnfPM4IGaIn2Xjb1fYAmiOGtqLuiQnDEaBDM6jxdd99rmuL6n6DnMkIW8HbtduYVUTyjjyqzZ1xUh9T3x7EoktWoO19URa.jpg?r=f02",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVPSj4FwCdE7_oFR8N41FxWaDValN7CbsAQijDKk1sI0UL49bEL3bXYWBLOkaPXUqyH6hGku4vOvohob58r-LEc2SKxeHOVycAg.jpg?r=ea2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "Ready to run for your lives? Player 456 returns for more heart-pounding children's games, facing deadly new challenges — but armed with a hidden agenda.",
+      "title": "Squid Game: Season 2",
+      "parentTitle": "Squid Game",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABURK_Lqz1m4_GcvyzzSDGCMl4vjv_JvaaNmgN5cx4ZTLYa2lQ6Ir6TkApDENBlf-cCwFSIucIPkfJ5oFhi7ryDyvVqMKqzb7EyMT.jpg?r=052",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUhO2mJ2QlnJTBc0hIuPbyC_5P-4Y2agya3Ov9bU9LeyLtQiCDEoDxEWXvRvL4gAK17q-1Q7eBYWcwDCtzRYMajzKujTU5q0NE8.jpg?r=dd2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "New games. Old foes. Player 456 and the Front Man clash in a final showdown of moral dilemmas and pulse-racing challenges. Who will emerge victorious?",
+      "title": "Squid Game: Season 3",
+      "parentTitle": "Squid Game",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcvKK24oYP5WJdBenaHkHJlb4QB87GUGoUPw0ir7TU-za1RoOqF2KDErMGUV2Gu2tGCi6OqIVhKgiIvVPYndtiP3rKtMNhw6lnXy.jpg?r=638",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABep0Cj9g4DqsXD6QmWu6CWvGZiWEksjXZvRmez06LtmH7rXg_WzIe3vUGxpsUhgZH9hEHDx0pUvbziG7-mvaZTkFzk8f5qcwgwI.jpg?r=c9a",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "Lives are on the line as the Professor's plan begins to unravel and the crew must fend off enemies from both inside and outside the Bank of Spain.",
+      "title": "Money Heist: Part 4",
+      "parentTitle": "Money Heist",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABc42_ammCSFqlP1G601eg97RXX62YyiQp1o51UJXSh8iyL8RswrRkvvsVIg_vtB0H015R0V92UxrRwkvjwdUwDW-wM7bSXbmz63a.jpg?r=49a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVf8f38D20WmJnf7oQ0T-XynsyaIkk0ai-1hoKUGD8mbp_zqYqJWkdm0Bk5IJmYr0ZPoLh7NyvrTHO4nAom3Vucu11k6sYdpVRM.jpg?r=a75",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Inspired by the adventures of Arsène Lupin, gentleman thief Assane Diop sets out to avenge his father for an injustice inflicted by a wealthy family.",
+      "title": "Lupin: Part 1",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_6": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYgedVP-d5OFCpkohlIQ0xygfyb1u-mGFQe147NnlzTeNfnWbVUJ0ITaPlw1JDfo4DaZrUhXFYdMzul7sy8QbFwD2M_ZQ4HKB1Iw.jpg?r=2ac",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABaMQiJuX52i-i5bw94hHv9yPIoTtlwx26tPnKfxAVyAxgdeg5iXk_IiDJBraWJtw10N6RArJMK4T_0K8aVy7dvej6ccYO5fKgT8.jpg?r=326",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "The gang has been in the Bank of Spain for more than 100 hours and the Professor is at risk. To make matters worse, a new adversary is coming: the army.",
+      "title": "Money Heist: Part 5",
+      "parentTitle": "Money Heist",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_7": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXX7aLd8QR2xSetBUXuEn-bEYk1uOKtsegC5jPezZB9gGmrOKGkP528AYkRkgH0vwrOEUI7YdsJgrCCMbF1E2t03HwOs8017rPcm.jpg?r=f09",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdxS1kzMF49WdHQKH5ZoQtGVYOOM5v2t2LFenEFD-B3w6RfmXH6fhV8VIeLqyh1oGM1KghKYhEoK7mQeOtDCXBKZkdOVVf6uVSw.jpg?r=b25",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "The Professor and his team reunite to free Río, this time targeting the Bank of Spain with a daring and dangerous new plan. The Resistance continues.",
+      "title": "Money Heist: Part 3",
+      "parentTitle": "Money Heist",
+      "year": 2019,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_8": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWTi7Q_Q0zKVTAwl1lToj0yesv_kwGgZhHiAg2HqsinvWLEUx_Qr17bUISHsH9dKpBOhVbR94F3dVIgYlVlfh8IgPI-H_rbNz8CX.jpg?r=96b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQTAyWeM7yjvL0FNWsN9Th7Q4LT6o-i1qJwA2Lycqq5Nc20gtXCvlo-kZQwcOL4HxvX5y2qpzhwLns0_-HaOAbVKdqeW4srV8bA.jpg?r=d94",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSpn3ZqXPi4D6KlDRRVOlT54dPUebfI7tj8Ej3YF0nmq_K3FwE8gB6oV0l4HpBpeDomjeB_q98dRIvtIoXzDsY-yJKy3j9YRuWs84R9tulk.png?r=46e",
+      "synopsis": "A Norwegian family vacationing on La Palma faces disaster when a young researcher discovers alarming signs of an imminent volcanic eruption.",
+      "title": "La Palma: Limited Series",
+      "parentTitle": "La Palma",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_9": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfzHBRII55jGq_YHQiFnRgRi7RGwYfcnu_6alvFKivDk6ASSA_3krQ_n02JTZrtHK9NRpXq6I98aBaxuoKLT7ir5jlrI9uD2bDZ-.jpg?r=e47",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVb9MIgH3LIaYNFErAiXv5f7PGFdl0XJOXWxQvVX6ni4Vaa63d4K8odKGoYATp8tQo-s25kG2YUIrBSF-aRS1XdG2GK-sGHlJw4.jpg?r=a03",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Pursued by Hubert and his henchmen, Assane scrambles to find Raoul and wins an unlikely new ally as he draws up a grand plan to reveal Hubert's crimes.",
+      "title": "Lupin: Part 2",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "tv_non_en_10": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWThoxdmClcuBB2gH48RYSJ0SRy0FQxlDWsizGFFUZXgY4wE8-ipN4hqtLTJpvcnMWrbNlnsdYy5pFebwEb_5DbgmRsO-aMDbTvC.jpg?r=db2",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdG3uwZeHFHGMIKQ78auye1_cG4w6ShHJ_G4eOgKi0S5TL5fxn4-7sJ15Ce6d7jGMvLwBJZI7l4fkqoKzAJC3MEko_vl-c3gQuc.jpg?r=6d5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSat8a_7cPl_E3lJlp4KHncTj7rzRoRazFGXEajbipKL6NnKKcAUj0Ceyidqxtq-KVaRlJ_BMXIoxgqxeFyApLhMqhypTIX4zCG3dIc0_IM.png?r=37e",
+      "synopsis": "When respect collapses in schools, unconventional inspectors arrive to set things right — with sharp, no-nonsense lessons you won't find in textbooks.",
+      "title": "Teach You a Lesson: Limited Series",
+      "parentTitle": "Teach You a Lesson",
+      "year": 2026,
+      "rating": "TV-MA"
+    }
+  },
+  "byTitle": {
+    "animals": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABblD_FaWkwlpXxe-Iqa8fPMYFAFX17GEWziINzvQPs55EGSGxx-avogRhitiXhuvOwvQzgXJT7XOC8Jw214WIejLtPFJ62ZRSj5J.jpg?r=154",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYqnynJ5fRfm5n1mIRLwCbJtlwnqyxyUi9lB299FR5hl9b_5c7dwlDCwY4DeV0pI52q1TS40m0lo6D1BHsh1OHpY9wy-YUAL3-w.jpg?r=169",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQZW9toTO0f2jHFImvf1HhpoSHvTJVkE0676RPTKQivJyQIu5GtVcoCas-iNMIsVYIvTqEw7Lyb7iPqTeNupEMHtP8jy3B0n4w9WA1Dz4nY.png?r=0d5",
+      "synopsis": "When their son is kidnapped, an LA mayoral candidate and his wife scramble to raise the ransom while making choices that could tear their world apart.",
+      "title": "Animals",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "R"
+    },
+    "return to sender": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUuSYVYAWHwXoqfhPyLbkB_IuRallG65nTcWF94jDBYxmdJwxsC9uclGmvanhm4fYbvDEz4D9V88Gwfc2fjmX84EzkPYrQzgMw4O.jpg?r=62a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeFGo6zcUsloHcqzNAKbGl52lNbYnYxwsnSHml5ANQgr4NH6zLIISB-sGRpMg7EM9vfl_O7jK4QHhLmwVt6eoGGKpH2L8VZrmuQ.jpg?r=02b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRyp_HD8wJ_PFMw6r1HkBFzbPyDILkH5hRRaonUhfu4TglzSAl6cZz5KL7DAgu8W-sOgm2182M2Dd0EGKw_aKTO3QQFZVNztGmi24OiC7b8.png?r=a32",
+      "synopsis": "After surviving an assault in her own home, a nurse seeking closure writes to her attacker in prison and forges a strange relationship with him.",
+      "title": "Return to Sender",
+      "parentTitle": "",
+      "year": 2015,
+      "rating": "TV-MA"
+    },
+    "kpop demon hunters": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABeKUv0SD_U6cZTjamXsfkdCqOJ5I0Tm0gQBHIxXe1zerjb5vqEHrSnwGaOyCGobgkUr_rk4zwadhQc8EXar20dGutosyCJmpMcOE.jpg?r=983",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUyw-0qkeSjJ3rY7ieKr9qFTB6pydFtSeB0RlNX658KtF4YDhMW3fkvnQR3uecwgKedJNQd-vkg8eXqym1cLzj5Adqti1f6ODtM.jpg?r=d64",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZWSzsAkjgBk9AaFX808aLhPEYmACvc9wolKMtxdad5NB39oDTNbkMmC_aoLEGN0zIFTtlPkr0dVgpJUU22VoG72CK0F8y8F2anweqRDN8k.png?r=77d",
+      "synopsis": "When K-pop superstars Rumi, Mira and Zoey aren't selling out stadiums, they're using their secret powers to protect their fans from supernatural threats.",
+      "title": "KPop Demon Hunters",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "PG"
+    },
+    "hot wheels let's race: attack of the t-rex": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQR7VzTUomJnDxAfC-j-FL-Fo1jTRpbcRePcEegmWb9qR1tex9DCek1WEl-DRhctCnB8YtS2AtOiqSmXtaU5pIuIxTCRMGaA-Kr-.jpg?r=1e4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABex2L6OsLnINJBXGRF3ypyPFO2XBAGFLbhh6ZpE62HK3_5LBjzRl7PrAWbQrPUK16SdkJy6r-YUypEqAAvbJuvPt6lGmJRDY5I0.jpg?r=ac9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYQxJYiiidKMtfzLinwAV1XEw1wtGZ8NHJDA22Yt2jc0AyV4Xz0lUuV_t7dhS20WIZfLkPOBXgp5Wyb5wxARZS7aMiM1PZh5EOeshQzLR9Y.png?r=2f3",
+      "synopsis": "When a giant T-Rex threatens Hot Wheels City, it's up to Coop and his friends to race to the rescue and save the day.",
+      "title": "Hot Wheels Let's Race: Attack of the T-Rex",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-Y7"
+    },
+    "ice age 4: continental drift": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABedNRrGnDfxSER-iRFDz7uwCg7lVMCSYQ6q7VgUKpg6F3pXcg2nSY8EneSP_DGLE1MQwvrRkBKIQ7J4xQHdnFavERATNo3ulae4X.jpg?r=479",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYCeydTjlLD-277DgKCqdrSXxOvIN_HIt3GCkEbJiiNO3UF5qLGfp6bfuU5VC4h9ksvEM926FttW9t1ICBMddXKwNVBBkLyEeQ4.jpg?r=ca9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVPw3yLcIcltTnBzNiU_15Nc6hK1s33rXAVJUY6FjNIfUeRW-4ylebweGDZhDRDGazm4EIiFaHTNHjB14359qJ_YRsxYWFhaw0U09ETqJ-w.png?r=4a8",
+      "synopsis": "The Ice Age series tacks on a fourth act when unexpected events set the continent in motion, sending Manny, Diego and Sid into the open sea.",
+      "title": "Ice Age 4: Continental Drift",
+      "parentTitle": "",
+      "year": 2012,
+      "rating": "PG"
+    },
+    "ice age: dawn of the dinosaurs": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcbPFpvudh4x0y-bk9E1VOe1kuX4sRvVetMV0AfEDCHYPCwO_SkqdsnEZq1MYYDncLjlDgpmgBIl9qzUpJLwZ53ceMCTyt48seOo.jpg?r=3bf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXAZGqsf8zC3ZL4N6YTVZfvTvPnGPSZ7FJyTCsfSSnUJTPIFsq4v-Z06e1dsDxwsH-_VO0g9_G1OMx9G3xiXXZK-4IxypOAtlDA.jpg?r=749",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbcIeq_qeNvBKCesNr0BaPgm0XcnJ9m63XMkoxYjiRxwXE551RltTp3NuZHNACJCu-lbstZgWenrCcjGynrDwlHU7SgrvnKmApHw61bNiHs.png?r=3a9",
+      "synopsis": "Times are changing for moody mammoth Manny, motormouthed sloth Sid and crafty saber-toothed tiger Diego.",
+      "title": "Ice Age: Dawn of the Dinosaurs",
+      "parentTitle": "",
+      "year": 2009,
+      "rating": "PG"
+    },
+    "ice age 5: collision course": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQIQAUITT5H0LMI4fwLGpZY25FbFAV30cfskaZ5q8-yIBIyyVHweUsQ-qaBOfuznO6sFTS7GlvJQUgMZ-OM7qikFg3vcAzJ0mqYx.jpg?r=bc6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWUrnuclVM_mhJHYy6KK4E2Hh6klu0yvkemu6ll_UoEJsNBXgxeDVF-I_MCRAMwWiSMRvh2w4ONczExVDJrCK2zld87t56cMYsY.jpg?r=095",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXaAAQvXr52yR5qUF4AC0ayqXFtcgTxEHKvM147vYZydHu-P0yIZnPY7yPlv_b1F_cx2arWdOKdsKkP8jNBwl3dR0VjxLo3FtbXdWOr5TiI.png?r=a02",
+      "synopsis": "The herd lands in extraterrestrial hot water when Scrat's wild quest to bury his acorn triggers a cosmic event putting all of Earth in jeopardy.",
+      "title": "Ice Age 5: Collision Course",
+      "parentTitle": "",
+      "year": 2016,
+      "rating": "PG"
+    },
+    "this is not a test": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfBNIGvTd3fDYwVRRmc0bBlr9DxTUGlZyXnrXLhmtTRwiHu3OO5o-d4X8Lu-kr65Ym89S1iX7s9AK3LEfIpZtzvgkqfpc7oPf75p.jpg?r=4e1",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWvGunELMKLSSt7lxkY6inOh3T3u0uOCrBfOarE9nYjU8OuFwY2xsDW9A2DAhF2AtxYh5TTtAssoM_OFgqKdutUl4XxE1owouM0.jpg?r=379",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdisajhp1cZWhrw-1SmItPVY4xv1HW6v8V9W5ZR54FVn8RdSZra0Jl54O39aG46SXXO15cRXNGtKzNC1ICv2UmFDGoVeDaBZcK7koRu4aWI.png?r=4e3",
+      "synopsis": "With the undead roaming the streets, five teenagers seek refuge in a school. Soon, they discover they aren't alone — and that may be a problem.",
+      "title": "This Is Not a Test",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "16+"
+    },
+    "ice age": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTbvJ6ZhoJKmIYXRyY7JJTNw9gjY6qEpXzsgv_DPO71NOr_rRFZW03YlLMaJ4v6m2-Det-liJFsJiUnxzFd3KKUYcoz_C8jhgy7k.jpg?r=62d",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQsrxlnLU7JIg91KqYr5UygHw9cuN4cWn4GvBVo9BUsC97ih-e4V9MXDRFVUWDujeBA19ZLoJ4TS3WPdDwHuA1ZcvrP4hJ5tDFY.jpg?r=179",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRI6RzwEryq2MicFGEozDLvsx9kGjZGoMMLn2-rVlx-oQMIi_jQbcoJBBYHZ1Rfnp1uPohVM_S5MNxqQ5hTrr4g2kwlQDPcgwFxnV5he5gg.png?r=850",
+      "synopsis": "With the ice age almost upon them, a trio of prehistoric critters finds a lost infant and decides to return the baby to its human parents.",
+      "title": "Ice Age",
+      "parentTitle": "",
+      "year": 2002,
+      "rating": "PG"
+    },
+    "aliens in the attic": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABRoweNuZSX4ok00a9jvjJcxdXAqydf-yeL7E9lUMOMNpVrvbFETy8-bmptbvmlZAxslCWjjAqxmSJ63bxARlakJF8iRQmdZ6Y0pG.jpg?r=e61",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ3N0Gbu9spR9FRHHB3GDilBD5qtTxoml0MY7NRfZmyg89VhfBGEmwuhdG8OB21uo0e93VZnm8VAL1BNeCjnWkxjMjEBozVRJIA.jpg?r=907",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfi4euxxdY5hr6o-06KTTkh6KjTtHrcKB0gjEgKTSVlGCGX3DMQyf00Yu0bVNzdw5m3HZn96-CkperXuzBMgLtZ_EwBCKuoaweqQ_A6s_y4.png?r=ea0",
+      "synopsis": "After finding a crew of crafty aliens camping out in the attic of their family vacation rental, the Pearson kids must pull together to save humanity.",
+      "title": "Aliens in the Attic",
+      "parentTitle": "",
+      "year": 2009,
+      "rating": "PG"
+    },
+    "surviving hurricane otis": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTcaI3doK0WYeeh8VFGETCYTW_ykXow27oQ7B_mSP4NCARtvcw6D4LD5I5zQH3DmK6KMUFzAWGQ5HU8kKbUALqd1C8H3wuMyAplL.jpg?r=b64",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbWgcWHNNqZq_Jz1nqXtA_rriw0AmN2s0ejfZFDo3ZN65KhQ3kWH2bNhF3k1UKVIvUuu00qYp6Z9O9ryxjOX7RJpMdz_B8N_jFc.jpg?r=c87",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUgm9cAv6Zdz40z0ZPvI2n0-fOOVkeSnqnRmovCtEYwPJ4AiyoCbCfl-UwBsEZgo5-jZ1CK3D_88mkQ70vLSaOIpVO9SkVdzAE2gt2mg82s.png?r=4f1",
+      "synopsis": "Two estranged brothers struggle to survive Hurricane Otis in Acapulco, where their bond and courage turn adversity into hope. Inspired by a true story.",
+      "title": "Surviving Hurricane Otis",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "collision course": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQAmwO3LH4S_uDeW9e8TZW6j4zrOaknikG2M23wVqDd9xh7KR7Lc2K5vu4s4yH7mYlN4HcWYf00802bLDIA10UePVbmUmIRKJaZP.jpg?r=14a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSGg0G2D8PitOAPpaTbB3TDKFRhKJkQBj8DgBStMgYQ0IURUTfonBnqj6CT55oDGfDKpaApTjbwxSNtbl7UdvYNkJW0jFkc12dM.jpg?r=38c",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABV_K_Q67Cneva2xawZJblhbiWJZPIgPHIGBipSABxHPNA6MIMaIa86M6hXkg5rV_XU8LKXsrVBuiI2C4lM616Cwf0eReyDHPEgyIpmSQ12o.png?r=69d",
+      "synopsis": "Spain, 2013. After robbing a bank, a getaway crash reveals the hidden side of each thief, exposing betrayals and lies that began long before the heist.",
+      "title": "Collision Course",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "gajab raat": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXVHk2qVWrWevF-TkstdWzgtLNmHbm7nRoCkRmtspWCz-Nwa_gD7uVB0HBWG1z6VgUaY90ZRWKY-ETI0-bTuqrd15hOmbvZmFKnN.jpg?r=858",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABV1DBxbWUyjEeEyO6bN3oujgvOrtT_26L-dgFpBl314EAcCUVk6dZRvr6VAG9mwt-xVMjPWi6-l39DsHZdIESMgSCR9aZULx4mA.jpg?r=50d",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdqDCO3PPbBIvgXhUGGjzix-BLF89RmIQsnjWv40CY4hOE2AbeuqZWxtR8hmbTY_69bsmhGxEgun_PhyRUL9upBWYZ6u6NsCO_UPJKItERA.png?r=353",
+      "synopsis": "A cop's reluctant compassion for an injured woman exposes a conspiracy at the highest levels — trapping him in a deadly game across a single night.",
+      "title": "Gajab Raat",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "baththa": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfADTI1VKqU_C-vpHRhldIdvl-aqSYEFHwIPfoiuaEb226RoaHx0clF2pMVfTlj-VCRehBO5A_7ISrPxrTUROoYGmwIBwnpHIQ-t.jpg?r=18f",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABaCNqN0M7xAm7oku4mtP_Us63EUB2PC8m5sZquC6asyGy4uTE4tcFc_ch-a88Juux0ciDi2lkRcafQsUAbwtIFzZlWbtTUK3uNY.jpg?r=f20",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXtqPE6p86Tt_1p3I1HfNR2AFBDBb30Nf7PVyIG_fPiRjXG01XJ3J0aBc6pMUh6ExsEtbS2q1yvbyLsDK5ep0z8LBmdHEKAdL4an3i0BxCk.png?r=4e5",
+      "synopsis": "In 1986 Madras, a timid boy accidentally traps a feared gangster in a school restroom, where an unlikely friendship brings out new sides of them both.",
+      "title": "Baththa",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "the paradise": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABST0EWJt5yjKqNcDyxl88u9SoKxI2v-n49YcEH56s9GgZRz-zDMpma53SiX6DALbOYGW1pAbZ6i54zXE7pBJaP0_gm74ghT8TSl5.jpg?r=b60",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ3MpCRqK-IqAkHo-6Wp2Ywoorlob1dEQjGiye5AgzLAf6iTK5JrgAoyTQIWoI5BvwkYTZDxnT8Li8i9biS3yKHlHglCHHqH3Sw.jpg?r=a11",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABeu_Q96WJiREd-Q0TygU4qOAvYEt5l2I0ZsKn_FkV6OSvFu2Bv7M_W8KZnN3zO69BmzCNFMwbd3ZnZN_5fmS2h1nGARdCPZWWVOwOsSw3M4.png?r=300",
+      "synopsis": "In 1980s India, a reluctant hero leads a marginalized community to fight against their oppressors for citizenship and dignity.",
+      "title": "The Paradise",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "you, me, us": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABZSLiPfCye058HnSlFv4OqYbTiKF8Z1FLJwaZq7PgW2nmgCRVfiuWty2v61uU2j1_C5D1ehq1h_opruUA2KRmAwGVX-NM4kH6NWl.jpg?r=569",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZ39APRbYiLE-v1y9zYI9TUGuSgrhfrwLEpV3K1lY6ci6BjxZa2Zf8Vainncb9BTWY-7-VBE0SJeDwPkK5uPe4YU5aZL7_UO_zc.jpg?r=0aa",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUy9S5LUVdI17HqI45WzOKymnM5PmVphUx6iRAhrtIE2ZnmuegJsMq3tR-cKXkIv_oMK6shvPpBD1xRRcapP9JiIDDzCJ6tK9TjMG3aXXd8.png?r=01e",
+      "synopsis": "When a free-spirited woman and a family-minded man pursue adoption, their opposing backgrounds and world views put their love to the test.",
+      "title": "You, Me, Us",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "dorothy": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABRC42duAKx6t6qwbX4xysLb6VaC37hWUKmXMlJ1FyY0hZhZpdXxdJRkvBMWF8SgUNjUvOjMlMDdCqt7Ohbcb2aWq6w9NbPB_YDFJ.jpg?r=d85",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSUEZs-wLRsKuWbx6mvM1GmQ5HWS65WT_ky5s7qzUW3vF_5V0EhInJNU6YyApEnrrM3Cvo5eweGXaHXNMdv4dGj5qoH8PfAO9sQ.jpg?r=763",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWXWaBzhgGh2tjbER4-W9WmU3vvve4TC3qgL831lPC_MyIwvtEjahnsxSCGJN_8j-xcokWtmNzTaxxIx_5ZnkCI3pHp3rSZlL63nn9U9id8.png?r=d22",
+      "synopsis": "In a village shaped by toxic masculinity, the arrival of Dorothy — a woman who challenges social norms — upends the worldviews of two longtime friends.",
+      "title": "Dorothy",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the birthday gift": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWIdEYmL9iTfTMXDi6r0BPXS8B-5UEGmJE-bnQYgOlxIImXnmw5aszq5czXdNVXVFMYHYqL7NqWdxUn8jMff9amPNXBzzb-2HvX4.jpg?r=722",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXRm4qvWxuVSsT2lFVst5ZQeJQW1po57sXQMErVMDaV9Orgl5EKlVwBwYoBRHElQkDpPbYQrvUWlJ9e9Xljdg70Etd5_xR0auPw.jpg?r=1cf",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQR86ellGLtVs18Gpy02EnOlESegHOJ6IvvbiwdSUNe5mVLEsPEYgaR7K0gtfwjq470rG8ZenjTpSwh5mN60HwhS_sPzzUnSvTnT0DWMeBQ.png?r=142",
+      "synopsis": "A neatly curated children's birthday goes off the rails when an iffy gift and unruly guests launch world-view quarrels, family drama and amusing chaos.",
+      "title": "The Birthday Gift",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "dhoomakethu": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXFh6bNSO2ssCjOMDeY8oCal1f5GbQSOVjPw6_488HdOkY43aqSIO19Ttmzdw_KX3e0Rg0T9O5XMfmS3_ODbuL40h9wgCanhsJkf.jpg?r=9f9",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdMMM2tOTNicY4kdAb5WcB9QEU2UdySFVqMg-2dVW1rRdrvNrkcznM1xYnIRpa7KNo6HhRq4vu3TKbdYOiHpPZylWFF3yhR4ADo.jpg?r=326",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWAjRuJgDepbqu9nvJ6DMqVQRshB8Fd0RKqbkQKweAjki1uq4i7cXhbfOU_6SGwTByJZB0vAZSKBZxBsnlqQWpxfO4cZFJtsq0SwwEK5L58.png?r=e95",
+      "synopsis": "After dreaming of his own death, Kuttan wakes on his wedding day to find himself stuck in a time loop, reliving the events of his nightmare.",
+      "title": "Dhoomakethu",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "the secret woman": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQbqztHiEun-I0zUbwLsL4-p0_sdxRPag7oy1znXd8_x2dL3Vo8_L2f8atdQQ6StQsipT0qGGhWP-twSjh8226m4595EOL8deAyk.jpg?r=40d",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeWrpLjWFINe3npLyXkaA22rqhBJhFHEFwZeypRw3k8XbI7f9idJ3KiPvFZYUU035YpT8Kf5jRC7SkuGkVGwIhtfYzQ1iYgRNG4.jpg?r=b65",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRr4UlpaQr8jgNm9RcTv8sHtjrHDRNIJQNCgpQDQFxqYik48f9R-OLoM601-9gYBmhzoYC0-foJ6xgUWjwnUYeB1Fl8_5BV1GMW1CwGl5e4.png?r=f16",
+      "synopsis": "After discovering she has a family and a shipping empire, a woman with amnesia returns to a wealthy and seemingly perfect past to uncover why she left.",
+      "title": "The Secret Woman",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "the one about matthew perry: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVmHALrDtMjJyjmObLLRbhUMMhR8v64CmkyahP1-RWFFInDoi11uz8nt85W9czfVnFSEo9ohIRAlRK8q7GkTkgz3co9jBFLOq14q.jpg?r=e8b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWBQfrVnXdZWZq6qfWEFDpxNdELA3ryIRE6KYTHgShFZdxKxvoNOsUOjxX50HQjnn546pI4AfnEQrTtqZ1JBxNrxDIH5xP0SyH0.jpg?r=853",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQB8kvkIYBbgUcc4AHM3IB2sABH2i7OfGa0AXBhmQC7pcKMpDRghuhe921e_2_rTqx5n5s_m4oSh1pv-xfYIuiJtTKzLi0XaIz8wZuq4UV4.png?r=982",
+      "synopsis": "This documentary series chronicles the Hollywood success, outspoken advocacy and tragic death of the beloved \"Friends\" star, as told by his inner circle.",
+      "title": "The One About Matthew Perry: Season 1",
+      "parentTitle": "The One About Matthew Perry",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the one about matthew perry": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVmHALrDtMjJyjmObLLRbhUMMhR8v64CmkyahP1-RWFFInDoi11uz8nt85W9czfVnFSEo9ohIRAlRK8q7GkTkgz3co9jBFLOq14q.jpg?r=e8b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWBQfrVnXdZWZq6qfWEFDpxNdELA3ryIRE6KYTHgShFZdxKxvoNOsUOjxX50HQjnn546pI4AfnEQrTtqZ1JBxNrxDIH5xP0SyH0.jpg?r=853",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQB8kvkIYBbgUcc4AHM3IB2sABH2i7OfGa0AXBhmQC7pcKMpDRghuhe921e_2_rTqx5n5s_m4oSh1pv-xfYIuiJtTKzLi0XaIz8wZuq4UV4.png?r=982",
+      "synopsis": "This documentary series chronicles the Hollywood success, outspoken advocacy and tragic death of the beloved \"Friends\" star, as told by his inner circle.",
+      "title": "The One About Matthew Perry: Season 1",
+      "parentTitle": "The One About Matthew Perry",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "nobody wants this: season 3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVRJ45FhjoCGe9DQ9Mx_R4YULf1dOM-D70t4N0WP5twRPnItAEcyx6smaj1JybNfEuTB4HdKeXcb1U4xWqy2JTWqCUs00m8LfmBI.jpg?r=3c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeYMYTe-Gi-njBii-FeBkqi4FVTnAGCEXlAs8cPouLKd8xe1Xt4QO0fy_Tt6ln83s6SDiIfn7hHmZopJPxRy2JdVcx81GF8mfcI.jpg?r=18c",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABe8b-vxzTbgL9GEme-lc_K5UVw3Vra35y6wAtFVoSwOCHGIjUslTUiHKo-yaOFDo3Jj08FWOFmh6CPGN7pb9edlG2iujCMcrprglbASt-no.png?r=a91",
+      "synopsis": "Joanne and Noah take their relationship to the next level amid sibling drama, maternal meddling and one giant leap of faith.",
+      "title": "Nobody Wants This: Season 3",
+      "parentTitle": "Nobody Wants This",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "nobody wants this": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVRJ45FhjoCGe9DQ9Mx_R4YULf1dOM-D70t4N0WP5twRPnItAEcyx6smaj1JybNfEuTB4HdKeXcb1U4xWqy2JTWqCUs00m8LfmBI.jpg?r=3c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeYMYTe-Gi-njBii-FeBkqi4FVTnAGCEXlAs8cPouLKd8xe1Xt4QO0fy_Tt6ln83s6SDiIfn7hHmZopJPxRy2JdVcx81GF8mfcI.jpg?r=18c",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABe8b-vxzTbgL9GEme-lc_K5UVw3Vra35y6wAtFVoSwOCHGIjUslTUiHKo-yaOFDo3Jj08FWOFmh6CPGN7pb9edlG2iujCMcrprglbASt-no.png?r=a91",
+      "synopsis": "Joanne and Noah take their relationship to the next level amid sibling drama, maternal meddling and one giant leap of faith.",
+      "title": "Nobody Wants This: Season 3",
+      "parentTitle": "Nobody Wants This",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "below: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQfUcSsl7int4Hu-uKXulSMhLgRSojXmIScP_wdNJW9Oy6WkrZv1cb2-jK83scxifbUBFrsCp2Nm-pskjuwiCe6DW0xXrtcTjFoW.jpg?r=eaf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABT3-A6m2lamZwquGv5AuX78m23jKerEdjrKSp7rITnJIBMv7J-vefHhFhKHmKIWlsTnIFsYCC9WYZJK_V1HLEWSwmm65I1Pymbg.jpg?r=8cb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXwsGGWYr1eq7chWBWhmdUjQ8nB6XtERAYWUWDWamc4kpbYyH3jlu2_v0riilwSmm0o9TpsDsEA2ulJL4eremswTvnAxmAQb_k7DKbQEpdQ.png?r=f75",
+      "synopsis": "When a mysterious sea creature starts terrorizing a coastal town, a fisherman must fight to protect his family and his community's vanishing way of life.",
+      "title": "Below: Limited Series",
+      "parentTitle": "Below",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "below": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQfUcSsl7int4Hu-uKXulSMhLgRSojXmIScP_wdNJW9Oy6WkrZv1cb2-jK83scxifbUBFrsCp2Nm-pskjuwiCe6DW0xXrtcTjFoW.jpg?r=eaf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABT3-A6m2lamZwquGv5AuX78m23jKerEdjrKSp7rITnJIBMv7J-vefHhFhKHmKIWlsTnIFsYCC9WYZJK_V1HLEWSwmm65I1Pymbg.jpg?r=8cb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXwsGGWYr1eq7chWBWhmdUjQ8nB6XtERAYWUWDWamc4kpbYyH3jlu2_v0riilwSmm0o9TpsDsEA2ulJL4eremswTvnAxmAQb_k7DKbQEpdQ.png?r=f75",
+      "synopsis": "When a mysterious sea creature starts terrorizing a coastal town, a fisherman must fight to protect his family and his community's vanishing way of life.",
+      "title": "Below: Limited Series",
+      "parentTitle": "Below",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the diplomat: season 4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTjlBNod49e0MTiHb64DfXbggneiaOC3bTWJURogtNz9hQJGFYoSWGe59qK2QAJoJ3Wv66836MewKtfVV7rXWrEyyC_7ycrfNJzo.jpg?r=74f",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZmvUvyYwdH9mEBDQyYMT4_rg8uQh5mZSkFGuWLT4xa-t3FpSDI62ZjN_HJ6ZsUfWbvc5ZqdYN-VOWQacBsgdBdAcsM7P1toYyM.jpg?r=4b9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTN3V25GGFC-nHE-sLfhAcs4epX3xUVPP8oGjWJjT5I7P55kQiz8q_-It7-1_huTXXIM7EvE3GMI3iZauHzNwGes_vV-xdOdcxKFsY9dSbs.png?r=19f",
+      "synopsis": "One catastrophic moment shatters the fragile peace Kate Wyler has brokered between the US and UK — and the crumbling marriage she's trying to save.",
+      "title": "The Diplomat: Season 4",
+      "parentTitle": "The Diplomat",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the diplomat": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTjlBNod49e0MTiHb64DfXbggneiaOC3bTWJURogtNz9hQJGFYoSWGe59qK2QAJoJ3Wv66836MewKtfVV7rXWrEyyC_7ycrfNJzo.jpg?r=74f",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABZmvUvyYwdH9mEBDQyYMT4_rg8uQh5mZSkFGuWLT4xa-t3FpSDI62ZjN_HJ6ZsUfWbvc5ZqdYN-VOWQacBsgdBdAcsM7P1toYyM.jpg?r=4b9",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTN3V25GGFC-nHE-sLfhAcs4epX3xUVPP8oGjWJjT5I7P55kQiz8q_-It7-1_huTXXIM7EvE3GMI3iZauHzNwGes_vV-xdOdcxKFsY9dSbs.png?r=19f",
+      "synopsis": "One catastrophic moment shatters the fragile peace Kate Wyler has brokered between the US and UK — and the crumbling marriage she's trying to save.",
+      "title": "The Diplomat: Season 4",
+      "parentTitle": "The Diplomat",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "love is blind: s11: boston": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbI6jLkH1hrepLXXq07o3mf-_sVW8FI4-9-z87Ak1LvFeXXtA6MgkfmDB9QFBBi6NAyva85JlMEJ0sgfKnzU2B3qqf4jcj-PfBYU.jpg?r=2b7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYGSaJP9tyNUBjr7Y9qElALK4l7YdnlWueWlQnJ64ByM_sevIuDVRI8zs3mwmjcOUw-ZZf82u4zYvPWgmRHnXBPgboeax_hXTNg.jpg?r=141",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSPcD-dD3CajEyWfKFsGQjFWqVIBNAYFmsHlFNJSARAatG6_0O_VpOfKnF01OvM8Z0HPBdrrqOWk23eONsPXm20C91nM255-4Su2zXnl-3w.png?r=281",
+      "synopsis": "Boston singles enter the pods to find their soulmates and get engaged sight unseen. Will they walk down the aisle or will looks get in the way of love?",
+      "title": "Love Is Blind: S11: Boston",
+      "parentTitle": "Love Is Blind",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "love is blind": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbI6jLkH1hrepLXXq07o3mf-_sVW8FI4-9-z87Ak1LvFeXXtA6MgkfmDB9QFBBi6NAyva85JlMEJ0sgfKnzU2B3qqf4jcj-PfBYU.jpg?r=2b7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYGSaJP9tyNUBjr7Y9qElALK4l7YdnlWueWlQnJ64ByM_sevIuDVRI8zs3mwmjcOUw-ZZf82u4zYvPWgmRHnXBPgboeax_hXTNg.jpg?r=141",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSPcD-dD3CajEyWfKFsGQjFWqVIBNAYFmsHlFNJSARAatG6_0O_VpOfKnF01OvM8Z0HPBdrrqOWk23eONsPXm20C91nM255-4Su2zXnl-3w.png?r=281",
+      "synopsis": "Boston singles enter the pods to find their soulmates and get engaged sight unseen. Will they walk down the aisle or will looks get in the way of love?",
+      "title": "Love Is Blind: S11: Boston",
+      "parentTitle": "Love Is Blind",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "minimum wage: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfSgTDPB5-XM_qxURbmqww4EH1wFxSmREU6p4Ki1Tfuf8AMXXLk9Ybkkb-L1zji4sRXa2dvlyGwpqoqHso1KAk5C2T4nKt7PnVyh.jpg?r=633",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf0v8WmKbwPfJP-ybQyrHnVgA0w3FDIOdmKmXRFLpBCRD51-4Fp7ngFzas3eENo62ZK73YuEKi6iCAycCCNj1KyCCIB3LVOVxiM.jpg?r=bae",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTftEihvkDXJiZCVL2_hdxhBYXOPIMZ_3e6Re1SmqpT41Uo_cn03CKUhdyyZgqBr0Pv4mK-pJLkhWR6EfTzeb97vdW5QuNeEWuYt_muksSs.png?r=a4a",
+      "synopsis": "Teens struggle to run a local pizzeria while juggling school, a manic boss and minimum wage in this series based on the hit social media shorts.",
+      "title": "Minimum Wage: Season 1",
+      "parentTitle": "Minimum Wage",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "minimum wage": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfSgTDPB5-XM_qxURbmqww4EH1wFxSmREU6p4Ki1Tfuf8AMXXLk9Ybkkb-L1zji4sRXa2dvlyGwpqoqHso1KAk5C2T4nKt7PnVyh.jpg?r=633",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf0v8WmKbwPfJP-ybQyrHnVgA0w3FDIOdmKmXRFLpBCRD51-4Fp7ngFzas3eENo62ZK73YuEKi6iCAycCCNj1KyCCIB3LVOVxiM.jpg?r=bae",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTftEihvkDXJiZCVL2_hdxhBYXOPIMZ_3e6Re1SmqpT41Uo_cn03CKUhdyyZgqBr0Pv4mK-pJLkhWR6EfTzeb97vdW5QuNeEWuYt_muksSs.png?r=a4a",
+      "synopsis": "Teens struggle to run a local pizzeria while juggling school, a manic boss and minimum wage in this series based on the hit social media shorts.",
+      "title": "Minimum Wage: Season 1",
+      "parentTitle": "Minimum Wage",
+      "year": 2026,
+      "rating": "TV-14"
+    },
+    "raw: 2026 - october 26, 2026": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcAQwGLvQJIZZgewqdTP66d01C4XRsgoWXdRZl___AVczefY5vKXePCmMcWtfJ_PeLngrfvmfcIHjVp9garP-pd1IMH31mEwhlZa.jpg?r=957",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABRC8vlkr18Ff-RYajWoDUKNSNJMz5_UdSA7ASQrJsSFKTNRlmXjP92tcf6UOjguOWOPLRWInizj3eUxshCMZ_0PxFk1SYs0fwT8.jpg?r=208",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbFLPRLeHEHEqtXx1fxm7NhDLT0MSNKX8cKDavVneiAVYm5uTic0vxk-uryHEMAMAQHi5FMfsfihNVFmtFc1jNFPTv52_p_eyzzvcJMwbOU.png?r=45f",
+      "synopsis": "Former friends turned foes collide as Bayley and Lyra Valkyria square off in a No Disqualification Match.",
+      "title": "Raw: 2026 - October 26, 2026",
+      "parentTitle": "Raw: 2026",
+      "year": 2026,
+      "rating": "TV-PG"
+    },
+    "raw: 2026": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcAQwGLvQJIZZgewqdTP66d01C4XRsgoWXdRZl___AVczefY5vKXePCmMcWtfJ_PeLngrfvmfcIHjVp9garP-pd1IMH31mEwhlZa.jpg?r=957",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABRC8vlkr18Ff-RYajWoDUKNSNJMz5_UdSA7ASQrJsSFKTNRlmXjP92tcf6UOjguOWOPLRWInizj3eUxshCMZ_0PxFk1SYs0fwT8.jpg?r=208",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbFLPRLeHEHEqtXx1fxm7NhDLT0MSNKX8cKDavVneiAVYm5uTic0vxk-uryHEMAMAQHi5FMfsfihNVFmtFc1jNFPTv52_p_eyzzvcJMwbOU.png?r=45f",
+      "synopsis": "Former friends turned foes collide as Bayley and Lyra Valkyria square off in a No Disqualification Match.",
+      "title": "Raw: 2026 - October 26, 2026",
+      "parentTitle": "Raw: 2026",
+      "year": 2026,
+      "rating": "TV-PG"
+    },
+    "from: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABabTLrFj8LGGUrAsLjxIVVGSnBPCWaCEQgiljrBAUOsxLAP3XNg7bo5jFTYzhMUh0Ush84AGNQEFg6Y06O8zNne-qnkLTr2XhO3B.jpg?r=fad",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABR7PfRSFm7ytS1lQysO1w5spNJ_0GfGapZCno1s-ij4f5OlLRVnntirBcEv9sbBvMJSMzBuapHhFhAfbO9A948TrRSxR-hOf54Q.jpg?r=ee5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbNwxPM9RVhCrtKDqrXT787yq2O_zwm3-aCWbrr5Zt_J-YUr4XiuJOfpJYfpA4P5yzuOLJ3wYylbWTEXa6xI8-CHFMsMU62jzm_ZDnNlJqs.png?r=5c8",
+      "synopsis": "Disoriented travelers find themselves trapped in a mysterious town with no exit, where malevolent forces toy with their minds and hunt them by night.",
+      "title": "From: Season 1",
+      "parentTitle": "From",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "from": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABabTLrFj8LGGUrAsLjxIVVGSnBPCWaCEQgiljrBAUOsxLAP3XNg7bo5jFTYzhMUh0Ush84AGNQEFg6Y06O8zNne-qnkLTr2XhO3B.jpg?r=fad",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABR7PfRSFm7ytS1lQysO1w5spNJ_0GfGapZCno1s-ij4f5OlLRVnntirBcEv9sbBvMJSMzBuapHhFhAfbO9A948TrRSxR-hOf54Q.jpg?r=ee5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbNwxPM9RVhCrtKDqrXT787yq2O_zwm3-aCWbrr5Zt_J-YUr4XiuJOfpJYfpA4P5yzuOLJ3wYylbWTEXa6xI8-CHFMsMU62jzm_ZDnNlJqs.png?r=5c8",
+      "synopsis": "Disoriented travelers find themselves trapped in a mysterious town with no exit, where malevolent forces toy with their minds and hunt them by night.",
+      "title": "From: Season 1",
+      "parentTitle": "From",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "east of eden: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfaEkve_u_fxwTUyUDdQi7Pl83gl13sl2jgBJmcxgYXaSXVq2D9BknfQLZowYfmxAfutjBYVgiVnSNuve3f_cmpUJlBCUd4W07mI.jpg?r=3d1",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbZ1N7gHhmMcoZWv6H64NJVNR9tle0gpeIyAcYyQRdlb3boJ3IBWBUL32UXfoG6wweHcfudBvuVb_fzZv2_r2ihqXzka4M-T_ak.jpg?r=071",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX-k7PFMDNnPWyFODkCHhE9ujVGHVs6_1FIjicdtN8gt8v9vByQ6IW2Kxylrpehqo4P7fuO3yJkUU-uYWJjLYdTpk0VuQdJsZiQE7xyKSls.png?r=76a",
+      "synopsis": "In the early 1900s, a fiercely independent woman drives a rift between two brothers, igniting a saga that unfolds across two generations.",
+      "title": "East of Eden: Limited Series",
+      "parentTitle": "East of Eden",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "east of eden": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfaEkve_u_fxwTUyUDdQi7Pl83gl13sl2jgBJmcxgYXaSXVq2D9BknfQLZowYfmxAfutjBYVgiVnSNuve3f_cmpUJlBCUd4W07mI.jpg?r=3d1",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbZ1N7gHhmMcoZWv6H64NJVNR9tle0gpeIyAcYyQRdlb3boJ3IBWBUL32UXfoG6wweHcfudBvuVb_fzZv2_r2ihqXzka4M-T_ak.jpg?r=071",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX-k7PFMDNnPWyFODkCHhE9ujVGHVs6_1FIjicdtN8gt8v9vByQ6IW2Kxylrpehqo4P7fuO3yJkUU-uYWJjLYdTpk0VuQdJsZiQE7xyKSls.png?r=76a",
+      "synopsis": "In the early 1900s, a fiercely independent woman drives a rift between two brothers, igniting a saga that unfolds across two generations.",
+      "title": "East of Eden: Limited Series",
+      "parentTitle": "East of Eden",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "instadocs: jane doe v. cornell": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSE3qMXp8XDdmp9w9tvrYd5WQRMUv_M2lmSN8O0j7qhBwt1EaDQGU5S3FVc84aynIrx6jnW6N6PDpb9Mmv96O1UgVUOQNg_O8hKW.jpg?r=2bb",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdDOkwzvScFg9wpS2b5Z2HlNNQWoKIcQc9jFwP5ln8JfDSv3OvRdErK_PpxhGXz2ApwiZraWGlHT3G-SaXHbEHtLsc0W6nXs8_c.jpg?r=1c1",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABU8K0P2fiAS5u6uQxDYvIKLsG9jYcTd_nEcuYxYXEWZT3k7RP6bJOp-OuTE2SF7iK2UMFLj9b5jQ5HwbAznNqbpbafb1yZldAgZ-xVupveE.png?r=b4a",
+      "synopsis": "Instadocs goes inside the rape investigation and Jane Doe lawsuit at Cornell University, with the student journalists at the forefront of the story.",
+      "title": "Instadocs: Jane Doe v. Cornell",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "lupin: part 4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQ348H0FqhirMK5gMthWHdLrPGv-TahsMLpmIBz_aULOddFYEzEQxNr5nbtHEGBLL_2o4GBBmdJ3fDNAkTQ0ggRUw4NAYlQ1WQ_S.jpg?r=7df",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABSQIqZsIQCjPuCzXFy535u_CH0cNvO_fykDnuT4sCB8u4VpYWEqFO4M8L5liEZmO_zNMTHyu_Z9v5Dh4Z_E7L82Nkl_VyE3RB0E.jpg?r=c7f",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "After four years behind bars, Assane is ready to leave his past behind and start over, until a copycat forces him to become Lupin once again.",
+      "title": "Lupin: Part 4",
+      "parentTitle": "Lupin",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "lupin": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfzHBRII55jGq_YHQiFnRgRi7RGwYfcnu_6alvFKivDk6ASSA_3krQ_n02JTZrtHK9NRpXq6I98aBaxuoKLT7ir5jlrI9uD2bDZ-.jpg?r=e47",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVb9MIgH3LIaYNFErAiXv5f7PGFdl0XJOXWxQvVX6ni4Vaa63d4K8odKGoYATp8tQo-s25kG2YUIrBSF-aRS1XdG2GK-sGHlJw4.jpg?r=a03",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Pursued by Hubert and his henchmen, Assane scrambles to find Raoul and wins an unlikely new ally as he draws up a grand plan to reveal Hubert's crimes.",
+      "title": "Lupin: Part 2",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "lupin: part 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABc42_ammCSFqlP1G601eg97RXX62YyiQp1o51UJXSh8iyL8RswrRkvvsVIg_vtB0H015R0V92UxrRwkvjwdUwDW-wM7bSXbmz63a.jpg?r=49a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVf8f38D20WmJnf7oQ0T-XynsyaIkk0ai-1hoKUGD8mbp_zqYqJWkdm0Bk5IJmYr0ZPoLh7NyvrTHO4nAom3Vucu11k6sYdpVRM.jpg?r=a75",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Inspired by the adventures of Arsène Lupin, gentleman thief Assane Diop sets out to avenge his father for an injustice inflicted by a wealthy family.",
+      "title": "Lupin: Part 1",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "the fall of el mayo: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVwOMhKMkoKIfsqiWIvR-am6LWaPrCYEaQ6o7Cw0ohiemIVsFLqlZFghbGOegJwHZo0RToipTMES9VF9TQwddKU26WjrmlOfzMY5.jpg?r=88a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUepRcQadZKrEKLInL1D9MTSwA7WVi_lUEQdp0FsD8kT0p3dr8RMq0coPHyFrtEEogGPB3UMYIAlQr0dtBkf-s6EMNHR02mtdpY.jpg?r=854",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABayxcrHrwsusGCuTaCKb2CQbWvkJv8vvg3JiPAU-8DgSwsIT1cCpEm2dm5sgTwzSivSywXMqfLkRZ8SbGniMB1bA5-VX2LLIA5A3Y5ZEHbs.png?r=2dc",
+      "synopsis": "The story of El Mayo Zambada, kingpin and shadowy partner of El Chapo Guzmán in the Sinaloa cartel, his capture and the mystery of who betrayed him.",
+      "title": "The Fall of El Mayo: Limited Series",
+      "parentTitle": "The Fall of El Mayo",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the fall of el mayo": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABVwOMhKMkoKIfsqiWIvR-am6LWaPrCYEaQ6o7Cw0ohiemIVsFLqlZFghbGOegJwHZo0RToipTMES9VF9TQwddKU26WjrmlOfzMY5.jpg?r=88a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUepRcQadZKrEKLInL1D9MTSwA7WVi_lUEQdp0FsD8kT0p3dr8RMq0coPHyFrtEEogGPB3UMYIAlQr0dtBkf-s6EMNHR02mtdpY.jpg?r=854",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABayxcrHrwsusGCuTaCKb2CQbWvkJv8vvg3JiPAU-8DgSwsIT1cCpEm2dm5sgTwzSivSywXMqfLkRZ8SbGniMB1bA5-VX2LLIA5A3Y5ZEHbs.png?r=2dc",
+      "synopsis": "The story of El Mayo Zambada, kingpin and shadowy partner of El Chapo Guzmán in the Sinaloa cartel, his capture and the mystery of who betrayed him.",
+      "title": "The Fall of El Mayo: Limited Series",
+      "parentTitle": "The Fall of El Mayo",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "dead-end job: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWdx2YHO-1NNsdSrymg4kklO9Dpeo2QpdTBxUF_qf1xpzQmGS-WXezjqsRdtQr7cVHKlb2-QTwXUC21t7FXi7iCDGRQoMTEpnPAX.jpg?r=962",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdGXjDE-mxvPbUuoDnntf82l8IfIyuJFR5DDmYZAV91pjZ9S6NFcDVPuJBMafYVDjNXJW5cobj-rj6zz_9SI8WGRuVKiBvoRHRU.jpg?r=1bb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVYOQYt_TxXFZ0WBOuuEvVEL7zDSbhG_dcfZ6Ki7Z-E-OfMYxQOpIki4NEpQEJaD1Xjjr9AckBAJWSIlsBMFOBU10UCtodYOfE_kmlNGAEM.png?r=7bc",
+      "synopsis": "Drowning in debt, a young man takes lucrative part-time jobs from a mysterious agency — only to find his hustle for more money turning nightmarish.",
+      "title": "Dead-End Job: Limited Series",
+      "parentTitle": "Dead-End Job",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "dead-end job": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWdx2YHO-1NNsdSrymg4kklO9Dpeo2QpdTBxUF_qf1xpzQmGS-WXezjqsRdtQr7cVHKlb2-QTwXUC21t7FXi7iCDGRQoMTEpnPAX.jpg?r=962",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdGXjDE-mxvPbUuoDnntf82l8IfIyuJFR5DDmYZAV91pjZ9S6NFcDVPuJBMafYVDjNXJW5cobj-rj6zz_9SI8WGRuVKiBvoRHRU.jpg?r=1bb",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVYOQYt_TxXFZ0WBOuuEvVEL7zDSbhG_dcfZ6Ki7Z-E-OfMYxQOpIki4NEpQEJaD1Xjjr9AckBAJWSIlsBMFOBU10UCtodYOfE_kmlNGAEM.png?r=7bc",
+      "synopsis": "Drowning in debt, a young man takes lucrative part-time jobs from a mysterious agency — only to find his hustle for more money turning nightmarish.",
+      "title": "Dead-End Job: Limited Series",
+      "parentTitle": "Dead-End Job",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "doctor x: mafia in white: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQqDhGMtNM4TuI4BjjVJxb8HDg8mvXRgOsXljPWXbnWCQnFKqYNsMvLAslS_3NzjwZu0lHw1y0LaHjn61dWUMWM7sbWXU4LwQz0m.jpg?r=1b4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWa2rbmHw9RhbcM7lMQlNrjkajsTax7TgRO1U9pnPNt0QlIBD4qhgtJbiY7NCQ0O3ZppIHc2Q3KZQCwiZqHKBzKSv7J17-XJz9w.jpg?r=25a",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZAYPuv975Y1o0klR24Qn3CuPn2Ix3cv3TprwMrnF87RHDikENYrihkk3QYPWQ5BQKAqCcYiNV5l8sX7H4pStfjVUAV4zod9xxSdnX5uOvY.png?r=b66",
+      "synopsis": "In a hospital dominated by ego and corruption, an enigmatic but brilliant surgeon arrives — taking on seemingly impossible cases amid fierce opposition.",
+      "title": "Doctor X: Mafia in White: Limited Series",
+      "parentTitle": "Doctor X: Mafia in White",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "doctor x: mafia in white": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQqDhGMtNM4TuI4BjjVJxb8HDg8mvXRgOsXljPWXbnWCQnFKqYNsMvLAslS_3NzjwZu0lHw1y0LaHjn61dWUMWM7sbWXU4LwQz0m.jpg?r=1b4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWa2rbmHw9RhbcM7lMQlNrjkajsTax7TgRO1U9pnPNt0QlIBD4qhgtJbiY7NCQ0O3ZppIHc2Q3KZQCwiZqHKBzKSv7J17-XJz9w.jpg?r=25a",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZAYPuv975Y1o0klR24Qn3CuPn2Ix3cv3TprwMrnF87RHDikENYrihkk3QYPWQ5BQKAqCcYiNV5l8sX7H4pStfjVUAV4zod9xxSdnX5uOvY.png?r=b66",
+      "synopsis": "In a hospital dominated by ego and corruption, an enigmatic but brilliant surgeon arrives — taking on seemingly impossible cases amid fierce opposition.",
+      "title": "Doctor X: Mafia in White: Limited Series",
+      "parentTitle": "Doctor X: Mafia in White",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "lupin: part 2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfzHBRII55jGq_YHQiFnRgRi7RGwYfcnu_6alvFKivDk6ASSA_3krQ_n02JTZrtHK9NRpXq6I98aBaxuoKLT7ir5jlrI9uD2bDZ-.jpg?r=e47",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVb9MIgH3LIaYNFErAiXv5f7PGFdl0XJOXWxQvVX6ni4Vaa63d4K8odKGoYATp8tQo-s25kG2YUIrBSF-aRS1XdG2GK-sGHlJw4.jpg?r=a03",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "Pursued by Hubert and his henchmen, Assane scrambles to find Raoul and wins an unlikely new ally as he draws up a grand plan to reveal Hubert's crimes.",
+      "title": "Lupin: Part 2",
+      "parentTitle": "Lupin",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "a couple of lies: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXIGxXNJk5uxnCDWihwD07I4Q8KMBFZfb4kRI-P8z1inNmOt6JtpuxhFpxbLnlwCAv3v-3TJ2rV3L-IMZ9--TB_sfoK0UUgFTcB5.jpg?r=492",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWnWdunVpBPdSrWfzblMg1xaEQmiqh0GLwkSah5mS1KNQ2lBtz4-9pFGn3euexBr9a93Hu-oIYe0OvDK7k_Xemp1z4TWKfFAqgA.jpg?r=60b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTGiJPbYpEI4lLY-_p4xQsjmBW_FW3BRqZW1EUVayXQy61g5z_RQoYRHSIPzd92q6olxeD_YJ0pXkr1KKRAZx3mk2gr-jof63Dg4bkuyUa8.png?r=3ed",
+      "synopsis": "A seemingly idyllic home swap between Sicily and Stockholm turns toxic as two wealthy couples go to extremes to protect themselves — and their secrets.",
+      "title": "A Couple of Lies: Limited Series",
+      "parentTitle": "A Couple of Lies",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "a couple of lies": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXIGxXNJk5uxnCDWihwD07I4Q8KMBFZfb4kRI-P8z1inNmOt6JtpuxhFpxbLnlwCAv3v-3TJ2rV3L-IMZ9--TB_sfoK0UUgFTcB5.jpg?r=492",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWnWdunVpBPdSrWfzblMg1xaEQmiqh0GLwkSah5mS1KNQ2lBtz4-9pFGn3euexBr9a93Hu-oIYe0OvDK7k_Xemp1z4TWKfFAqgA.jpg?r=60b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABTGiJPbYpEI4lLY-_p4xQsjmBW_FW3BRqZW1EUVayXQy61g5z_RQoYRHSIPzd92q6olxeD_YJ0pXkr1KKRAZx3mk2gr-jof63Dg4bkuyUa8.png?r=3ed",
+      "synopsis": "A seemingly idyllic home swap between Sicily and Stockholm turns toxic as two wealthy couples go to extremes to protect themselves — and their secrets.",
+      "title": "A Couple of Lies: Limited Series",
+      "parentTitle": "A Couple of Lies",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "lupin: part 3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWye3m18Ti_a8SekxAoJnojc621NgjheLrU-LVWq2pP7lA7y_Suktj4WKVuOzK4x8xE6Tkv8TxNgM5ZuU2nKbkcYmOV04IOSfNk2.jpg?r=796",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABX5QuhQ2TPMobvaI_r0W8OJPkHGg8DCcC8aGUY20Nhm0jhAFpcrn-woLfY-F5V6ANt4n-WWwU1HSIrbvT690BYmAgEe4k3dsdYY.jpg?r=0e0",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABehHRNDBLhgSaccYqxG7_1rE4nN1HoLsQYLIWVc3Kz2kqi6MJWsrT5Lc-i4d9uH7pxQBsSYxCr1JL0BOyWFeMiFH0q42KwzpLdGBcYSn4o4.png?r=fcc",
+      "synopsis": "As the media and police look to Claire and Raoul, an on-the-run Assane schemes to protect them from afar — but old foes are eager to thwart his plans.",
+      "title": "Lupin: Part 3",
+      "parentTitle": "Lupin",
+      "year": 2023,
+      "rating": "TV-14"
+    },
+    "where the mask ends: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABatyDyLvoATUJJ41Z98gA62nAtEFD8yayxmL__cA1jWN5OHieZxlDfpxtT0xiED-4pW8GOFnzEHTPtQ4SngjEMp_VPsXoSc97tNw.jpg?r=733",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeQXPYrDsHMdTy4k5JVxrjElc7xb_XyZaB_T50hTqMXqI2X_oEFCal0f4KQPQb4KWfNQcePoOpIcOJziUvcfkU97j_WPNpUBPyM.jpg?r=1ac",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABaehQtJA9pCG__wXDRz4465_xTIEoiVYNJHXCJkiqFOgN6bsc5lMmzekUZxsULc5jFzl1msAaUsbbNtHZ5huoRz3k6ObZw_tPRNTrKQm8RI.png?r=4dc",
+      "synopsis": "An uncanny resemblance to a wealthy heiress leads humble A-Chou to marry a gravely ill noble in her place — but her new life is a dangerous one to keep.",
+      "title": "Where the Mask Ends: Season 1",
+      "parentTitle": "Where the Mask Ends",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "where the mask ends": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABatyDyLvoATUJJ41Z98gA62nAtEFD8yayxmL__cA1jWN5OHieZxlDfpxtT0xiED-4pW8GOFnzEHTPtQ4SngjEMp_VPsXoSc97tNw.jpg?r=733",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeQXPYrDsHMdTy4k5JVxrjElc7xb_XyZaB_T50hTqMXqI2X_oEFCal0f4KQPQb4KWfNQcePoOpIcOJziUvcfkU97j_WPNpUBPyM.jpg?r=1ac",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABaehQtJA9pCG__wXDRz4465_xTIEoiVYNJHXCJkiqFOgN6bsc5lMmzekUZxsULc5jFzl1msAaUsbbNtHZ5huoRz3k6ObZw_tPRNTrKQm8RI.png?r=4dc",
+      "synopsis": "An uncanny resemblance to a wealthy heiress leads humble A-Chou to marry a gravely ill noble in her place — but her new life is a dangerous one to keep.",
+      "title": "Where the Mask Ends: Season 1",
+      "parentTitle": "Where the Mask Ends",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the gift of deceit: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABX6NBPvnvwtvoBBZKKYkKHVB2hAFx5KG5N6aPPWq6bJFYgsTdkZ0XxZvsxoIXbVFPD0l104FL9TTSbTYm_oCkfiHlGPZExaVosnM.jpg?r=6a6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXF3m1fKRCNMOrr8lfZVKSW0HGa9SzeMOKKdTjdeqqHBlvbgGVBq65JLfQhDDzdH6P3xK4cOJ3wwlv5oCrmidhONnNsz5XEelMc.jpg?r=1f7",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRRC8gMWcKAh4gKH6oeD8cfJmQsbc4MZdUapaYmRnU0FT6EnS6Gi9_iOpVFl3L8oH5d_yx_xbCINJAu4AVAgV6zIu76ZLh6aD_Et6LB1HFo.png?r=361",
+      "synopsis": "A multi-million dollar art heist unearths dangerous secrets as it pits a controlling mother, her daughter and a seasoned swindler against each other.",
+      "title": "The Gift of Deceit: Season 1",
+      "parentTitle": "The Gift of Deceit",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "the gift of deceit": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABX6NBPvnvwtvoBBZKKYkKHVB2hAFx5KG5N6aPPWq6bJFYgsTdkZ0XxZvsxoIXbVFPD0l104FL9TTSbTYm_oCkfiHlGPZExaVosnM.jpg?r=6a6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABXF3m1fKRCNMOrr8lfZVKSW0HGa9SzeMOKKdTjdeqqHBlvbgGVBq65JLfQhDDzdH6P3xK4cOJ3wwlv5oCrmidhONnNsz5XEelMc.jpg?r=1f7",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABRRC8gMWcKAh4gKH6oeD8cfJmQsbc4MZdUapaYmRnU0FT6EnS6Gi9_iOpVFl3L8oH5d_yx_xbCINJAu4AVAgV6zIu76ZLh6aD_Et6LB1HFo.png?r=361",
+      "synopsis": "A multi-million dollar art heist unearths dangerous secrets as it pits a controlling mother, her daughter and a seasoned swindler against each other.",
+      "title": "The Gift of Deceit: Season 1",
+      "parentTitle": "The Gift of Deceit",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "red notice": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcTjLPcpQ64KXwtzYPxMlSUvuAaY9CRVtEu6PePgx03LR166kPa7Ftgmgn-NnKzKdazDrlGDK6FppBdX2KjBaVgeuFmAs0D4JovH.jpg?r=afe",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABV_Rz79-ek1myi-jqy9IePZ-DB7_akgNxrGgvOACPIFqc92eOYD3fKWPNmQcBO4pi9fdQSDrI_zcwhZxQayXplBjsQpkcvxKsgY.jpg?r=347",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSd8UO67769E0hkMwMzwGNBsPIb7Tpoh5VOHnaf16LwfWJUpw4zGe94W5eLoprMPwTP3eBZZxBCRR3OEVyOlcBQnkqXnAZCsV18yu04u9PE.png?r=4db",
+      "synopsis": "An FBI profiler pursuing the world's most wanted art thief becomes his reluctant partner in crime to catch an elusive crook who's always one step ahead.",
+      "title": "Red Notice",
+      "parentTitle": "",
+      "year": 2021,
+      "rating": "PG-13"
+    },
+    "carry-on": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQP_EO3UpNJN7cegE76sUggZTgdPSku0kareoeJFGS-GFDe5vrWSsdYOXzTKiqYYN24lahPuQ3aIZrXv2ALDuB2mLBKMIKBnHzmw.jpg?r=8e4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABWfPBoEZnhTP_QMSYnCDPr4K9kJljL-VNVzF1_sGB7HBLAcylTYZ5psWfsA3ZsmjBRYazYNBlC2cUsU0OJZHOagFwXov-WWbv5M.jpg?r=f44",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABcdwH-BtVf48cWOZwjcYW5YSmc7BRzaw-Kenk60-fFno-ZocSjLYcc0e6qJC5S46nHFM4MAUbABeB7Ngr4D7YPMuQftd3P0Lbmg_Vic_5BU.png?r=507",
+      "synopsis": "An airport security officer races to outsmart a mysterious traveler forcing him to let a dangerous item slip onto a Christmas Eve flight.",
+      "title": "Carry-On",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "PG-13"
+    },
+    "don't look up": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_K1B0XMBH1HmwsDha4PtLICYWwW5Ex-BQrJ4FBmDvCoYu8zOAueEsCyRakQN8r6_VMQ7JSSH2S6H5cuAuVRLkrKXAWS0GpGizS.jpg?r=7c6",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeNULe-gSfKjwz78FMOtLoUr_oA0bZoUlXuiID6mbGclr7CvsRXPYGd2M383S1GmlhKVY6Wp-hpO1b3cONiKrpqA1PnQrRcUXuU.jpg?r=116",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfArEaaaHpQyUPEVR0KRIOyISOga2zOXDMTRCazH-ZkN6RvvjlhtHIoxPLvRDJiJ5iKQkISlAHBOGz0576txoD8eDXl6ZlfGqxkttZjiWSQ.png?r=1a5",
+      "synopsis": "Two astronomers go on a media tour to warn humankind of a planet-killing comet hurtling toward Earth. The response from a distracted world: Meh.",
+      "title": "Don't Look Up",
+      "parentTitle": "",
+      "year": 2021,
+      "rating": "R"
+    },
+    "the adam project": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYSa-r7gheYYMUPpVDYd2y4_WaqLwJkTiOWh1wufBuCGR1AFmSAkbEfliVAx4bNOezoxa73xk2lKkw_4xJcmJY1Ai8esvRMdGgdz.jpg?r=909",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTgz94-dpAkms9zVaJzDcKcloRnJX_MiAhRaml4DRmzPjArhglt-L7hVEALsmAIQYkgyKGSGgg7FLXnIUARIJJsFFGMNKsxdWLY.jpg?r=3db",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABcdDryk6AKjCr3Tw-qnCT-C5LBp7UOOmfEOwQYxVMeKjeLGSDkb1MHXiAH9-287tWC4wlJZqAoUJOgdGMSX3PGHWb2UuwM2AZgu6Vhcs8yw.png?r=e03",
+      "synopsis": "After accidentally crash-landing in 2022, time-traveling fighter pilot Adam Reed teams up with his 12-year-old self on a mission to save the future.",
+      "title": "The Adam Project",
+      "parentTitle": "",
+      "year": 2022,
+      "rating": "PG-13"
+    },
+    "bird box": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYkGg2IP_8p82tXX8upcKbHUiHR9iPD7Vmz3QrihKsTT79SjMu09O_L2gr7FB-IZC_mNiILqGVFJmnb0N-j-B13jCbQs2yNW0v4F.jpg?r=7b2",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdD57V7pj-T7fsqpJ4X9evGjJdTiUPs-xxBQKSUQ6SUtKG7LdiRvfcS9MGuY2ql2Rxp7cgVA-0mYII-HJCFdPj68R_DflDISqgg.jpg?r=ca8",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABVn3vDAw24pEEu8GYGdPFy-t_ON9A0XUnY-HvCgQaB4CoG7alc0WawIYbxmcsJZvTFwK-yw8-eUmBleV0kpwba8Fqe4wbshgo-PMDdRDel0.png?r=cf0",
+      "synopsis": "Five years after an ominous unseen presence decimates society, a survivor and her two children make a desperate bid to reach safety.",
+      "title": "Bird Box",
+      "parentTitle": "",
+      "year": 2018,
+      "rating": "R"
+    },
+    "back in action": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABY5hL3cy40HaQO0mC7AJv0g8MFi9bURymf9du7G1Iv3kN5xW_N_T0sBVicqWYVYUnGAWgPVL1DIOBoezMlhYpTxIqUXKyOc5LdVd.jpg?r=39e",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbozRHocMwtqg53bVR_xqaF54W1Gn6S_QWYiYGQbEZ9UWjhHLQu0pwy53u2oVA1yQj6ozQw_CoG7aPcmTcBrH09IGG93nGcoNSI.jpg?r=a12",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSyJdF6THa7icv3frrnDX8UJleAPz4DeNBwn3Rk8KO5K_Of6sXun085lvtxEcMSTL0UC4xvp_4-8_A9HyAgDnsR_LtiMKOISrgcDd1oueSA.png?r=cec",
+      "synopsis": "Fifteen years after vanishing from the CIA to start a family, elite spies Matt and Emily jump back into the world of espionage when their cover is blown.",
+      "title": "Back in Action",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "PG-13"
+    },
+    "swapped": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABY93n8wGBJUM7lzbRYKQ2FsUMK6ewam_L0hbjhhX2Qp4ntkC1LkYUVSvV6Ua_LAKjq_QMbARoNHS4THyiGOnSzZHhx8t_vZj2A9N.jpg?r=f82",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABYbaWlX9Rwa1DBfsmw8W5ctIhC73kcyQh_KwceP6uFn-Cqq5OuRzMcpfvfgDtjGtAaWCKHcmujOCq6XTxmStr6R3S1xWLF05VNU.jpg?r=9a5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABaFPtBiQgLMjEuqJJ0JGQWxoTef4EhAh0Nje2JRGirHoi-XAgFvPUrQkSLg3weg4HIpn4qNhDmras6v5Ki5BmQ2szW-DJ_RbJ4i-nbIThmU.png?r=b20",
+      "synopsis": "A tiny woodland creature and a majestic bird suddenly swap bodies, forcing them to team up to survive the wildest adventure of their lives.",
+      "title": "Swapped",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "PG"
+    },
+    "leave the world behind": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcl5-dF5UjI7wx0Djj51vYJZHcUEqRPSAEWNEUKhw7BOIRhwCgL-5lbK8vrpCXVKetfKMq5s7TzC_HPQVmtgqVg9uZUyGcQB1tBp.jpg?r=3e0",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTlPPsqym50kgVT7WoQaBgX9gk1srtsI5OOoh0tak-nDlK1c6A-1BbfhwhHW5jAZtS-Yl35f_nl66yzoKpGAV1FSc9rSpyA5BpQ.jpg?r=a50",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYZLSbbZuovX7gu2y0MyAlSNk5Z2WUtowaR03gJ2usrxjZORNKLInQqwXs3VU8rV_ns9bP9DEO6zPswOPZXLDQmKdGWBpIFFOu9D5bPxxDI.png?r=1d7",
+      "synopsis": "A family's getaway to a luxurious rental home takes an ominous turn when a cyberattack knocks out their devices — and two strangers appear at their door.",
+      "title": "Leave the World Behind",
+      "parentTitle": "",
+      "year": 2023,
+      "rating": "R"
+    },
+    "war machine": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXmx9SsD93PrYjxKCHw8C-XTWw1PTZ881B-CM6kD55yKQ2GNP5Wj2Ef0e4mYUJT-rFFx09zD7hEBasUbpsq3BA_IHQ05Nd3glms7.jpg?r=211",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQpNRPbYsv_5GIgwUkSE3EvaF2ylNwiUcNQvByQkO_TZEiR0vVS2e5PzofCBt4pbqZ-reMwGaMUwGsGbO2rb1VftvQ-jISmXjsQ.jpg?r=9ed",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXmlrd6kcgs4Kl_v3ipJSFlxwzMwUPIPAmBhFzdK9uOZasKXDGmQz5IXRh56ZieeB-I4DQ-Nr8bUpEVAs7goFjZM3MytgN8wSUso6jzLuyM.png?r=96d",
+      "synopsis": "On one last grueling mission during Army Ranger training, a combat engineer must lead his unit in a fight against a giant otherworldly killing machine.",
+      "title": "War Machine",
+      "parentTitle": "",
+      "year": 2026,
+      "rating": "R"
+    },
+    "troll": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUwNLPh_XwAdi58dEC2hzbMyKg0sygDh2dBQV-BdWHUC5lnMge7D0T5rMcAJ2Aq3uB_qKhS-umbLp12aqngv22PeqOgtlkphqH3E.jpg?r=52e",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUdue7uMyt5-Kh-FRFbLZkNcGYramyo_38m7QX5_kx-dsc8HaoqtS-Mmq_qejQOj1HLM5Ezezf4_CE5BsfbFDspZwkJf5O2rfeQ.jpg?r=e16",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABb6vsEk_J17aA9ui2L1GB0M71KuWXrtbHBWyfXqFhGbBYDplostCv6ty-XOBLa5QbwMsEX7dEh_ggCE8oXId7SkemTpitMrysNmP8JHkdlc.png?r=0e7",
+      "synopsis": "When an explosion in the Norwegian mountains awakens an ancient troll, officials appoint a fearless paleontologist to stop it from wreaking deadly havoc.",
+      "title": "Troll",
+      "parentTitle": "",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "under paris": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUgT0vMBRcRHKgeU8s7Anp7qyHm992V1IAUUxHcJdQoUsK98Z5zAkfn_rU4eLkl-VJu3tz_HF59dNQ5rMU8L2rCXLGsMnnAglvuL.jpg?r=7bf",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABfLm64m9fD0ZKgvWL9KOyFTnMbHf9QkYwjzdr0R3ZTKbOonttF4hcpnU5orPavp-cxigOvNpBUoGiAhYtwTNaLPV2OCARPyRXh8.jpg?r=868",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABYOjs6-cXok-wP6TS-IWKXoodT-TfUyd8RNg8cAI1y5ojzSQ0rV-XttAbIZGXRcy9_dAwOGDxcyl4p_EW1u4uuromBOHLkL3djQbT3x9ljg.png?r=f96",
+      "synopsis": "In order to save Paris from an international bloodbath, a grieving scientist is forced to face her tragic past when a giant shark appears in the Seine.",
+      "title": "Under Paris",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "society of the snow": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABe793oSkcdJg1eMRtHPOR3feR_JnyaVYD2Huk1dUF414GChzJxGjNJPEhAnSciGrglNqT4MiVv_BC_eLZFAZHeYQvDhdKWb0nnAa.jpg?r=393",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeUHucMASYTHu7MDVkYbJ-WjncG6Nh3MvdSh1PE4V-xozoFdYCcyqiCEjvQs3ggd8Xtzm26i4RL6UQCiR6P46p8EVj8D5jeSDi8.jpg?r=e61",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZ0JwS6V28lVE22SAUrT2Kb89ejAhNeRtMLsRNqrOElOOg542G8ck2xORVdYYTzssnzLctGhUBsKPcu4h-2THN9AgKoA6hTATkDaoYCL3sg.png?r=289",
+      "synopsis": "Following a plane crash in the remote heart of the Andes, survivors join forces and become each other's best hope as they navigate their way back home.",
+      "title": "Society of the Snow",
+      "parentTitle": "",
+      "year": 2024,
+      "rating": "R"
+    },
+    "exterritorial": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABQSJcl1CCMAHa3PbRsbU38sIMwg6LYEcNA_R-ziu6RA7IaIAUluSWBaomuKUYRL8qL1a9RFkRyp2uVvQyejruLqCJmxmPF61ldaJ.jpg?r=cbd",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABfOCikeJ5QOE8mIS2f4xAzjB_vKVee8muTjAYsWYZEDwWdsCzoKQ40YcHPTJ1V-4t-CAhuU0fPTin0Khi97w6kHin6dE4b552PA.jpg?r=76e",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfZachaFzwy1Y3wfksf2IjbZN5h3a8r0nswZ2u-qGE0wyv1noqTgCtrgvcu9PM1MpFyMJNzR_y0tDum4EKY70rAbYpjZufHvseHgCh0k66E.png?r=fac",
+      "synopsis": "When her son vanishes inside a US consulate, ex-special forces soldier Sara does everything in her power to find him — and uncovers a dark conspiracy.",
+      "title": "Exterritorial",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "the great flood": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXYkCRZ16jZL8qqsJuJo89bDMeM6VtVvZ9nwsnaKkQlP2YE0iurkPfP2oXZhpP4-tOjLLPuhwuXiSXoa7_8QMSnLtXyTe8Gg6Gie.jpg?r=a1a",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABTxjQEYB52SeqrsZVNWf7MVIkNfl4Ue0hPhQSfDWZCnas4gPB6BF8eqQchDn74iMq7Du2iWi0tL9STJxVO6_Wmo28yby4wROBd8.jpg?r=4c1",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABfHYxgmOcG8cBKKVhEhlSc9sy5dA4ATxIdcVHun-d3559xqkmgI4N3cs68CZ_BCVlyY6jJnwXbYwWlPUQbr18r7q33wET5qHlI2UaWWUsBo.png?r=1b8",
+      "synopsis": "When a raging flood traps a researcher and her young son, a call to a crucial mission puts their escape — and the future of humanity — on the line.",
+      "title": "The Great Flood",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "nowhere": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABTpuzE0DAd_imHQbsvUV9TjERAQ7r1GZoPxXnobdXruwQxlmdNo7jnHNKH7v6L045AAP0pbM1W-UCOtLXLCEZIf4FoQmRAMAhilT.jpg?r=493",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABcEA49TvEX0m7wlFNWkuRf2OPqWsy3xH_6bLTv4rdaVlLGFoEZuFH6j71G20jBQLeyXjc3c9OXUVdD1bMccbRdhgKA6YsHEuM3g.jpg?r=4f8",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABV9y01Os2_bKZOQpvdzW-uFkfkTsTV4c6vVeqc0ly82A0LgETNv_OYr4KAZ8JCYCB02zzIQ470MVk2kYbp0ONV1OobyKeDomzSXO2-Z702g.png?r=45a",
+      "synopsis": "Pregnant, alone and drifting in the sea, a woman trapped in a shipping container tries to survive after fleeing a devastated totalitarian country.",
+      "title": "Nowhere",
+      "parentTitle": "",
+      "year": 2023,
+      "rating": "TV-MA"
+    },
+    "the platform": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfYmDgVLt7dxNEge72muf_kQqecfbMeNsDkAnjIkz_Hqs2m1ZCYHpa1L-U-d4Drhxe7jpoFk9yu7OB8tXKafvLDM5-0ZkrRLHKPO.jpg?r=0fa",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUoYfHfrCmWJVbAnSQcMGkMP5rWNm_ehiA_yJFG7_0T0Vdc74AQDeqbb5uWXUtIj0vAKQ84h4c5kgKS9wrzx3yB6yqArVWWhkZI.jpg?r=60e",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABbNWWDN7DcusVYNqfWVCzhidC3ekyzUtHljN7SKDY8xCvr5_kY8RTC78-vdv9Mh6hT0LutitAjiDf5iGiFxEayQoAoEQvoIUOPETz1bRZkA.png?r=280",
+      "synopsis": "A slab of food descends down a vertical facility. The residents above eat heartily, leaving those below starving and desperate. A rebellion is imminent.",
+      "title": "The Platform",
+      "parentTitle": "",
+      "year": 2019,
+      "rating": "TV-MA"
+    },
+    "counterattack": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSSkFtHFtbG5m3nGzLuLJPuLmFKsXU-icDKqEArgFuuWT05qrClHnBufHVVKbJlRR2hJnYh0QNBN8TYNVNYeJomRxiGmFqNv_BO0.jpg?r=651",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABULn_UYaDLlHeK4B0obqlSy1d8__-3_tBTP4dnafzYze0ymtu6qNWQmDEfL6CgVFUKLoFvEqqKknaTCIij5wIJXVILumhaZ6f8U.jpg?r=73b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWVM4PXxKoMwb0Nx-NNKSs--ADCYRZy0bjene0h9x5LdrC7VIXOpABRTdR1a0dSP8DCWGj59tp7hfMvOCcddFYKn_sQg85H8lCdY9H0EKHc.png?r=d3d",
+      "synopsis": "When a hostage rescue mission creates a new enemy, Capt. Guerrero and his elite soldiers must face an ambush by a criminal group.",
+      "title": "Counterattack",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "ad vitam": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWhg9iOt3f1fTZVBDS7VojqkGzGLx7s7SpnbYMTTlaoLzRdRpV78bpkKaGqoJgB3SVCjMpA_1ERorQv_M9JsgYJA0oOwhxqNXm1-.jpg?r=8f8",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf2Nhiv_XS8osXpmbbhrQwkw0TZc6IObV2xNUKQdm_YzqnO2M3x_wGBwcg2RGZrpmIz9HpJJkdTy6OHQu9iGqcK1I-QaU2QeZRA.jpg?r=7c2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa_M4yGUiazmz2GRnoCwG-OztRadeEvfFNM10wsdk7XMXE-dtytM1WHl-m-C9O_-z1OB_1rdlzwtQXpesUijWashshzlV1yfvfmsf1K0qbs.png?r=8bc",
+      "synopsis": "When he and his pregnant wife are attacked in their home, a former elite agent becomes trapped in a deadly manhunt tied to his own painful past.",
+      "title": "Ad Vitam",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "brick": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfrEjhYJOT_y0STYIF-q1QJriS66P_qlCNUOHz8WBOuOlGDDPTE6bSEQNsOrW-bBv4qTrhpyrH3-M6srcdvj3MramO5aKzu6v-TO.jpg?r=807",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeO3RnpP9UWMod9QnWnXalnQdDN4-wdEtpyG-Gq9q4gtX35HJtMekMknJMJYaTmFFLDRq45DOK24SCaRYejSbhjRj9svXTfERHQ.jpg?r=511",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABZSCEVbMuYiYiYhCmpQ2AVqIywkKMFKvzTHWGIKXF38bUJWf1OViPsiP4B6QTHKWaOs_xnmYuvxEm9euMTkfv8B7t9sMh-glyl5NWqspYGk.png?r=2af",
+      "synopsis": "When a mysterious brick wall encloses their apartment building overnight, Tim and Olivia must unite with their wary neighbors to get out alive.\n",
+      "title": "Brick",
+      "parentTitle": "",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "wednesday: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWu3yLC_h4YnQ2jlZhvhKuYdGi8rl6YJHeforrlpsq_3gs4wWR4ZLmvBoE2ASNm05DYZ3fnXeiyb5nZwotSgxDhNwumquixbOxdF.jpg?r=570",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQzwPOJZECRup8dSNYHsp6yFX2wz3s9PETLkvLUoab4TeOwi7W1_QMGG-hrmTCgjUaNQNf7WlI3tQNl7ZNPoE6LJn8UJgEXdhbg.jpg?r=082",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWHz6C60YqKeAnURPkvxDEURGdTqmep3Ud0DLuo7GSWz1UIa9tsLACMGXsftz0CG8AOmJTqoOePaUG3ECz5PqMKkBqEH7ehYBq2FJvMuU54.png?r=166",
+      "synopsis": "Smart, sarcastic and a little dead inside, Wednesday Addams investigates a murder spree while making new friends — and foes — at Nevermore Academy.",
+      "title": "Wednesday: Season 1",
+      "parentTitle": "Wednesday",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "wednesday": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfRVm_e-dJQu7tw2OB4l4Vmn5S0y687a8NfkhAQsBCsEV9jmBX_Gx2iH8jsAITtLrv05e-midL9rxTnywCyW8cdT-rpMh2dMsdrF.jpg?r=af7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQLa87bKO5RaLZckaPw8-z-YEzQHavPeUUuPMuvWKq_YE0gjYt_GBViCnoSKjn6h5ZYTyyGhCq-7phZs_-zoj-w96bkj05v15Rw.jpg?r=433",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWHz6C60YqKeAnURPkvxDEURGdTqmep3Ud0DLuo7GSWz1UIa9tsLACMGXsftz0CG8AOmJTqoOePaUG3ECz5PqMKkBqEH7ehYBq2FJvMuU54.png?r=166",
+      "synopsis": "When her psychic powers falter, Wednesday must fight to regain them — or face deadly consequences for Enid and others at Nevermore.",
+      "title": "Wednesday: Season 2",
+      "parentTitle": "Wednesday",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "adolescence: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWZHB3sXiJecf3V_R5D5vsFSH4C2iK0CzlVU2HyNE-NsNXn1h_l3MLEIDGuhn08nQENHwkaG_eNtrpjC0Fu4bC5-yHLHpEHDGbyO.jpg?r=0c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABX39OvycOmzhFLzFerx7GHuQ-i-eBGSYDlCL2TXwjyJxSZetNIpnLh6KCznPkSQd7JIy1aOYU1DrLttJej6-DzeC2jezRJI-JJ8.jpg?r=204",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdmEIsHN25ugXvSCzfj_QJMJQjMx9t98_uDXIy5RHFS_VoxPV5zidzhkiDdqnmqcXbxFy059lIbSief_70yc5jK5rZL6rybS57iMH5PmmRw.png?r=b66",
+      "synopsis": "When a 13-year-old is accused of the murder of a classmate, his family, therapist and the detective in charge are all left asking: what really happened?",
+      "title": "Adolescence: Limited Series",
+      "parentTitle": "Adolescence",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "adolescence": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWZHB3sXiJecf3V_R5D5vsFSH4C2iK0CzlVU2HyNE-NsNXn1h_l3MLEIDGuhn08nQENHwkaG_eNtrpjC0Fu4bC5-yHLHpEHDGbyO.jpg?r=0c4",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABX39OvycOmzhFLzFerx7GHuQ-i-eBGSYDlCL2TXwjyJxSZetNIpnLh6KCznPkSQd7JIy1aOYU1DrLttJej6-DzeC2jezRJI-JJ8.jpg?r=204",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABdmEIsHN25ugXvSCzfj_QJMJQjMx9t98_uDXIy5RHFS_VoxPV5zidzhkiDdqnmqcXbxFy059lIbSief_70yc5jK5rZL6rybS57iMH5PmmRw.png?r=b66",
+      "synopsis": "When a 13-year-old is accused of the murder of a classmate, his family, therapist and the detective in charge are all left asking: what really happened?",
+      "title": "Adolescence: Limited Series",
+      "parentTitle": "Adolescence",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "stranger things 4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABaNeUcpwO2JirpMHb6WJugLqDAgzWFGjr-Zyvd3ppzo3trrc2wE5U_zBVhJI89FlxVg5ZPGPeUY8mXAipDMZ1Va1fzGLZ7BEzwda.jpg?r=b45",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABR0mKXC1M8aYlDWeoG41pcjEp1iS6qmz3mWIzFNt6XxWMmmrfSsXUcPZJFnMHjMnwtfg2Usi5dOv_QhgNZJc0x8pstEf9ykZ8qE.jpg?r=c68",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSODcG6DSxuQLY2pWcHNCwLMudm77yPGcFe5HUZEMtGDvUV7EHK0vOOLBDxJal-Plm3GNq6YwEDMQ8DwpICuqOXe5Ybo_rh3VyBf6pq27ns.png?r=931",
+      "synopsis": "Darkness returns to Hawkins just in time for spring break, igniting fresh terror, disturbing memories — and an ominous new threat.",
+      "title": "Stranger Things 4",
+      "parentTitle": "Stranger Things",
+      "year": 2022,
+      "rating": "TV-14"
+    },
+    "stranger things": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbQXh30Pa01GIqx2uAPe0O5RavTuNkaoFs_TcQJearYHk4eI_BoZC9ZWYU9YCK-nkiMdDn9DtUxTqpFHV15BjEGvJeTxO9ezEZVx.jpg?r=1d9",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeLe7rw6nRT4FxhdDqLshPQSoi-I9i-sXL2nMS7A_p5WLImc1EeacV6L28hTG5z2WHmRcTe-DqUhOjTRlbvRRnm9ITpX47YIVwE.jpg?r=dce",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSODcG6DSxuQLY2pWcHNCwLMudm77yPGcFe5HUZEMtGDvUV7EHK0vOOLBDxJal-Plm3GNq6YwEDMQ8DwpICuqOXe5Ybo_rh3VyBf6pq27ns.png?r=931",
+      "synopsis": "With Hawkins under lockdown, El in hiding and danger lurking at every turn, the entire party unites with a single goal: to hunt and kill Vecna.",
+      "title": "Stranger Things 5",
+      "parentTitle": "Stranger Things",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "stranger things 5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbQXh30Pa01GIqx2uAPe0O5RavTuNkaoFs_TcQJearYHk4eI_BoZC9ZWYU9YCK-nkiMdDn9DtUxTqpFHV15BjEGvJeTxO9ezEZVx.jpg?r=1d9",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeLe7rw6nRT4FxhdDqLshPQSoi-I9i-sXL2nMS7A_p5WLImc1EeacV6L28hTG5z2WHmRcTe-DqUhOjTRlbvRRnm9ITpX47YIVwE.jpg?r=dce",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSODcG6DSxuQLY2pWcHNCwLMudm77yPGcFe5HUZEMtGDvUV7EHK0vOOLBDxJal-Plm3GNq6YwEDMQ8DwpICuqOXe5Ybo_rh3VyBf6pq27ns.png?r=931",
+      "synopsis": "With Hawkins under lockdown, El in hiding and danger lurking at every turn, the entire party unites with a single goal: to hunt and kill Vecna.",
+      "title": "Stranger Things 5",
+      "parentTitle": "Stranger Things",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "i will find you: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUxBpw7pn1tqK7C9pe7eQgswjy1hcf726pNaNXGKyEkiyqk_Jhe00ekBi0Beqy_NPe_Zbs0IYTFZteHr9pXThgIlOW8nLDSYuoZv.jpg?r=e31",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeIPOvzMYJkkwC3VcY04P4it2p6c5lHwQ3epSmzkRu5rLBugSTghHI2poIdw2pVqUOEi_oJWkSQoa1fjme18XPDNnFYavGUX-GU.jpg?r=33b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQo_wPklu2WP7IxfOiStnOsGvsehE4DOGP4-gEPJ0o4E_BoGj7pwNk7kzOwzsZqimpEER9eMGKwilp5fuAS4YPLCLqiuP6yYFFJWZ26sd38.png?r=387",
+      "synopsis": "Wrongfully imprisoned for murdering his own son, a father sets out on a desperate rescue mission after learning the boy may still be alive.",
+      "title": "I Will Find You: Limited Series",
+      "parentTitle": "I Will Find You",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "i will find you": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABUxBpw7pn1tqK7C9pe7eQgswjy1hcf726pNaNXGKyEkiyqk_Jhe00ekBi0Beqy_NPe_Zbs0IYTFZteHr9pXThgIlOW8nLDSYuoZv.jpg?r=e31",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABeIPOvzMYJkkwC3VcY04P4it2p6c5lHwQ3epSmzkRu5rLBugSTghHI2poIdw2pVqUOEi_oJWkSQoa1fjme18XPDNnFYavGUX-GU.jpg?r=33b",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQo_wPklu2WP7IxfOiStnOsGvsehE4DOGP4-gEPJ0o4E_BoGj7pwNk7kzOwzsZqimpEER9eMGKwilp5fuAS4YPLCLqiuP6yYFFJWZ26sd38.png?r=387",
+      "synopsis": "Wrongfully imprisoned for murdering his own son, a father sets out on a desperate rescue mission after learning the boy may still be alive.",
+      "title": "I Will Find You: Limited Series",
+      "parentTitle": "I Will Find You",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "wednesday: season 2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABfRVm_e-dJQu7tw2OB4l4Vmn5S0y687a8NfkhAQsBCsEV9jmBX_Gx2iH8jsAITtLrv05e-midL9rxTnywCyW8cdT-rpMh2dMsdrF.jpg?r=af7",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQLa87bKO5RaLZckaPw8-z-YEzQHavPeUUuPMuvWKq_YE0gjYt_GBViCnoSKjn6h5ZYTyyGhCq-7phZs_-zoj-w96bkj05v15Rw.jpg?r=433",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABWHz6C60YqKeAnURPkvxDEURGdTqmep3Ud0DLuo7GSWz1UIa9tsLACMGXsftz0CG8AOmJTqoOePaUG3ECz5PqMKkBqEH7ehYBq2FJvMuU54.png?r=166",
+      "synopsis": "When her psychic powers falter, Wednesday must fight to regain them — or face deadly consequences for Enid and others at Nevermore.",
+      "title": "Wednesday: Season 2",
+      "parentTitle": "Wednesday",
+      "year": 2025,
+      "rating": "TV-14"
+    },
+    "dahmer: monster: the jeffrey dahmer story": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbdtIoa_V951u5Jsqgd98oqw_BWVVz76odSN2dX2HUqvPMQbyvJsscqxUqHf0WzKij3syRzdqG6VixFh75nXzUI8RR-9BuhjK1TV.jpg?r=864",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf5TGW_zOgkT1HDX-WzcqlpNwNkMGSxAttjfksljQjta_jU1ACHwaVCgRnjAnm5tPNUCqRSRnUM2xGH9k9yEgjX_o-jbSXn-zdc.jpg?r=385",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXMBzCLVS5b5zZ6ziITBDX50af9J1gnbiZafsfD3O66Kd946XObmVAF8HvSd0RXwciRnVN2xh9rxf0VPeAT18WrGm7y8jC70crJ4iPnEMcE.png?r=151",
+      "synopsis": "Across more than a decade, 17 teen boys and young men were murdered by convicted killer Jeffrey Dahmer. How did he evade arrest for so long?",
+      "title": "DAHMER: Monster: The Jeffrey Dahmer Story",
+      "parentTitle": "DAHMER",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "dahmer": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABbdtIoa_V951u5Jsqgd98oqw_BWVVz76odSN2dX2HUqvPMQbyvJsscqxUqHf0WzKij3syRzdqG6VixFh75nXzUI8RR-9BuhjK1TV.jpg?r=864",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABf5TGW_zOgkT1HDX-WzcqlpNwNkMGSxAttjfksljQjta_jU1ACHwaVCgRnjAnm5tPNUCqRSRnUM2xGH9k9yEgjX_o-jbSXn-zdc.jpg?r=385",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABXMBzCLVS5b5zZ6ziITBDX50af9J1gnbiZafsfD3O66Kd946XObmVAF8HvSd0RXwciRnVN2xh9rxf0VPeAT18WrGm7y8jC70crJ4iPnEMcE.png?r=151",
+      "synopsis": "Across more than a decade, 17 teen boys and young men were murdered by convicted killer Jeffrey Dahmer. How did he evade arrest for so long?",
+      "title": "DAHMER: Monster: The Jeffrey Dahmer Story",
+      "parentTitle": "DAHMER",
+      "year": 2022,
+      "rating": "TV-MA"
+    },
+    "bridgerton: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABaEnpeQW5tgVwkDrCo95-TGnPtibp2Z6NEzheUH9-UoRKzqDhL78bvf3SLt2e0H5Qo-CemEu2Wwj3-sm_O9nNvJpLuRMGjOEMURk.jpg?r=c70",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABcso2U852_-brO_cOwiPqqEf2ir92LgQXOVc8NkmHjmrZ9wbpyr_CNOXSnt0jdGqfjWIDf8Uz3Ii1BoC37Xhiwg73xno_BSPjOc.jpg?r=3a0",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX4f-S8RAt3SCQIe7Qcsu0D8jjvycNG6HllCJqmbRK9PfHtoQA51m7CbmRBUBPPyCt4S6De_pKi2ZojfrA3BUNuHYPycVV4OIy6wmFs8_SQ.png?r=eb8",
+      "synopsis": "The eight close-knit siblings of the Bridgerton family look for love and happiness in London high society. Inspired by Julia Quinn's bestselling novels.",
+      "title": "Bridgerton: Season 1",
+      "parentTitle": "Bridgerton",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "bridgerton": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABa-KqhNuciG4MtX0cGVe7Pl77lFy73RypCeY2fWf1_P5jk-13t8NbfOEMdxDiAuATOTIU63GNll-Ksgu_yrp6PXNJhCHz0Pd62_5.jpg?r=036",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVSIJEbhITFZa3ONZoUnfdRGbv_37yAhK98Tja9pySDNzYLaBsMMmUTrYxrlhQWSXDFFEIqTtLFg7USgZRSj85QrIUbJCzjAi5E.jpg?r=5e5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX4f-S8RAt3SCQIe7Qcsu0D8jjvycNG6HllCJqmbRK9PfHtoQA51m7CbmRBUBPPyCt4S6De_pKi2ZojfrA3BUNuHYPycVV4OIy6wmFs8_SQ.png?r=eb8",
+      "synopsis": "As a new crop of debutantes yearns to become the brightest of the ball, a wallflower with a double life finds her light amid secrets and surprises.",
+      "title": "Bridgerton: Season 3",
+      "parentTitle": "Bridgerton",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "the queen's gambit: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSK5lmNR7RSrSX4h2NAH_Z6RgncYMrFfCUCobWldi_ftN7hIZUKVlbKXH4FjBjuZvsDenf541-WtEHUolgn3gAf_Ck9Jaj4i_V9P.jpg?r=736",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbysNLYaxBzFMU3znnKKwy6UvJ22Fl9OULMEcdV0sdVWranL4gETxTzDtdRonYmXI5g3hdsN9e3zRjuqLBysYrwW2L3xm7DTkiU.jpg?r=069",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUzZjtVShRjUTcjapNDFwOXCqT4UXZ9ysVIsAZTryQpV0R82JYYUlpG8Y0UfP11Hq6oaMlgtDfnLhVWlYNKfwKvjOR8aEjAK35x7YjFe7l8.png?r=373",
+      "synopsis": "In a 1950s orphanage, a young girl reveals an astonishing talent for chess and begins an unlikely journey to stardom while grappling with addiction.",
+      "title": "The Queen's Gambit: Limited Series",
+      "parentTitle": "The Queen's Gambit",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "the queen's gambit": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABSK5lmNR7RSrSX4h2NAH_Z6RgncYMrFfCUCobWldi_ftN7hIZUKVlbKXH4FjBjuZvsDenf541-WtEHUolgn3gAf_Ck9Jaj4i_V9P.jpg?r=736",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABbysNLYaxBzFMU3znnKKwy6UvJ22Fl9OULMEcdV0sdVWranL4gETxTzDtdRonYmXI5g3hdsN9e3zRjuqLBysYrwW2L3xm7DTkiU.jpg?r=069",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABUzZjtVShRjUTcjapNDFwOXCqT4UXZ9ysVIsAZTryQpV0R82JYYUlpG8Y0UfP11Hq6oaMlgtDfnLhVWlYNKfwKvjOR8aEjAK35x7YjFe7l8.png?r=373",
+      "synopsis": "In a 1950s orphanage, a young girl reveals an astonishing talent for chess and begins an unlikely journey to stardom while grappling with addiction.",
+      "title": "The Queen's Gambit: Limited Series",
+      "parentTitle": "The Queen's Gambit",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "bridgerton: season 3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABa-KqhNuciG4MtX0cGVe7Pl77lFy73RypCeY2fWf1_P5jk-13t8NbfOEMdxDiAuATOTIU63GNll-Ksgu_yrp6PXNJhCHz0Pd62_5.jpg?r=036",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVSIJEbhITFZa3ONZoUnfdRGbv_37yAhK98Tja9pySDNzYLaBsMMmUTrYxrlhQWSXDFFEIqTtLFg7USgZRSj85QrIUbJCzjAi5E.jpg?r=5e5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABX4f-S8RAt3SCQIe7Qcsu0D8jjvycNG6HllCJqmbRK9PfHtoQA51m7CbmRBUBPPyCt4S6De_pKi2ZojfrA3BUNuHYPycVV4OIy6wmFs8_SQ.png?r=eb8",
+      "synopsis": "As a new crop of debutantes yearns to become the brightest of the ball, a wallflower with a double life finds her light amid secrets and surprises.",
+      "title": "Bridgerton: Season 3",
+      "parentTitle": "Bridgerton",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "squid game: season 1": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcLaEOs_lxVRDkGymPc0ZSiEPszCyFbMYNlwWc3zK0FXKM6I-5KCSvxKhC7ms86vsAbiQ7Eh_Lv_PEg03M_4FP374hUerHVAHY-F.jpg?r=002",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVhbr1dcTgqdSSTBYlr0kWnVQg7vtpoMAq5wC0Xp4CIF8IuWjOBHbYnAMjqpMBg6i8UlXTgvDhxg535hW2rA1nfjN4Z92oQjc8c.jpg?r=853",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits — with deadly high stakes.",
+      "title": "Squid Game: Season 1",
+      "parentTitle": "Squid Game",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "squid game": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABURK_Lqz1m4_GcvyzzSDGCMl4vjv_JvaaNmgN5cx4ZTLYa2lQ6Ir6TkApDENBlf-cCwFSIucIPkfJ5oFhi7ryDyvVqMKqzb7EyMT.jpg?r=052",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUhO2mJ2QlnJTBc0hIuPbyC_5P-4Y2agya3Ov9bU9LeyLtQiCDEoDxEWXvRvL4gAK17q-1Q7eBYWcwDCtzRYMajzKujTU5q0NE8.jpg?r=dd2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "New games. Old foes. Player 456 and the Front Man clash in a final showdown of moral dilemmas and pulse-racing challenges. Who will emerge victorious?",
+      "title": "Squid Game: Season 3",
+      "parentTitle": "Squid Game",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "squid game: season 2": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXva7UMnfPM4IGaIn2Xjb1fYAmiOGtqLuiQnDEaBDM6jxdd99rmuL6n6DnMkIW8HbtduYVUTyjjyqzZ1xUh9T3x7EoktWoO19URa.jpg?r=f02",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABVPSj4FwCdE7_oFR8N41FxWaDValN7CbsAQijDKk1sI0UL49bEL3bXYWBLOkaPXUqyH6hGku4vOvohob58r-LEc2SKxeHOVycAg.jpg?r=ea2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "Ready to run for your lives? Player 456 returns for more heart-pounding children's games, facing deadly new challenges — but armed with a hidden agenda.",
+      "title": "Squid Game: Season 2",
+      "parentTitle": "Squid Game",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "squid game: season 3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABURK_Lqz1m4_GcvyzzSDGCMl4vjv_JvaaNmgN5cx4ZTLYa2lQ6Ir6TkApDENBlf-cCwFSIucIPkfJ5oFhi7ryDyvVqMKqzb7EyMT.jpg?r=052",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABUhO2mJ2QlnJTBc0hIuPbyC_5P-4Y2agya3Ov9bU9LeyLtQiCDEoDxEWXvRvL4gAK17q-1Q7eBYWcwDCtzRYMajzKujTU5q0NE8.jpg?r=dd2",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABQlm4twCHfqHbut7fGUlBGJvGxK_HLfgygetBWkcft4OpHxbBvSyazNh0YSvzTTpxQP2RZ--mpWB2DeH6tSq84W8qNFL9Q4RE38cLjrP7LA.png?r=438",
+      "synopsis": "New games. Old foes. Player 456 and the Front Man clash in a final showdown of moral dilemmas and pulse-racing challenges. Who will emerge victorious?",
+      "title": "Squid Game: Season 3",
+      "parentTitle": "Squid Game",
+      "year": 2025,
+      "rating": "TV-MA"
+    },
+    "money heist: part 4": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABcvKK24oYP5WJdBenaHkHJlb4QB87GUGoUPw0ir7TU-za1RoOqF2KDErMGUV2Gu2tGCi6OqIVhKgiIvVPYndtiP3rKtMNhw6lnXy.jpg?r=638",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABep0Cj9g4DqsXD6QmWu6CWvGZiWEksjXZvRmez06LtmH7rXg_WzIe3vUGxpsUhgZH9hEHDx0pUvbziG7-mvaZTkFzk8f5qcwgwI.jpg?r=c9a",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "Lives are on the line as the Professor's plan begins to unravel and the crew must fend off enemies from both inside and outside the Bank of Spain.",
+      "title": "Money Heist: Part 4",
+      "parentTitle": "Money Heist",
+      "year": 2020,
+      "rating": "TV-MA"
+    },
+    "money heist": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXX7aLd8QR2xSetBUXuEn-bEYk1uOKtsegC5jPezZB9gGmrOKGkP528AYkRkgH0vwrOEUI7YdsJgrCCMbF1E2t03HwOs8017rPcm.jpg?r=f09",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdxS1kzMF49WdHQKH5ZoQtGVYOOM5v2t2LFenEFD-B3w6RfmXH6fhV8VIeLqyh1oGM1KghKYhEoK7mQeOtDCXBKZkdOVVf6uVSw.jpg?r=b25",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "The Professor and his team reunite to free Río, this time targeting the Bank of Spain with a daring and dangerous new plan. The Resistance continues.",
+      "title": "Money Heist: Part 3",
+      "parentTitle": "Money Heist",
+      "year": 2019,
+      "rating": "TV-MA"
+    },
+    "money heist: part 5": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABYgedVP-d5OFCpkohlIQ0xygfyb1u-mGFQe147NnlzTeNfnWbVUJ0ITaPlw1JDfo4DaZrUhXFYdMzul7sy8QbFwD2M_ZQ4HKB1Iw.jpg?r=2ac",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABaMQiJuX52i-i5bw94hHv9yPIoTtlwx26tPnKfxAVyAxgdeg5iXk_IiDJBraWJtw10N6RArJMK4T_0K8aVy7dvej6ccYO5fKgT8.jpg?r=326",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "The gang has been in the Bank of Spain for more than 100 hours and the Professor is at risk. To make matters worse, a new adversary is coming: the army.",
+      "title": "Money Heist: Part 5",
+      "parentTitle": "Money Heist",
+      "year": 2021,
+      "rating": "TV-MA"
+    },
+    "money heist: part 3": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABXX7aLd8QR2xSetBUXuEn-bEYk1uOKtsegC5jPezZB9gGmrOKGkP528AYkRkgH0vwrOEUI7YdsJgrCCMbF1E2t03HwOs8017rPcm.jpg?r=f09",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdxS1kzMF49WdHQKH5ZoQtGVYOOM5v2t2LFenEFD-B3w6RfmXH6fhV8VIeLqyh1oGM1KghKYhEoK7mQeOtDCXBKZkdOVVf6uVSw.jpg?r=b25",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABa65c0Hs6tQnTQbZ4h_PQOeNonPr1DzWqgZtl5cK_i4wZdWCmpuUVWalzzD_PRvrZruRwrNCu-RZaz1KgLIKdCwdj6AsJPNVPeVeJNcWzwU.png?r=141",
+      "synopsis": "The Professor and his team reunite to free Río, this time targeting the Bank of Spain with a daring and dangerous new plan. The Resistance continues.",
+      "title": "Money Heist: Part 3",
+      "parentTitle": "Money Heist",
+      "year": 2019,
+      "rating": "TV-MA"
+    },
+    "la palma: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWTi7Q_Q0zKVTAwl1lToj0yesv_kwGgZhHiAg2HqsinvWLEUx_Qr17bUISHsH9dKpBOhVbR94F3dVIgYlVlfh8IgPI-H_rbNz8CX.jpg?r=96b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQTAyWeM7yjvL0FNWsN9Th7Q4LT6o-i1qJwA2Lycqq5Nc20gtXCvlo-kZQwcOL4HxvX5y2qpzhwLns0_-HaOAbVKdqeW4srV8bA.jpg?r=d94",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSpn3ZqXPi4D6KlDRRVOlT54dPUebfI7tj8Ej3YF0nmq_K3FwE8gB6oV0l4HpBpeDomjeB_q98dRIvtIoXzDsY-yJKy3j9YRuWs84R9tulk.png?r=46e",
+      "synopsis": "A Norwegian family vacationing on La Palma faces disaster when a young researcher discovers alarming signs of an imminent volcanic eruption.",
+      "title": "La Palma: Limited Series",
+      "parentTitle": "La Palma",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "la palma": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWTi7Q_Q0zKVTAwl1lToj0yesv_kwGgZhHiAg2HqsinvWLEUx_Qr17bUISHsH9dKpBOhVbR94F3dVIgYlVlfh8IgPI-H_rbNz8CX.jpg?r=96b",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABQTAyWeM7yjvL0FNWsN9Th7Q4LT6o-i1qJwA2Lycqq5Nc20gtXCvlo-kZQwcOL4HxvX5y2qpzhwLns0_-HaOAbVKdqeW4srV8bA.jpg?r=d94",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSpn3ZqXPi4D6KlDRRVOlT54dPUebfI7tj8Ej3YF0nmq_K3FwE8gB6oV0l4HpBpeDomjeB_q98dRIvtIoXzDsY-yJKy3j9YRuWs84R9tulk.png?r=46e",
+      "synopsis": "A Norwegian family vacationing on La Palma faces disaster when a young researcher discovers alarming signs of an imminent volcanic eruption.",
+      "title": "La Palma: Limited Series",
+      "parentTitle": "La Palma",
+      "year": 2024,
+      "rating": "TV-MA"
+    },
+    "teach you a lesson: limited series": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWThoxdmClcuBB2gH48RYSJ0SRy0FQxlDWsizGFFUZXgY4wE8-ipN4hqtLTJpvcnMWrbNlnsdYy5pFebwEb_5DbgmRsO-aMDbTvC.jpg?r=db2",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdG3uwZeHFHGMIKQ78auye1_cG4w6ShHJ_G4eOgKi0S5TL5fxn4-7sJ15Ce6d7jGMvLwBJZI7l4fkqoKzAJC3MEko_vl-c3gQuc.jpg?r=6d5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSat8a_7cPl_E3lJlp4KHncTj7rzRoRazFGXEajbipKL6NnKKcAUj0Ceyidqxtq-KVaRlJ_BMXIoxgqxeFyApLhMqhypTIX4zCG3dIc0_IM.png?r=37e",
+      "synopsis": "When respect collapses in schools, unconventional inspectors arrive to set things right — with sharp, no-nonsense lessons you won't find in textbooks.",
+      "title": "Teach You a Lesson: Limited Series",
+      "parentTitle": "Teach You a Lesson",
+      "year": 2026,
+      "rating": "TV-MA"
+    },
+    "teach you a lesson": {
+      "cover": "https://dnm.nflximg.net/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABWThoxdmClcuBB2gH48RYSJ0SRy0FQxlDWsizGFFUZXgY4wE8-ipN4hqtLTJpvcnMWrbNlnsdYy5pFebwEb_5DbgmRsO-aMDbTvC.jpg?r=db2",
+      "thumb": "https://dnm.nflximg.net/api/v6/LSExTNdA1vCOYNZ8eHZ6J0eyIcQ/AAAABdG3uwZeHFHGMIKQ78auye1_cG4w6ShHJ_G4eOgKi0S5TL5fxn4-7sJ15Ce6d7jGMvLwBJZI7l4fkqoKzAJC3MEko_vl-c3gQuc.jpg?r=6d5",
+      "logo": "https://dnm.nflximg.net/api/v6/9R7jmI8ri5rJNRlvCsMBDHE5JuQ/AAAABSat8a_7cPl_E3lJlp4KHncTj7rzRoRazFGXEajbipKL6NnKKcAUj0Ceyidqxtq-KVaRlJ_BMXIoxgqxeFyApLhMqhypTIX4zCG3dIc0_IM.png?r=37e",
+      "synopsis": "When respect collapses in schools, unconventional inspectors arrive to set things right — with sharp, no-nonsense lessons you won't find in textbooks.",
+      "title": "Teach You a Lesson: Limited Series",
+      "parentTitle": "Teach You a Lesson",
+      "year": 2026,
+      "rating": "TV-MA"
+    }
+  }
+};
+export default NETFLIX_ARTWORK;

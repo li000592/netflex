@@ -305,7 +305,12 @@ export async function fetchNetflixCatalog(
       hoursFormatted: it.hoursFormatted,
       viewsFormatted: it.viewsFormatted,
       remarks: it.remarks,
-      cover: it.cover || '',
+      cover: it.cover || it.thumb || '',
+      backdrop: it.backdrop || it.cover || '',
+      logo: it.logo || '',
+      overview: it.overview || it.content || '',
+      year: it.year ? String(it.year) : '',
+      rate: it.rate || '',
     }));
     const result = { week: data.week, total: data.total || items.length, items };
     netflixMemoryCache.set(cacheKey, { data: result, time: now });
@@ -323,9 +328,11 @@ const detailCache = new Map<string, VideoDetail>();
 
 export function prefetchVideo(keyword: string, huakaiEnabled: boolean = false): void {
   if (!keyword || !keyword.trim()) return;
-  const key = `${keyword.trim().toLowerCase()}_all_all_${huakaiEnabled ? 'hk1' : 'hk0'}`;
+  const parenMatch = keyword.match(/^(.*?)\s*\((.*?)\)$/);
+  const targetKeyword = parenMatch ? parenMatch[2].trim() : keyword.trim();
+  const key = `${targetKeyword.toLowerCase()}_all_all_${huakaiEnabled ? 'hk1' : 'hk0'}`;
   if (searchCache.has(key)) return;
-  searchVideos(keyword, undefined, undefined, huakaiEnabled).catch(() => {});
+  searchVideos(targetKeyword, undefined, undefined, huakaiEnabled).catch(() => {});
 }
 
 export async function searchVideos(

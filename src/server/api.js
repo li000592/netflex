@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { VIDEO_SOURCES } from '../config/sources.js';
+import { NETFLIX_ARTWORK } from '../config/netflixArtwork.js';
 
 const api = express();
 api.use(cors());
@@ -222,6 +223,8 @@ const NETFLIX_TITLE_MAP = {
   'Wednesday': '星期三',
   'Squid Game': '鱿鱼游戏',
   'Stranger Things': '怪奇物语',
+  'Stranger Things 4': '怪奇物语 第四季',
+  'Stranger Things 5': '怪奇物语 第五季',
   'Red Notice': '红色通缉令',
   'The Queen\'s Gambit': '后翼弃兵',
   'Money Heist': '纸钞屋',
@@ -250,6 +253,16 @@ const NETFLIX_TITLE_MAP = {
   'Below': '下层',
   'Love Is Blind': '盲婚试爱',
   'Ice Age': '冰川时代',
+  'Ice Age 4': '冰川时代4：大陆漂移',
+  'Ice Age 5': '冰川时代5：星际碰撞',
+  'This Is Not a Test': '这绝非演习',
+  'Aliens in the Attic': '楼上的外星人',
+  'Baththa': '巴塔',
+  'You, Me, Us': '你，我，我们',
+  'Dorothy': '桃乐丝',
+  'The Birthday Gift': '生日礼物',
+  'Dhoomakethu': '彗星',
+  'Minimum Wage': '最低工资',
   'Return to Sender': '退件',
   'Surviving Hurricane Otis': '幸存奥蒂斯飓风',
   'Collision Course': '碰撞轨迹',
@@ -265,11 +278,136 @@ const NETFLIX_TITLE_MAP = {
   'The Secret Woman': '秘密女人',
   'The One About Matthew Perry': '致敬马修·派瑞',
   'Raw': 'WWE Raw',
+  'Raw: 2026': 'WWE Raw 2026',
+  'Instadocs': '简·多伊案',
   'The Fall of El Mayo': '大毒枭的陨落',
   'Dead-End Job': '绝路工作',
+  'Doctor X': 'X医生：白衣黑帮',
   'Doctor X: Mafia in White': 'X医生：白衣黑帮',
   'Teach You a Lesson': '给你上一课',
+  'A Couple of Lies': '谎言夫妇',
+  'Where the Mask Ends': '面具之下',
+  'The Gift of Deceit': '欺骗之礼',
+  'I Will Find You': '我会找到你',
+  'La Palma': '拉帕尔马海啸',
 };
+
+// Helper: extract sized image URLs from Netflix GraphQL pulse image object
+function getArtworkUrl(artObj) {
+  if (!artObj) return '';
+  for (const [k, v] of Object.entries(artObj)) {
+    if (k.startsWith('urlsSized') && Array.isArray(v) && v.length > 0) {
+      return v[0]?.url || '';
+    }
+  }
+  return '';
+}
+
+function normalizeNetflixCategory(cat) {
+  if (!cat) return '';
+  const upper = cat.toUpperCase();
+  if (upper.includes('ENGLISH') && upper.includes('MOVIES') && !upper.includes('NON')) return 'films_en';
+  if (upper.includes('NON') && upper.includes('MOVIES')) return 'films_non_en';
+  if (upper.includes('ENGLISH') && upper.includes('SERIES') && !upper.includes('NON')) return 'tv_en';
+  if (upper.includes('NON') && upper.includes('SERIES')) return 'tv_non_en';
+  return cat.toLowerCase();
+}
+
+let netflixArtworkCache = { weekly: null, popular: null, time: 0 };
+
+async function fetchNetflixArtworkMap(mode = 'weekly') {
+  const now = Date.now();
+  if (netflixArtworkCache[mode] && now - netflixArtworkCache.time < 21600000) {
+    return netflixArtworkCache[mode];
+  }
+
+  const urls = mode === 'popular'
+    ? [
+        'https://top10.netflix.com/most-popular',
+        'https://top10.netflix.com/most-popular/films-non-english',
+        'https://top10.netflix.com/most-popular/tv',
+        'https://top10.netflix.com/most-popular/tv-non-english',
+      ]
+    : [
+        'https://top10.netflix.com/films',
+        'https://top10.netflix.com/films-non-english',
+        'https://top10.netflix.com/tv',
+        'https://top10.netflix.com/tv-non-english',
+      ];
+
+  const map = new Map();
+  try {
+    const fetchPromises = urls.map(async (url) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      try {
+        const res = await fetch(url, {
+          signal: controller.signal,
+          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return;
+        const html = await res.text();
+        const marker = "netflix.reactContext.models.graphql = JSON.parse('";
+        const idx = html.indexOf(marker);
+        if (idx === -1) return;
+        const endMarker = "');";
+        const endIdx = html.indexOf(endMarker, idx + marker.length);
+        const jsonStr = html.substring(idx + marker.length, endIdx).replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+        const parsed = JSON.parse(jsonStr);
+        const items = Object.values(parsed.data || {}).filter((x) => x && x.__typename === 'PulseTop10ItemEntity');
+        for (const it of items) {
+          const catKey = normalizeNetflixCategory(it.top10?.category);
+          const rank = it.top10?.weeklyRank;
+          const cover = getArtworkUrl(it.artwork?.storyArt) || getArtworkUrl(it.artwork?.sdpArt);
+          const thumb = getArtworkUrl(it.artwork?.sdpArt) || cover;
+          const logo = getArtworkUrl(it.artwork?.logoArt);
+          const synopsis = it.top10Video?.shortSynopsis || '';
+          const title = it.top10Video?.title || '';
+          const parentTitle = it.top10Video?.parentShow?.title || '';
+          const year = it.top10Video?.releaseYear;
+          const rating = it.top10Video?.maturityRating;
+
+          const artData = { cover, thumb, logo, synopsis, title, parentTitle, year, rating };
+          if (catKey && rank) map.set(`${catKey}_${rank}`, artData);
+          if (title) map.set(title.toLowerCase().trim(), artData);
+          if (parentTitle) map.set(parentTitle.toLowerCase().trim(), artData);
+        }
+      } catch {
+        clearTimeout(timeoutId);
+      }
+    });
+
+    await Promise.allSettled(fetchPromises);
+    if (map.size > 0) {
+      netflixArtworkCache[mode] = map;
+      netflixArtworkCache.time = now;
+      return map;
+    }
+  } catch (err) {
+    console.error('Error fetching live Netflix artwork:', err.message);
+  }
+
+  return null;
+}
+
+function resolveNetflixArtwork(artMap, mode, catKey, rank, showTitle) {
+  if (artMap) {
+    const byRank = artMap.get(`${catKey}_${rank}`);
+    if (byRank && byRank.cover) return byRank;
+    const byTitle = artMap.get(showTitle.toLowerCase().trim());
+    if (byTitle && byTitle.cover) return byTitle;
+  }
+  const fallbackMode = NETFLIX_ARTWORK[mode] || {};
+  if (fallbackMode[`${catKey}_${rank}`]) {
+    return fallbackMode[`${catKey}_${rank}`];
+  }
+  const byTitleFallback = NETFLIX_ARTWORK.byTitle || {};
+  if (byTitleFallback[showTitle.toLowerCase().trim()]) {
+    return byTitleFallback[showTitle.toLowerCase().trim()];
+  }
+  return {};
+}
 
 // 3. Netflix Official Top 10 Public Data API (top10.netflix.com)
 api.get('/api/netflix', async (req, res) => {
@@ -279,6 +417,8 @@ api.get('/api/netflix', async (req, res) => {
   if (cached) return res.json(cached);
 
   try {
+    const artworkMap = await fetchNetflixArtworkMap(mode);
+
     if (mode === 'popular') {
       const url = 'https://top10.netflix.com/data/most-popular.tsv';
       const response = await fetch(url, {
@@ -310,6 +450,7 @@ api.get('/api/netflix', async (req, res) => {
             const displayTitle = cnName ? `${showTitle} (${cnName})` : showTitle;
             const viewsStr = views >= 100000000 ? `${(views / 100000000).toFixed(2)}亿次` : `${(views / 10000).toFixed(0)}万次`;
             const hoursStr = hours >= 100000000 ? `${(hours / 100000000).toFixed(2)}亿小时` : `${(hours / 10000).toFixed(0)}万小时`;
+            const art = resolveNetflixArtwork(artworkMap, 'popular', catKey, rank, showTitle);
 
             items.push({
               id: `netflix_pop_${catKey}_${rank}`,
@@ -327,6 +468,14 @@ api.get('/api/netflix', async (req, res) => {
               hoursFormatted: hoursStr,
               viewsFormatted: viewsStr,
               remarks: `总观看 ${viewsStr}`,
+              cover: art.cover || art.thumb || '',
+              thumb: art.thumb || art.cover || '',
+              backdrop: art.cover || '',
+              logo: art.logo || '',
+              overview: art.synopsis || '',
+              content: art.synopsis || '',
+              year: art.year ? String(art.year) : '',
+              rate: art.rating || '',
             });
           }
         }
@@ -373,6 +522,7 @@ api.get('/api/netflix', async (req, res) => {
             const displayTitle = cnName ? `${showTitle} (${cnName})` : showTitle;
             const viewsStr = views >= 100000000 ? `${(views / 100000000).toFixed(2)}亿次` : `${(views / 10000).toFixed(0)}万次`;
             const hoursStr = hours >= 100000000 ? `${(hours / 100000000).toFixed(2)}亿小时` : `${(hours / 10000).toFixed(0)}万小时`;
+            const art = resolveNetflixArtwork(artworkMap, 'weekly', catKey, rank, showTitle);
 
             items.push({
               id: `netflix_week_${catKey}_${rank}`,
@@ -392,6 +542,14 @@ api.get('/api/netflix', async (req, res) => {
               hoursFormatted: hoursStr,
               viewsFormatted: viewsStr,
               remarks: `周观看 ${viewsStr} • 在榜 ${cumulativeWeeks} 周`,
+              cover: art.cover || art.thumb || '',
+              thumb: art.thumb || art.cover || '',
+              backdrop: art.cover || '',
+              logo: art.logo || '',
+              overview: art.synopsis || '',
+              content: art.synopsis || '',
+              year: art.year ? String(art.year) : '',
+              rate: art.rating || '',
             });
           }
         }
