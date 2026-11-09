@@ -174,7 +174,138 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
         <div className="py-20 text-center text-gray-400">
           <p className="text-base">{t('noCategoryContent')}</p>
         </div>
+      ) : selectedCategory === 'all' ? (
+        /* Grouped Sections When "All" is Selected */
+        <div className="space-y-14">
+          {[
+            {
+              id: 'films_en',
+              label: t('filmsEn'),
+              icon: <Film className="w-5 h-5 text-[#E50914]" />,
+              desc: mode === 'weekly' ? '本周英语电影前十' : '历史最受欢迎英语电影',
+            },
+            {
+              id: 'films_non_en',
+              label: t('filmsNonEn'),
+              icon: <Globe2 className="w-5 h-5 text-[#E50914]" />,
+              desc: mode === 'weekly' ? '本周非英语电影前十' : '历史最受欢迎非英语电影',
+            },
+            {
+              id: 'tv_en',
+              label: t('tvEn'),
+              icon: <Tv className="w-5 h-5 text-[#E50914]" />,
+              desc: mode === 'weekly' ? '本周英语剧集前十' : '历史最受欢迎英语剧集',
+            },
+            {
+              id: 'tv_non_en',
+              label: t('tvNonEn'),
+              icon: <Sparkles className="w-5 h-5 text-[#E50914]" />,
+              desc: mode === 'weekly' ? '本周非英语剧集前十' : '历史最受欢迎非英语剧集',
+            },
+          ].map((sec) => {
+            const sectionItems = items.filter((it) => it.catKey === sec.id);
+            if (sectionItems.length === 0) return null;
+            return (
+              <div key={sec.id} className="space-y-5">
+                {/* Section Header */}
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="flex items-center space-x-2.5">
+                    {sec.icon}
+                    <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                      {sec.label} Top 10
+                    </h2>
+                    <span className="hidden sm:inline-block text-xs text-gray-400 font-normal ml-2">
+                      ({sec.desc})
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedCategory(sec.id)}
+                    className="text-xs sm:text-sm font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center group/btn"
+                  >
+                    <span>查看完整</span>
+                    <span className="ml-1 group-hover/btn:translate-x-0.5 transition-transform">→</span>
+                  </button>
+                </div>
+
+                {/* Section Grid */}
+                <div
+                  className={
+                    viewMode === 'landscape'
+                      ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10'
+                      : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10'
+                  }
+                >
+                  {sectionItems.map((item) => {
+                    const isFav = watchlistIds.has(item.id);
+                    return (
+                      <div key={item.id} className="flex flex-col space-y-2 group">
+                        <MovieCard
+                          movie={item}
+                          rank={item.rank}
+                          aspectRatio={viewMode === 'landscape' ? 'video' : 'poster'}
+                          hideTitleBelow={true}
+                          onPlay={onPlay}
+                          onOpenDetail={onOpenDetail}
+                          isFavorite={isFav}
+                          onToggleFavorite={onToggleFavorite}
+                          className="w-full"
+                        />
+
+                        {/* Netflix Metadata & Explicit Title */}
+                        <div className="flex flex-col space-y-1 pt-1">
+                          <h3
+                            onClick={() => onOpenDetail(item)}
+                            className="font-bold text-sm sm:text-base text-white line-clamp-1 group-hover:text-[#E50914] cursor-pointer transition-colors leading-snug"
+                            title={item.title}
+                          >
+                            {item.title}
+                          </h3>
+
+                          <div className="flex items-center justify-between text-xs text-gray-400">
+                            <div className="flex items-center space-x-1.5 min-w-0">
+                              <span className="text-white/80 font-medium text-[11px] truncate">
+                                {item.netflixCategory}
+                              </span>
+                              {item.season && (
+                                <span className="text-[10px] bg-white/10 text-gray-300 px-1.5 py-0.5 rounded font-mono truncate">
+                                  {item.season}
+                                </span>
+                              )}
+                            </div>
+
+                            {item.viewsFormatted && (
+                              <div className="flex items-center text-[11px] text-red-400 font-mono font-medium flex-shrink-0 ml-2">
+                                <span>{item.viewsFormatted}</span>
+                                {item.cumulativeWeeks !== undefined && (
+                                  <span className="ml-1 text-gray-500 font-sans text-[10px]">
+                                    • {item.cumulativeWeeks}周
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Synopsis snippet in landscape mode */}
+                          {viewMode === 'landscape' && item.overview && (
+                            <p
+                              onClick={() => onOpenDetail(item)}
+                              className="text-xs text-gray-400 line-clamp-2 leading-relaxed pt-0.5 cursor-pointer hover:text-gray-300 transition-colors"
+                            >
+                              {item.overview}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
+        /* Single Selected Category Grid */
         <div
           className={
             viewMode === 'landscape'
@@ -185,11 +316,12 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
           {items.map((item) => {
             const isFav = watchlistIds.has(item.id);
             return (
-              <div key={item.id} className="flex flex-col space-y-2">
+              <div key={item.id} className="flex flex-col space-y-2 group">
                 <MovieCard
                   movie={item}
                   rank={item.rank}
                   aspectRatio={viewMode === 'landscape' ? 'video' : 'poster'}
+                  hideTitleBelow={true}
                   onPlay={onPlay}
                   onOpenDetail={onOpenDetail}
                   isFavorite={isFav}
@@ -197,31 +329,46 @@ export const NetflixPage: React.FC<NetflixPageProps> = ({
                   className="w-full"
                 />
 
-                {/* Netflix Metadata Stats Pill */}
+                {/* Netflix Metadata & Explicit Title */}
                 <div className="flex flex-col space-y-1 pt-1">
-                  <div className="flex items-center justify-between text-[11px] text-gray-400">
-                    <span className="font-semibold text-white/90 truncate mr-1">
-                      {item.netflixCategory}
-                    </span>
-                    {item.season && (
-                      <span className="text-[10px] text-gray-400 truncate max-w-[90px]">
-                        {item.season}
+                  <h3
+                    onClick={() => onOpenDetail(item)}
+                    className="font-bold text-sm sm:text-base text-white line-clamp-1 group-hover:text-[#E50914] cursor-pointer transition-colors leading-snug"
+                    title={item.title}
+                  >
+                    {item.title}
+                  </h3>
+
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <div className="flex items-center space-x-1.5 min-w-0">
+                      <span className="text-white/80 font-medium text-[11px] truncate">
+                        {item.netflixCategory}
                       </span>
+                      {item.season && (
+                        <span className="text-[10px] bg-white/10 text-gray-300 px-1.5 py-0.5 rounded font-mono truncate">
+                          {item.season}
+                        </span>
+                      )}
+                    </div>
+
+                    {item.viewsFormatted && (
+                      <div className="flex items-center text-[11px] text-red-400 font-mono font-medium flex-shrink-0 ml-2">
+                        <span>{item.viewsFormatted}</span>
+                        {item.cumulativeWeeks !== undefined && (
+                          <span className="ml-1 text-gray-500 font-sans text-[10px]">
+                            • {item.cumulativeWeeks}周
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
 
-                  {item.viewsFormatted && (
-                    <div className="flex items-center text-[10px] text-red-400 font-mono font-medium">
-                      <span>{item.viewsFormatted}</span>
-                      {item.cumulativeWeeks !== undefined && (
-                        <span className="ml-1.5 text-gray-500">• 在榜 {item.cumulativeWeeks} 周</span>
-                      )}
-                    </div>
-                  )}
-
                   {/* Synopsis snippet in landscape mode */}
                   {viewMode === 'landscape' && item.overview && (
-                    <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed pt-0.5">
+                    <p
+                      onClick={() => onOpenDetail(item)}
+                      className="text-xs text-gray-400 line-clamp-2 leading-relaxed pt-0.5 cursor-pointer hover:text-gray-300 transition-colors"
+                    >
                       {item.overview}
                     </p>
                   )}

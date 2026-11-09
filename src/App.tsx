@@ -50,7 +50,7 @@ const HOME_EXTRA_ROW_CONFIGS: ExtraRowDef[] = [
   { id: 'action', titleKey: 'rowAction', type: 'movie', tag: '动作', tab: 'movies' },
   { id: 'ustv', titleKey: 'rowUsTv', type: 'tv', tag: '美剧', tab: 'tv' },
   { id: 'koreatv', titleKey: 'rowKoreaTv', type: 'tv', tag: '韩剧', tab: 'tv' },
-  { id: 'comedy', titleKey: 'rowComedy', type: 'movie', tag: '喜剧', tag_tab: 'movies' as any, tab: 'movies' },
+  { id: 'comedy', titleKey: 'rowComedy', type: 'movie', tag: '喜剧', tab: 'movies' },
   { id: 'suspense', titleKey: 'rowSuspense', type: 'movie', tag: '悬疑', tab: 'movies' },
   { id: 'romance', titleKey: 'rowRomance', type: 'movie', tag: '爱情', tab: 'movies' },
   { id: 'animation', titleKey: 'rowAnimation', type: 'movie', tag: '动画', tab: 'movies' },

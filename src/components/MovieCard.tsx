@@ -8,6 +8,7 @@ interface MovieCardProps {
   movie: MediaItem;
   rank?: number;
   aspectRatio?: 'poster' | 'video';
+  hideTitleBelow?: boolean;
   onPlay: (movie: MediaItem) => void;
   onOpenDetail: (movie: MediaItem) => void;
   isFavorite: boolean;
@@ -19,6 +20,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   movie,
   rank,
   aspectRatio = 'poster',
+  hideTitleBelow = false,
   onPlay,
   onOpenDetail,
   isFavorite,
@@ -27,9 +29,31 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
+  const [imgSrc, setImgSrc] = useState(movie.cover);
+  const [proxyAttempted, setProxyAttempted] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const canShowCover = hasValidCover(movie.cover) && !imgError;
+  React.useEffect(() => {
+    setImgSrc(movie.cover);
+    setProxyAttempted(false);
+    setImgError(false);
+  }, [movie.cover]);
+
+  const handleImageError = () => {
+    if (
+      !proxyAttempted &&
+      movie.cover &&
+      movie.cover.startsWith('http') &&
+      !movie.cover.startsWith('/api/proxy/image')
+    ) {
+      setProxyAttempted(true);
+      setImgSrc(`/api/proxy/image?url=${encodeURIComponent(movie.cover)}`);
+    } else {
+      setImgError(true);
+    }
+  };
+
+  const canShowCover = hasValidCover(imgSrc) && !imgError;
 
   return (
     <div
@@ -64,13 +88,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         >
           {canShowCover ? (
             <img
-              src={movie.cover}
+              src={imgSrc}
               alt={movie.title}
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              onError={() => {
-                setImgError(true);
-              }}
+              onError={handleImageError}
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#252525]">
@@ -87,7 +109,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               </span>
             )}
             {movie.remarks && (
-              <span className="bg-black/70 backdrop-blur-sm text-gray-200 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-white/10 line-clamp-1 max-w-[100px]">
+              <span className="bg-black/70 backdrop-blur-sm text-gray-200 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-white/10 line-clamp-1 max-w-[170px] sm:max-w-[220px]">
                 {movie.remarks}
               </span>
             )}
@@ -149,9 +171,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       </div>
 
       {/* Title under card on mobile view */}
-      <div className="sm:hidden mt-1.5 text-[11px] font-medium text-gray-300 truncate w-32">
-        {movie.title}
-      </div>
+      {!hideTitleBelow && (
+        <div className="sm:hidden mt-1.5 text-[11px] font-medium text-gray-300 truncate w-32">
+          {movie.title}
+        </div>
+      )}
     </div>
   );
 };
