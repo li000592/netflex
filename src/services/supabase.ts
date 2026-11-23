@@ -4,9 +4,9 @@ import { WatchHistoryItem, WatchlistItem } from '../types';
 const STORAGE_URL_KEY = 'netflex_supabase_url';
 const STORAGE_KEY_KEY = 'netflex_supabase_anon_key';
 
-// Default project configuration fallback
-const DEFAULT_SUPABASE_URL = 'https://aibykoswmoyclmuotbra.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_jhuj2TVjw0F4vK3WzJEuFg_iFjFmXlI';
+// Default project configuration fallback (clean default without stale hosts)
+const DEFAULT_SUPABASE_URL = '';
+const DEFAULT_SUPABASE_ANON_KEY = '';
 
 let cachedClient: SupabaseClient | null = null;
 

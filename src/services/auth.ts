@@ -272,31 +272,148 @@ export function switchProfile(profileId: string): User | null {
   return user;
 }
 
-export async function signInWithGoogle(): Promise<{ success: boolean; error?: string }> {
-  const supabase = getSupabase();
-  if (!supabase) {
-    return {
-      success: false,
-      error: 'Supabase client not initialized. Please configure Supabase in Settings.',
-    };
-  }
+const GOOGLE_CLIENT_ID_KEY = 'netflex_google_client_id';
 
+export function getGoogleClientId(): string {
+  const envId = (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID || '';
+  const localId = localStorage.getItem(GOOGLE_CLIENT_ID_KEY) || '';
+  return localId || envId || '';
+}
+
+export function saveGoogleClientId(clientId: string): void {
+  localStorage.setItem(GOOGLE_CLIENT_ID_KEY, clientId.trim());
+}
+
+export function parseGoogleJwt(token: string): { email?: string; name?: string; picture?: string; sub?: string } | null {
   try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-
-    if (error) {
-      return { success: false, error: error.message };
-    }
-
-    return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err?.message || 'Google Sign-In failed' };
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
   }
+}
+
+export function loginWithGoogleCredential(credential: string): User | null {
+  const payload = parseGoogleJwt(credential);
+  if (!payload || !payload.sub) return null;
+
+  const email = payload.email || `${payload.sub}@google.user`;
+  const name = payload.name || email.split('@')[0] || 'Google User';
+  const avatar = payload.picture || AVATAR_PRESETS[0].url;
+
+  const user: User = {
+    id: `google_${payload.sub}`,
+    email,
+    username: name,
+    currentProfileId: 'profile_main',
+    profiles: [
+      {
+        id: 'profile_main',
+        name,
+        avatar,
+      },
+      {
+        id: 'profile_kids',
+        name: 'Kids',
+        avatar: AVATAR_PRESETS[4].url,
+        isKids: true,
+      },
+    ],
+  };
+
+  saveCurrentUser(user);
+  return user;
+}
+
+export async function signInWithGoogle(): Promise<{
+  success: boolean;
+  user?: User;
+  error?: string;
+  needConfig?: boolean;
+}> {
+  const googleClientId = getGoogleClientId();
+  const supabase = getSupabase();
+
+  // 1. If Google Client ID is configured, use Google Identity Services (GSI)
+  if (googleClientId) {
+    return new Promise((resolve) => {
+      const loadGsi = () => {
+        if ((window as any).google?.accounts?.id) {
+          try {
+            (window as any).google.accounts.id.initialize({
+              client_id: googleClientId,
+              callback: (response: any) => {
+                if (response?.credential) {
+                  const user = loginWithGoogleCredential(response.credential);
+                  if (user) {
+                    resolve({ success: true, user });
+                  } else {
+                    resolve({ success: false, error: 'Failed to parse Google credentials' });
+                  }
+                } else {
+                  resolve({ success: false, error: 'No credential returned from Google' });
+                }
+              },
+            });
+            (window as any).google.accounts.id.prompt((notification: any) => {
+              if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+                  googleClientId
+                )}&redirect_uri=${encodeURIComponent(
+                  window.location.origin
+                )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
+                window.location.href = redirectUrl;
+              }
+            });
+          } catch (err: any) {
+            resolve({ success: false, error: err?.message || 'Google Sign-In failed' });
+          }
+        } else {
+          const script = document.createElement('script');
+          script.src = 'https://accounts.google.com/gsi/client';
+          script.async = true;
+          script.defer = true;
+          script.onload = loadGsi;
+          script.onerror = () => resolve({ success: false, error: 'Failed to load Google SDK' });
+          document.head.appendChild(script);
+        }
+      };
+      loadGsi();
+    });
+  }
+
+  // 2. If Supabase is configured with a valid custom project
+  if (supabase && isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Supabase Google OAuth failed' };
+    }
+  }
+
+  // 3. Neither configured: tell UI we need configuration
+  return {
+    success: false,
+    needConfig: true,
+    error: '需要先配置 Google Client ID 或 Supabase 项目',
+  };
 }
 
 export function convertSupabaseUser(sbUser: any): User {
