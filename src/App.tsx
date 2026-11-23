@@ -10,6 +10,7 @@ import { SearchPage } from './components/SearchPage';
 import { MyListPage } from './components/MyListPage';
 import { HuakaiPage } from './components/HuakaiPage';
 import { NetflixPage } from './components/NetflixPage';
+import { AnimePage } from './components/AnimePage';
 import { InfiniteCatalogView } from './components/InfiniteCatalogView';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
@@ -514,36 +515,8 @@ export const App: React.FC = () => {
             onPlayEpisode={handlePlayEpisode}
           />
         ) : currentTab === 'anime' ? (
-          /* Dedicated Anime Portal with Infinite Scroll Catalog */
-          <InfiniteCatalogView
-            type="tv"
-            initialTag="日本动画"
-            tags={animeTags}
-            title={t('animePortalTitle')}
-            subtitle={t('animePortalSub')}
-            headerSlot={
-              animeRows.length > 0 ? (
-                <div className="mb-10">
-                  <h2 className="text-xl sm:text-2xl font-bold mb-4 flex items-center">
-                    {t('dailyAnimeCalendar')}
-                    <span className="ml-3 text-xs bg-[#E50914] text-white px-2 py-0.5 rounded font-mono">
-                      {t('simulcastMonSun')}
-                    </span>
-                  </h2>
-                  {animeRows.map((row) => (
-                    <MovieRow
-                      key={row.day}
-                      title={`${row.day} ${t('updatedDay')}`}
-                      movies={row.items}
-                      onPlay={handleDirectPlay}
-                      onOpenDetail={handleOpenDetail}
-                      watchlistIds={watchlistIds}
-                      onToggleFavorite={handleToggleFavorite}
-                    />
-                  ))}
-                </div>
-              ) : undefined
-            }
+          /* Kazumi-Inspired Netflix Anime Portal (Multi-Row, Timeline, Seasons, Theatrical, Genres) */
+          <AnimePage
             onPlay={handleDirectPlay}
             onOpenDetail={handleOpenDetail}
             watchlistIds={watchlistIds}

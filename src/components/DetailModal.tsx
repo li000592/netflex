@@ -562,12 +562,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                       }`}
                     >
                       {src.sourceCategory === 'anime'
-                        ? '🌸 '
+                        ? '🌸 4K双语·'
                         : src.sourceCategory === 'speed'
-                        ? '⚡ '
+                        ? '⚡ 秒播·'
                         : src.sourceCategory === 'netflix'
-                        ? '🔴 '
-                        : '🎬 '}
+                        ? '🔴 网飞·'
+                        : '🎬 全网·'}
                       {src.sourceName || `Line ${idx + 1}`}
                       {src.remarks ? ` (${src.remarks})` : ''}
                     </button>

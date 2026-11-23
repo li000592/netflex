@@ -585,11 +585,17 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const epMenuOpenRef = useRef(epMenuOpen);
   epMenuOpenRef.current = epMenuOpen;
   const lastTouchTimeRef = useRef(0);
+  const lastControlsShownTimeRef = useRef(Date.now());
 
   // Handle Controls Visibility on Idle
   const resetHideTimer = useCallback(() => {
     setControlsVisible(true);
+    lastControlsShownTimeRef.current = Date.now();
     if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
+
+    // When paused, keep controls visible without auto-hiding
+    if (!isPlayingRef.current) return;
+
     hideControlsTimer.current = setTimeout(() => {
       if (
         isPlayingRef.current &&
@@ -599,7 +605,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       ) {
         setControlsVisible(false);
       }
-    }, 4000);
+    }, 4500);
   }, []);
 
   const handleUserActivity = () => {
@@ -607,14 +613,20 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   };
 
   const handleContainerClick = () => {
-    // Ignore synthetic click right after touch on mobile
-    if (Date.now() - lastTouchTimeRef.current < 450) return;
+    // 1. Ignore synthetic clicks right after touch on iPad/iOS
+    if (Date.now() - lastTouchTimeRef.current < 1200) return;
+
+    // 2. Prevent accidental instant hiding if controls were recently shown
+    if (Date.now() - lastControlsShownTimeRef.current < 1200) return;
 
     setControlsVisible((prevVisible) => {
       if (!prevVisible) {
         resetHideTimer();
         return true;
       } else {
+        // If paused, keep controls visible
+        if (!isPlayingRef.current) return true;
+
         if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
         setSpeedMenuOpen(false);
         setEpMenuOpen(false);
@@ -683,10 +695,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video || hasError) return;
+    setControlsVisible(true);
+    lastControlsShownTimeRef.current = Date.now();
     if (video.paused) {
       video.play().catch(() => setIsPlaying(false));
+      resetHideTimer();
     } else {
       video.pause();
+      setIsPlaying(false);
+      if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     }
   };
 
@@ -909,6 +926,14 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               resetHideTimer();
               return true;
             } else {
+              // On iPad/iOS: if controls were revealed in the last 1200ms, DO NOT hide them!
+              if (Date.now() - lastControlsShownTimeRef.current < 1200) {
+                return true;
+              }
+              // If paused, keep controls visible
+              if (!isPlayingRef.current) {
+                return true;
+              }
               if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
               setSpeedMenuOpen(false);
               setEpMenuOpen(false);
@@ -1237,8 +1262,18 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         {/* Top Right Info Badge */}
         <div className="flex items-center space-x-2">
           {movie?.sourceCategory === 'anime' && (
-            <span className="bg-pink-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-              🌸 动漫极速线
+            <span className="bg-pink-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+              🌸 4K双语·新番
+            </span>
+          )}
+          {movie?.sourceCategory === 'speed' && (
+            <span className="bg-amber-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+              ⚡ 秒播切片·低延迟
+            </span>
+          )}
+          {movie?.sourceCategory === 'netflix' && (
+            <span className="bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+              🔴 网飞自制·美剧
             </span>
           )}
           <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
@@ -1257,23 +1292,32 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           e.stopPropagation();
           resetHideTimer();
         }}
+        onTouchMove={(e) => {
+          e.stopPropagation();
+          resetHideTimer();
+        }}
         onTouchEnd={(e) => {
           e.stopPropagation();
           resetHideTimer();
         }}
-        className={`absolute bottom-0 left-0 right-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pt-4 sm:pt-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent transition-opacity duration-300 z-30 ${
+        className={`absolute bottom-0 left-0 right-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pt-4 sm:pt-6 bg-gradient-to-t from-black/95 via-black/60 to-transparent transition-opacity duration-300 z-30 touch-auto ${
           controlsVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
         {/* Scrubber Progress Slider */}
-        <div className="relative mb-3 flex items-center group">
+        <div
+          className="relative mb-3 flex items-center group touch-auto"
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+        >
           <input
             type="range"
             min={0}
             max={duration || 100}
             value={currentTime}
             onChange={(e) => handleSeek(Number(e.target.value))}
-            className="w-full h-1.5 sm:h-2 rounded-lg cursor-pointer accent-[#E50914]"
+            className="w-full h-1.5 sm:h-2 rounded-lg cursor-pointer accent-[#E50914] touch-auto"
           />
         </div>
 
