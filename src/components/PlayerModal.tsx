@@ -585,28 +585,32 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const epMenuOpenRef = useRef(epMenuOpen);
   epMenuOpenRef.current = epMenuOpen;
   const lastTouchTimeRef = useRef(0);
+  const lastShownTimeRef = useRef(Date.now());
 
   // Handle Controls Visibility on Idle / Inactivity
   const resetHideTimer = useCallback(() => {
     setControlsVisible(true);
+    lastShownTimeRef.current = Date.now();
     if (hideControlsTimer.current) {
       clearTimeout(hideControlsTimer.current);
       hideControlsTimer.current = null;
     }
 
-    // Auto-hide controls after 3 seconds when playing
+    // Auto-hide controls after 4.5 seconds of inactivity when playing
     hideControlsTimer.current = setTimeout(() => {
       const video = videoRef.current;
       const isPlayingNow = video ? !video.paused && !video.ended : isPlayingRef.current;
+      // Guarantee controls stay on screen for at least 3.5 seconds
       if (
         isPlayingNow &&
+        Date.now() - lastShownTimeRef.current >= 3500 &&
         !speedMenuOpenRef.current &&
         !epMenuOpenRef.current &&
         !castMenuOpenRef.current
       ) {
         setControlsVisible(false);
       }
-    }, 3000);
+    }, 4500);
   }, []);
 
   const handleUserActivity = () => {
@@ -614,14 +618,20 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   };
 
   const handleContainerClick = () => {
-    // Ignore synthetic clicks right after touch on iPad/iOS
-    if (Date.now() - lastTouchTimeRef.current < 600) return;
+    // Ignore synthetic ghost clicks from touch interactions on mobile / iPad
+    if (Date.now() - lastTouchTimeRef.current < 2500) return;
 
     setControlsVisible((prevVisible) => {
       if (!prevVisible) {
+        lastShownTimeRef.current = Date.now();
         resetHideTimer();
         return true;
       } else {
+        // Enforce staying visible for at least 3.5 seconds once shown
+        if (Date.now() - lastShownTimeRef.current < 3500) {
+          resetHideTimer();
+          return true;
+        }
         if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
         setSpeedMenuOpen(false);
         setEpMenuOpen(false);
@@ -920,9 +930,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         singleTapTimeoutRef.current = setTimeout(() => {
           setControlsVisible((prevVisible) => {
             if (!prevVisible) {
+              lastShownTimeRef.current = Date.now();
               resetHideTimer();
               return true;
             } else {
+              // Enforce staying visible for at least 3.5 seconds once shown
+              if (Date.now() - lastShownTimeRef.current < 3500) {
+                resetHideTimer();
+                return true;
+              }
               if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
               setSpeedMenuOpen(false);
               setEpMenuOpen(false);
