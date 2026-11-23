@@ -1,5 +1,6 @@
 import { VIDEO_SOURCES } from '../../src/config/sources.js';
 import { NETFLIX_ARTWORK } from '../../src/config/netflixArtwork.js';
+import { getDanmakuComments, addDanmakuComment } from '../../src/server/danmaku.js';
 
 // Serverless in-memory cache
 const cache = new Map();
@@ -853,6 +854,45 @@ export async function handler(event) {
         headers,
         body: JSON.stringify(detailData),
       };
+    }
+
+    // Danmaku comments endpoint
+    if (path === '/danmaku') {
+      if (event.httpMethod === 'POST') {
+        let bodyObj = {};
+        try {
+          bodyObj = JSON.parse(event.body || '{}');
+        } catch {}
+        const { title, episode, text, time, color, mode, size } = bodyObj;
+        if (!title || !text) {
+          return { statusCode: 400, headers, body: JSON.stringify({ error: 'Title and text required' }) };
+        }
+        const item = addDanmakuComment({ title, episode, text, time, color, mode, size });
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, data: item }),
+        };
+      }
+
+      const { title, episode } = params;
+      if (!title) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: 'Title required' }) };
+      }
+      try {
+        const list = await getDanmakuComments({ title, episode });
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, count: list.length, data: list }),
+        };
+      } catch (err) {
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ success: false, error: err.message, data: [] }),
+        };
+      }
     }
 
     // 6. Anti-hotlinking Image Proxy (specifically handles Douban & TencentEdgeOne CDN)

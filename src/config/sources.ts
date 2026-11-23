@@ -7,10 +7,11 @@ export interface VideoSource {
 }
 
 export const VIDEO_SOURCES: VideoSource[] = [
-  // 🌸 动漫专线
-  { id: 'modu_dm', name: '魔都动漫', url: 'https://www.mdzyapi.com/api.php/provide/vod', category: 'anime', priority: 1 },
-  { id: 'yinghua', name: '樱花动漫', url: 'https://m3u8.apiyhzy.com/api.php/provide/vod', category: 'anime', priority: 2 },
+  // 🌸 Kazumi & 动漫专线
+  { id: 'girigiri', name: 'GiriGiri (Kazumi旗舰)', url: 'https://m3u8.girigirilove.com/api.php/provide/vod', category: 'anime', priority: 1 },
+  { id: 'modu_dm', name: '魔都动漫', url: 'https://www.mdzyapi.com/api.php/provide/vod', category: 'anime', priority: 2 },
   { id: 'uku88', name: 'U酷88', url: 'https://api.ukuapi88.com/api.php/provide/vod', category: 'anime', priority: 3 },
+  { id: 'yinghua', name: '樱花动漫', url: 'https://m3u8.apiyhzy.com/api.php/provide/vod', category: 'anime', priority: 4 },
   
   // 🌺 花开专区 (独立专属分类，不混入其他类别)
   { id: '155zy', name: '155动漫', url: 'https://155api.com/api.php/provide/vod', category: 'huakai', priority: 1 },

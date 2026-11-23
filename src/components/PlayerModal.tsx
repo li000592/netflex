@@ -29,6 +29,15 @@ import {
 import { Episode, MediaItem, VideoDetail } from '../types';
 import { saveWatchHistory, fetchVideoDetail, getWatchHistory } from '../services/api';
 import { useI18n } from '../i18n';
+import { DanmakuCanvas } from './DanmakuCanvas';
+import { DanmakuControls } from './DanmakuControls';
+import {
+  DanmakuItem,
+  DanmakuSettings,
+  getStoredDanmakuSettings,
+  saveStoredDanmakuSettings,
+  fetchDanmakuList,
+} from '../services/danmaku';
 
 interface PlayerModalProps {
   movie: MediaItem | null;
@@ -142,6 +151,39 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   useEffect(() => {
     setActiveEp(episode);
   }, [episode]);
+
+  // Danmaku state
+  const [danmakuComments, setDanmakuComments] = useState<DanmakuItem[]>([]);
+  const [danmakuSettings, setDanmakuSettings] = useState<DanmakuSettings>(() =>
+    getStoredDanmakuSettings()
+  );
+
+  // Fetch danmaku when video or episode changes
+  useEffect(() => {
+    if (!isOpen || !movie) return;
+    const title = movie.title;
+    const epName = activeEp?.name || episode?.name || '第1集';
+
+    let isMounted = true;
+    fetchDanmakuList(title, epName).then((list) => {
+      if (isMounted) {
+        setDanmakuComments(list);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, movie?.id, movie?.title, activeEp?.name, episode?.name]);
+
+  const handleUpdateDanmakuSettings = (newSettings: DanmakuSettings) => {
+    setDanmakuSettings(newSettings);
+    saveStoredDanmakuSettings(newSettings);
+  };
+
+  const handleAddDanmakuComment = (newComment: DanmakuItem) => {
+    setDanmakuComments((prev) => [...prev, newComment]);
+  };
 
   // Find previously saved watch progress
   const findSavedProgress = useCallback(
@@ -974,6 +1016,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         }}
       />
 
+      {/* 💬 Danmaku Canvas Layer */}
+      <DanmakuCanvas
+        comments={danmakuComments}
+        currentTime={currentTime}
+        isPlaying={isPlaying}
+        playbackRate={playbackSpeed}
+        settings={danmakuSettings}
+      />
+
       {/* Loading Spinner */}
       {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-black/40">
@@ -1164,14 +1215,32 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             <h1 className="text-base sm:text-lg font-bold text-white leading-tight">
               {movie?.title}
             </h1>
-            <p className="text-xs text-gray-300">
-              {activeEp?.name} • {t('ultraFastLine')}
+            <p className="text-xs text-gray-300 flex items-center gap-2 mt-0.5">
+              <span>{activeEp?.name}</span>
+              <span className="text-zinc-500">•</span>
+              <span className="text-red-400 font-medium">
+                {movie?.sourceName || (allGroups[activeGroupIndex]?.from) || t('ultraFastLine')}
+              </span>
+              {danmakuComments.length > 0 && (
+                <>
+                  <span className="text-zinc-500">•</span>
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    已装载 {danmakuComments.length} 条弹幕
+                  </span>
+                </>
+              )}
             </p>
           </div>
         </div>
 
         {/* Top Right Info Badge */}
         <div className="flex items-center space-x-2">
+          {movie?.sourceCategory === 'anime' && (
+            <span className="bg-pink-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+              🌸 动漫极速线
+            </span>
+          )}
           <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
             HLS STREAM
           </span>
@@ -1271,7 +1340,29 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           </div>
 
           {/* Right Controls */}
-          <div className="flex items-center space-x-3 sm:space-x-5">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* 💬 Danmaku Controls */}
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                resetHideTimer();
+              }}
+            >
+              <DanmakuControls
+                movieTitle={movie?.title || ''}
+                episodeName={activeEp?.name || episode?.name || '第1集'}
+                currentTime={currentTime}
+                commentsCount={danmakuComments.length}
+                settings={danmakuSettings}
+                onUpdateSettings={handleUpdateDanmakuSettings}
+                onAddComment={handleAddDanmakuComment}
+              />
+            </div>
+
             {/* Speed Selector */}
             <div
               className="relative"

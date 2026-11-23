@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { VIDEO_SOURCES } from '../config/sources.js';
 import { NETFLIX_ARTWORK } from '../config/netflixArtwork.js';
+import { getDanmakuComments, addDanmakuComment } from './danmaku.js';
 
 const api = express();
 api.use(cors());
@@ -918,6 +919,34 @@ api.get('/api/proxy/image', async (req, res) => {
     res.send(buffer);
   } catch (err) {
     res.status(500).send(err.message);
+  }
+});
+
+// Danmaku routes
+api.get('/api/danmaku', async (req, res) => {
+  const { title, episode } = req.query;
+  if (!title) {
+    return res.status(400).json({ error: 'Title required' });
+  }
+  try {
+    const list = await getDanmakuComments({ title, episode });
+    return res.json({ success: true, count: list.length, data: list });
+  } catch (err) {
+    console.error('[API] Danmaku fetch failed:', err);
+    return res.status(500).json({ success: false, error: err.message, data: [] });
+  }
+});
+
+api.post('/api/danmaku', (req, res) => {
+  const { title, episode, text, time, color, mode, size } = req.body || {};
+  if (!title || !text) {
+    return res.status(400).json({ error: 'Title and text required' });
+  }
+  try {
+    const item = addDanmakuComment({ title, episode, text, time, color, mode, size });
+    return res.json({ success: true, data: item });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 

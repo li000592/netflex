@@ -103,6 +103,12 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
           {/* New / HD Badges */}
           <div className="absolute top-2 left-2 flex flex-col space-y-1">
+            {movie.sourceCategory === 'anime' && (
+              <span className="bg-pink-600/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5">
+                <span>🌸</span>
+                <span>动漫</span>
+              </span>
+            )}
             {movie.isNew && (
               <span className="bg-[#E50914] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">
                 {t('newBadge')}
