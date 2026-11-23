@@ -37,6 +37,7 @@ import {
   logout,
   switchProfile,
   convertSupabaseUser,
+  fetchGoogleUserInfo,
 } from './services/auth';
 import { getSupabase } from './services/supabase';
 
@@ -224,7 +225,23 @@ export const App: React.FC = () => {
     reloadWatchlist();
   };
 
-  // Listen for Supabase OAuth Redirects (e.g. Google Sign-In)
+  // Check for Google OAuth redirect access_token in URL hash
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token=')) {
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      const token = params.get('access_token');
+      if (token) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        fetchGoogleUserInfo(token).then((user) => {
+          if (user) {
+            handleAuthSuccess(user);
+          }
+        });
+      }
+    }
+  }, []);
+  // Listen for Supabase OAuth Redirects (if custom Supabase is configured)
   useEffect(() => {
     const supabase = getSupabase();
     if (!supabase) return;

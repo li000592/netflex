@@ -272,16 +272,58 @@ export function switchProfile(profileId: string): User | null {
   return user;
 }
 
+const DEFAULT_GOOGLE_CLIENT_ID = '56485990452-plmi4glnroekvn57tkqd7anvv1prbqcn.apps.googleusercontent.com';
 const GOOGLE_CLIENT_ID_KEY = 'netflex_google_client_id';
 
 export function getGoogleClientId(): string {
   const envId = (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID || '';
   const localId = localStorage.getItem(GOOGLE_CLIENT_ID_KEY) || '';
-  return localId || envId || '';
+  return localId || envId || DEFAULT_GOOGLE_CLIENT_ID;
 }
 
 export function saveGoogleClientId(clientId: string): void {
   localStorage.setItem(GOOGLE_CLIENT_ID_KEY, clientId.trim());
+}
+
+export async function fetchGoogleUserInfo(accessToken: string): Promise<User | null> {
+  try {
+    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!res.ok) return null;
+    const profile = await res.json();
+    if (!profile || !profile.sub) return null;
+
+    const email = profile.email || `${profile.sub}@gmail.com`;
+    const name = profile.name || profile.given_name || email.split('@')[0] || 'Google User';
+    const avatar = profile.picture || AVATAR_PRESETS[0].url;
+
+    const user: User = {
+      id: `google_${profile.sub}`,
+      email,
+      username: name,
+      currentProfileId: 'profile_main',
+      profiles: [
+        {
+          id: 'profile_main',
+          name,
+          avatar,
+        },
+        {
+          id: 'profile_kids',
+          name: 'Kids',
+          avatar: AVATAR_PRESETS[4].url,
+          isKids: true,
+        },
+      ],
+    };
+
+    saveCurrentUser(user);
+    return user;
+  } catch (err) {
+    console.warn('Failed to fetch Google userinfo:', err);
+    return null;
+  }
 }
 
 export function parseGoogleJwt(token: string): { email?: string; name?: string; picture?: string; sub?: string } | null {
@@ -339,99 +381,102 @@ export async function signInWithGoogle(lang: string = 'zh'): Promise<{
   needConfig?: boolean;
 }> {
   const googleClientId = getGoogleClientId();
-  const supabase = getSupabase();
+  if (!googleClientId) {
+    return {
+      success: false,
+      needConfig: true,
+      error:
+        lang === 'zh'
+          ? '需要先配置 Google Client ID'
+          : 'Google Client ID configuration is required.',
+    };
+  }
 
-  // 1. If Google Client ID is configured, use Google Identity Services (GSI) with language support
-  if (googleClientId) {
-    return new Promise((resolve) => {
-      const loadGsi = () => {
-        if ((window as any).google?.accounts?.id) {
-          try {
-            (window as any).google.accounts.id.initialize({
-              client_id: googleClientId,
-              callback: (response: any) => {
-                if (response?.credential) {
-                  const user = loginWithGoogleCredential(response.credential);
-                  if (user) {
-                    resolve({ success: true, user });
-                  } else {
-                    resolve({
-                      success: false,
-                      error: lang === 'zh' ? '解析 Google 凭据失败' : 'Failed to parse Google credentials',
-                    });
-                  }
-                } else {
-                  resolve({
-                    success: false,
-                    error: lang === 'zh' ? '未从 Google 获取到有效凭据' : 'No credential returned from Google',
-                  });
-                }
-              },
-            });
-            (window as any).google.accounts.id.prompt((notification: any) => {
-              if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                const hl = lang === 'zh' ? 'zh-CN' : 'en';
-                const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
-                  googleClientId
-                )}&redirect_uri=${encodeURIComponent(
-                  window.location.origin
-                )}&response_type=token%20id_token&scope=openid%20email%20profile&hl=${hl}&nonce=${Date.now()}`;
-                window.location.href = redirectUrl;
+  return new Promise((resolve) => {
+    const handleSdkLoaded = () => {
+      const google = (window as any).google;
+      if (!google?.accounts?.oauth2) {
+        resolve({
+          success: false,
+          error: lang === 'zh' ? 'Google SDK 初始化失败' : 'Failed to initialize Google SDK',
+        });
+        return;
+      }
+
+      try {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: googleClientId,
+          scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+          callback: async (tokenResponse: any) => {
+            if (tokenResponse?.error) {
+              resolve({
+                success: false,
+                error: tokenResponse.error_description || tokenResponse.error,
+              });
+              return;
+            }
+            if (tokenResponse?.access_token) {
+              const user = await fetchGoogleUserInfo(tokenResponse.access_token);
+              if (user) {
+                resolve({ success: true, user });
+              } else {
+                resolve({
+                  success: false,
+                  error: lang === 'zh' ? '获取 Google 个人信息失败' : 'Failed to get Google profile',
+                });
               }
-            });
-          } catch (err: any) {
-            resolve({ success: false, error: err?.message || 'Google Sign-In failed' });
-          }
-        } else {
-          const script = document.createElement('script');
-          const hl = lang === 'zh' ? 'zh-CN' : 'en';
-          script.src = `https://accounts.google.com/gsi/client?hl=${hl}`;
-          script.async = true;
-          script.defer = true;
-          script.onload = loadGsi;
-          script.onerror = () =>
+            } else {
+              resolve({
+                success: false,
+                error: lang === 'zh' ? '授权未返回令牌' : 'No token received',
+              });
+            }
+          },
+          error_callback: (err: any) => {
             resolve({
               success: false,
-              error: lang === 'zh' ? '加载 Google SDK 失败' : 'Failed to load Google SDK',
+              error: err?.message || (lang === 'zh' ? 'Google 登录窗口已关闭' : 'Google login popup closed'),
             });
-          document.head.appendChild(script);
-        }
-      };
-      loadGsi();
-    });
-  }
-
-  // 2. If Supabase is configured with a valid custom project
-  if (supabase && isSupabaseConfigured()) {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-          queryParams: {
-            hl: lang === 'zh' ? 'zh-CN' : 'en',
           },
-        },
-      });
+        });
 
-      if (error) {
-        return { success: false, error: error.message };
+        // Trigger Google Login Popup
+        client.requestAccessToken({ prompt: 'consent' });
+      } catch (err: any) {
+        // Fallback to direct URL redirect
+        const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+          googleClientId
+        )}&redirect_uri=${encodeURIComponent(
+          window.location.origin
+        )}&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&hl=${
+          lang === 'zh' ? 'zh-CN' : 'en'
+        }&nonce=${Date.now()}`;
+        window.location.href = redirectUrl;
       }
-      return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err?.message || 'Supabase Google OAuth failed' };
-    }
-  }
+    };
 
-  // 3. Neither configured: tell UI we need configuration
-  return {
-    success: false,
-    needConfig: true,
-    error:
-      lang === 'zh'
-        ? '需要先配置 Google Client ID 或 Supabase 项目'
-        : 'Google Client ID or Supabase project configuration is required.',
-  };
+    if ((window as any).google?.accounts?.oauth2) {
+      handleSdkLoaded();
+    } else {
+      const existing = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+      if (existing) {
+        existing.addEventListener('load', handleSdkLoaded);
+      } else {
+        const script = document.createElement('script');
+        const hl = lang === 'zh' ? 'zh-CN' : 'en';
+        script.src = `https://accounts.google.com/gsi/client?hl=${hl}`;
+        script.async = true;
+        script.defer = true;
+        script.onload = handleSdkLoaded;
+        script.onerror = () =>
+          resolve({
+            success: false,
+            error: lang === 'zh' ? '加载 Google 认证服务失败，请检查网络' : 'Failed to load Google SDK',
+          });
+        document.head.appendChild(script);
+      }
+    }
+  });
 }
 
 export function convertSupabaseUser(sbUser: any): User {
