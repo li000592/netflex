@@ -183,7 +183,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           )}
           <span className="text-emerald-400 font-medium text-xs bg-black/60 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 shadow">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>💬 弹幕支持</span>
+            <span>💬 弹幕</span>
           </span>
         </div>
 
