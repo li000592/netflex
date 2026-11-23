@@ -449,11 +449,8 @@ export const AnimePage: React.FC<AnimePageProps> = ({
 
           {/* Right: Layout Switcher & Fast Indicators */}
           <div className="flex items-center space-x-2 self-end md:self-auto flex-shrink-0">
-            <span className="hidden sm:inline-flex items-center text-[11px] bg-pink-500/15 border border-pink-500/30 text-pink-300 px-2 py-0.5 rounded font-medium">
-              🌸 Kazumi旗舰源
-            </span>
-            <span className="hidden sm:inline-flex items-center text-[11px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded font-medium">
-              💬 弹幕支持
+            <span className="inline-flex items-center text-[11px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded font-medium">
+              💬 弹幕
             </span>
 
             {/* Layout Toggle (Rows vs Grid) */}
@@ -615,7 +612,7 @@ export const AnimePage: React.FC<AnimePageProps> = ({
                 {/* Row 5: 🧙 异世界转生与奇幻冒险 (Isekai & Fantasy) */}
                 {isekaiAnime.length > 0 && (
                   <MovieRow
-                    title={language === 'en' ? '🧙 Isekai & Fantasy Adventures' : '🧙 异世界转生与奇幻物语 (Kazumi热榜)'}
+                    title={language === 'en' ? '🧙 Isekai & Fantasy Adventures' : '🧙 异世界转生与奇幻物语'}
                     movies={isekaiAnime}
                     onPlay={onPlay}
                     onOpenDetail={onOpenDetail}

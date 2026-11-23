@@ -7,8 +7,8 @@ export interface VideoSource {
 }
 
 export const VIDEO_SOURCES: VideoSource[] = [
-  // 🌸 Kazumi & 动漫专线
-  { id: 'girigiri', name: 'GiriGiri (Kazumi旗舰)', url: 'https://m3u8.girigirilove.com/api.php/provide/vod', category: 'anime', priority: 1 },
+  // 🌸 动漫专线
+  { id: 'girigiri', name: 'GiriGiri (4K新番)', url: 'https://m3u8.girigirilove.com/api.php/provide/vod', category: 'anime', priority: 1 },
   { id: 'modu_dm', name: '魔都动漫', url: 'https://www.mdzyapi.com/api.php/provide/vod', category: 'anime', priority: 2 },
   { id: 'uku88', name: 'U酷88', url: 'https://api.ukuapi88.com/api.php/provide/vod', category: 'anime', priority: 3 },
   { id: 'yinghua', name: '樱花动漫', url: 'https://m3u8.apiyhzy.com/api.php/provide/vod', category: 'anime', priority: 4 },

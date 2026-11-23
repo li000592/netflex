@@ -449,15 +449,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             {/* Danmaku Live Indicator Pill */}
             <span className="flex items-center text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-md font-medium shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 animate-pulse" />
-              <span>💬 全网弹幕已支持</span>
+              <span>💬 弹幕支持</span>
             </span>
-
-            {/* Kazumi Anime Line Indicator */}
-            {(resolvedMovie?.sourceCategory === 'anime' || currentCandidate?.sourceCategory === 'anime') && (
-              <span className="flex items-center text-xs bg-pink-500/15 border border-pink-500/30 text-pink-300 px-3 py-1.5 rounded-md font-semibold">
-                🌸 Kazumi动漫源已接入
-              </span>
-            )}
 
             {/* Source Remarks pill if provided by source */}
             {(detail?.remarks || movie.remarks) ? (
