@@ -585,27 +585,28 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const epMenuOpenRef = useRef(epMenuOpen);
   epMenuOpenRef.current = epMenuOpen;
   const lastTouchTimeRef = useRef(0);
-  const lastControlsShownTimeRef = useRef(Date.now());
 
-  // Handle Controls Visibility on Idle
+  // Handle Controls Visibility on Idle / Inactivity
   const resetHideTimer = useCallback(() => {
     setControlsVisible(true);
-    lastControlsShownTimeRef.current = Date.now();
-    if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
+    if (hideControlsTimer.current) {
+      clearTimeout(hideControlsTimer.current);
+      hideControlsTimer.current = null;
+    }
 
-    // When paused, keep controls visible without auto-hiding
-    if (!isPlayingRef.current) return;
-
+    // Auto-hide controls after 3 seconds when playing
     hideControlsTimer.current = setTimeout(() => {
+      const video = videoRef.current;
+      const isPlayingNow = video ? !video.paused && !video.ended : isPlayingRef.current;
       if (
-        isPlayingRef.current &&
+        isPlayingNow &&
         !speedMenuOpenRef.current &&
         !epMenuOpenRef.current &&
         !castMenuOpenRef.current
       ) {
         setControlsVisible(false);
       }
-    }, 4500);
+    }, 3000);
   }, []);
 
   const handleUserActivity = () => {
@@ -613,20 +614,14 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   };
 
   const handleContainerClick = () => {
-    // 1. Ignore synthetic clicks right after touch on iPad/iOS
-    if (Date.now() - lastTouchTimeRef.current < 1200) return;
-
-    // 2. Prevent accidental instant hiding if controls were recently shown
-    if (Date.now() - lastControlsShownTimeRef.current < 1200) return;
+    // Ignore synthetic clicks right after touch on iPad/iOS
+    if (Date.now() - lastTouchTimeRef.current < 600) return;
 
     setControlsVisible((prevVisible) => {
       if (!prevVisible) {
         resetHideTimer();
         return true;
       } else {
-        // If paused, keep controls visible
-        if (!isPlayingRef.current) return true;
-
         if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
         setSpeedMenuOpen(false);
         setEpMenuOpen(false);
@@ -695,14 +690,16 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video || hasError) return;
-    setControlsVisible(true);
-    lastControlsShownTimeRef.current = Date.now();
     if (video.paused) {
       video.play().catch(() => setIsPlaying(false));
+      setIsPlaying(true);
+      isPlayingRef.current = true;
       resetHideTimer();
     } else {
       video.pause();
       setIsPlaying(false);
+      isPlayingRef.current = false;
+      setControlsVisible(true);
       if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     }
   };
@@ -926,14 +923,6 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               resetHideTimer();
               return true;
             } else {
-              // On iPad/iOS: if controls were revealed in the last 1200ms, DO NOT hide them!
-              if (Date.now() - lastControlsShownTimeRef.current < 1200) {
-                return true;
-              }
-              // If paused, keep controls visible
-              if (!isPlayingRef.current) {
-                return true;
-              }
               if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
               setSpeedMenuOpen(false);
               setEpMenuOpen(false);
@@ -942,7 +931,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             }
           });
           singleTapTimeoutRef.current = null;
-        }, 280);
+        }, 220);
       }
     }
   };
@@ -993,14 +982,24 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         } as any)}
         onPlay={() => {
           setIsPlaying(true);
+          isPlayingRef.current = true;
           saveProgress();
+          resetHideTimer();
         }}
         onPause={() => {
           setIsPlaying(false);
+          isPlayingRef.current = false;
           saveProgress();
+          setControlsVisible(true);
+          if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
         }}
         onWaiting={() => setIsLoading(true)}
-        onPlaying={() => setIsLoading(false)}
+        onPlaying={() => {
+          setIsLoading(false);
+          setIsPlaying(true);
+          isPlayingRef.current = true;
+          resetHideTimer();
+        }}
         onTimeUpdate={() => {
           if (videoRef.current) {
             const cur = videoRef.current.currentTime;
