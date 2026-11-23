@@ -272,6 +272,67 @@ export function switchProfile(profileId: string): User | null {
   return user;
 }
 
+export async function signInWithGoogle(): Promise<{ success: boolean; error?: string }> {
+  const supabase = getSupabase();
+  if (!supabase) {
+    return {
+      success: false,
+      error: 'Supabase client not initialized. Please configure Supabase in Settings.',
+    };
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Google Sign-In failed' };
+  }
+}
+
+export function convertSupabaseUser(sbUser: any): User {
+  const email = sbUser.email || '';
+  const meta = sbUser.user_metadata || {};
+  const name =
+    meta.full_name ||
+    meta.name ||
+    meta.user_name ||
+    (email ? email.split('@')[0] : 'Google User');
+  const avatar = meta.avatar_url || meta.picture || AVATAR_PRESETS[0].url;
+
+  const user: User = {
+    id: sbUser.id,
+    email: email || `${sbUser.id}@google.user`,
+    username: name,
+    currentProfileId: 'profile_main',
+    profiles: [
+      {
+        id: 'profile_main',
+        name: name,
+        avatar: avatar,
+      },
+      {
+        id: 'profile_kids',
+        name: 'Kids',
+        avatar: AVATAR_PRESETS[4].url,
+        isKids: true,
+      },
+    ],
+  };
+
+  saveCurrentUser(user);
+  return user;
+}
+
 export function logout(): void {
   saveCurrentUser(null);
   const supabase = getSupabase();

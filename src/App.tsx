@@ -36,7 +36,9 @@ import {
   getCurrentProfile,
   logout,
   switchProfile,
+  convertSupabaseUser,
 } from './services/auth';
+import { getSupabase } from './services/supabase';
 
 interface ExtraRowDef {
   id: string;
@@ -221,6 +223,32 @@ export const App: React.FC = () => {
     setCurrentProfile(getCurrentProfile(user));
     reloadWatchlist();
   };
+
+  // Listen for Supabase OAuth Redirects (e.g. Google Sign-In)
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase) return;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const user = convertSupabaseUser(session.user);
+        handleAuthSuccess(user);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user && (event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
+        const user = convertSupabaseUser(session.user);
+        handleAuthSuccess(user);
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
