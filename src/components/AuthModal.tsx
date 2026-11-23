@@ -66,7 +66,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setError('');
     setLoading(true);
     try {
-      const res = await signInWithGoogle();
+      const res = await signInWithGoogle(language);
       if (res.needConfig) {
         setShowGoogleConfig(true);
         setLoading(false);
@@ -148,16 +148,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <div className="mb-6 p-4 bg-zinc-900 border border-white/15 rounded-xl space-y-3 animate-in fade-in zoom-in-95">
             <div className="flex items-center space-x-2 text-white font-bold text-sm">
               <KeyRound className="w-4 h-4 text-[#E50914]" />
-              <span>配置 Google 登录凭据</span>
+              <span>{t('googleConfigTitle')}</span>
             </div>
             <p className="text-xs text-gray-300 leading-relaxed">
-              Google 登录需提供 OAuth 客户端 ID（免费自建）。请在下方填入你的 <span className="text-red-400 font-mono">Google Client ID</span>：
+              {t('googleConfigDesc')}
             </p>
             <input
               type="text"
               value={customClientId}
               onChange={(e) => setCustomClientId(e.target.value)}
-              placeholder="例如: xxx.apps.googleusercontent.com"
+              placeholder={t('googleClientIdPlaceholder')}
               className="w-full bg-[#242424] text-white px-3.5 py-2.5 rounded-lg text-xs outline-none focus:ring-2 focus:ring-[#E50914] placeholder-gray-500 font-mono border border-white/10"
             />
             <div className="flex items-center space-x-2 pt-1">
@@ -169,19 +169,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     setShowGoogleConfig(false);
                     handleGoogleSignIn();
                   } else {
-                    setError('请输入有效的 Google Client ID');
+                    setError(t('enterValidGoogleClientId'));
                   }
                 }}
                 className="flex-1 bg-[#E50914] text-white text-xs font-bold py-2.5 rounded-lg transition-transform active:scale-95 shadow cursor-pointer"
               >
-                保存并连接 Google
+                {t('saveAndConnectGoogle')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowGoogleConfig(false)}
                 className="px-4 py-2.5 bg-white/10 text-gray-300 hover:text-white text-xs font-medium rounded-lg cursor-pointer"
               >
-                取消
+                {t('cancel')}
               </button>
             </div>
             <div className="pt-2 border-t border-white/10 text-[11px] text-gray-400 flex items-center justify-between">
@@ -191,7 +191,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 rel="noopener noreferrer"
                 className="text-red-400 hover:underline flex items-center"
               >
-                <span>在 Google Cloud 控制台创建</span>
+                <span>{t('createInGoogleCloud')}</span>
                 <ExternalLink className="w-3 h-3 ml-1" />
               </a>
             </div>
@@ -223,14 +223,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>{language === 'en' ? 'Continue with Google' : '使用 Google 账号登录'}</span>
+              <span>{t('continueWithGoogle')}</span>
             </button>
 
             {/* Divider */}
             <div className="flex items-center my-4">
               <div className="flex-1 border-t border-white/15" />
               <span className="px-3 text-xs text-gray-400 font-semibold uppercase tracking-wider">
-                {language === 'en' ? 'OR' : '或者'}
+                {t('orDivider')}
               </span>
               <div className="flex-1 border-t border-white/15" />
             </div>

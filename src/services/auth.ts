@@ -332,7 +332,7 @@ export function loginWithGoogleCredential(credential: string): User | null {
   return user;
 }
 
-export async function signInWithGoogle(): Promise<{
+export async function signInWithGoogle(lang: string = 'zh'): Promise<{
   success: boolean;
   user?: User;
   error?: string;
@@ -341,7 +341,7 @@ export async function signInWithGoogle(): Promise<{
   const googleClientId = getGoogleClientId();
   const supabase = getSupabase();
 
-  // 1. If Google Client ID is configured, use Google Identity Services (GSI)
+  // 1. If Google Client ID is configured, use Google Identity Services (GSI) with language support
   if (googleClientId) {
     return new Promise((resolve) => {
       const loadGsi = () => {
@@ -355,20 +355,27 @@ export async function signInWithGoogle(): Promise<{
                   if (user) {
                     resolve({ success: true, user });
                   } else {
-                    resolve({ success: false, error: 'Failed to parse Google credentials' });
+                    resolve({
+                      success: false,
+                      error: lang === 'zh' ? '解析 Google 凭据失败' : 'Failed to parse Google credentials',
+                    });
                   }
                 } else {
-                  resolve({ success: false, error: 'No credential returned from Google' });
+                  resolve({
+                    success: false,
+                    error: lang === 'zh' ? '未从 Google 获取到有效凭据' : 'No credential returned from Google',
+                  });
                 }
               },
             });
             (window as any).google.accounts.id.prompt((notification: any) => {
               if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                const hl = lang === 'zh' ? 'zh-CN' : 'en';
                 const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
                   googleClientId
                 )}&redirect_uri=${encodeURIComponent(
                   window.location.origin
-                )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
+                )}&response_type=token%20id_token&scope=openid%20email%20profile&hl=${hl}&nonce=${Date.now()}`;
                 window.location.href = redirectUrl;
               }
             });
@@ -377,11 +384,16 @@ export async function signInWithGoogle(): Promise<{
           }
         } else {
           const script = document.createElement('script');
-          script.src = 'https://accounts.google.com/gsi/client';
+          const hl = lang === 'zh' ? 'zh-CN' : 'en';
+          script.src = `https://accounts.google.com/gsi/client?hl=${hl}`;
           script.async = true;
           script.defer = true;
           script.onload = loadGsi;
-          script.onerror = () => resolve({ success: false, error: 'Failed to load Google SDK' });
+          script.onerror = () =>
+            resolve({
+              success: false,
+              error: lang === 'zh' ? '加载 Google SDK 失败' : 'Failed to load Google SDK',
+            });
           document.head.appendChild(script);
         }
       };
@@ -396,6 +408,9 @@ export async function signInWithGoogle(): Promise<{
         provider: 'google',
         options: {
           redirectTo: window.location.origin,
+          queryParams: {
+            hl: lang === 'zh' ? 'zh-CN' : 'en',
+          },
         },
       });
 
@@ -412,7 +427,10 @@ export async function signInWithGoogle(): Promise<{
   return {
     success: false,
     needConfig: true,
-    error: '需要先配置 Google Client ID 或 Supabase 项目',
+    error:
+      lang === 'zh'
+        ? '需要先配置 Google Client ID 或 Supabase 项目'
+        : 'Google Client ID or Supabase project configuration is required.',
   };
 }
 

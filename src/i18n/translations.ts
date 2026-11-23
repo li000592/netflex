@@ -224,6 +224,16 @@ export const translations = {
     emailExists: 'This email is already registered. Please sign in.',
     accountNotFound: 'Account not found. Please check or sign up below.',
     passwordError: 'Incorrect password. Please try again.',
+    continueWithGoogle: 'Continue with Google',
+    orDivider: 'OR',
+    googleConfigTitle: 'Configure Google Sign-In Credentials',
+    googleConfigDesc: 'Google Sign-In requires an OAuth Client ID. Enter your Google Client ID below:',
+    googleClientIdPlaceholder: 'e.g. xxx.apps.googleusercontent.com',
+    saveAndConnectGoogle: 'Save & Connect Google',
+    cancel: 'Cancel',
+    createInGoogleCloud: 'Create in Google Cloud Console',
+    enterValidGoogleClientId: 'Please enter a valid Google Client ID',
+    needConfigGoogleError: 'Google Client ID or Supabase project is required.',
 
     // Footer
     copyright: '© 2024 NETFLEX, Inc. All rights reserved.',
@@ -548,6 +558,16 @@ export const translations = {
     emailExists: '该邮箱已被注册，请直接登录',
     accountNotFound: '账号不存在，请检查或点击下方立即注册',
     passwordError: '密码错误，请重新输入',
+    continueWithGoogle: '使用 Google 账号登录',
+    orDivider: '或者',
+    googleConfigTitle: '配置 Google 登录凭据',
+    googleConfigDesc: 'Google 登录需提供 OAuth 客户端 ID（免费自建）。请在下方填入你的 Google Client ID：',
+    googleClientIdPlaceholder: '例如: xxx.apps.googleusercontent.com',
+    saveAndConnectGoogle: '保存并连接 Google',
+    cancel: '取消',
+    createInGoogleCloud: '在 Google Cloud 控制台创建',
+    enterValidGoogleClientId: '请输入有效的 Google Client ID',
+    needConfigGoogleError: '需要先配置 Google Client ID 或 Supabase 项目',
 
     // Footer
     copyright: '© 2024 NETFLEX, Inc. 保留所有权利。',
