@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film } from 'lucide-react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
 import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule } from '../services/api';
 import { MovieCard } from './MovieCard';
@@ -13,7 +13,7 @@ interface MyListPageProps {
   onOpenDetail: (movie: MediaItem) => void;
   watchlistIds: Set<string>;
   onToggleFavorite: (movie: MediaItem) => void;
-  onPlayEpisode: (movie: MediaItem, episode: Episode, groupIndex: number, episodeIndex: number) => void;
+  onPlayEpisode: (movie: MediaItem, episode: Episode, groupIndex: number, episodeIndex: number, startFromBeginning?: boolean) => void;
 }
 
 export const MyListPage: React.FC<MyListPageProps> = ({
@@ -506,28 +506,53 @@ export const MyListPage: React.FC<MyListPageProps> = ({
                       </div>
                     </div>
 
-                    {/* Action */}
-                    <button
-                      onClick={() => {
-                        const mediaItem: MediaItem = {
-                          id: item.id,
-                          title: item.title,
-                          cover: item.cover,
-                          sourceUrl: item.sourceUrl,
-                          vod_id: item.vodId,
-                        };
-                        onPlayEpisode(
-                          mediaItem,
-                          { name: item.episodeName, url: item.episodeUrl },
-                          0,
-                          item.episodeIndex
-                        );
-                      }}
-                      className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shadow hover:scale-105 flex-none"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current mr-1.5" />
-                      {t('continueWatching')}
-                    </button>
+                    <div className="flex items-center space-x-2 flex-none">
+                      <button
+                        onClick={() => {
+                          const mediaItem: MediaItem = {
+                            id: item.id,
+                            title: item.title,
+                            cover: item.cover,
+                            sourceUrl: item.sourceUrl,
+                            vod_id: item.vodId,
+                          };
+                          onPlayEpisode(
+                            mediaItem,
+                            { name: item.episodeName, url: item.episodeUrl },
+                            0,
+                            item.episodeIndex,
+                            true
+                          );
+                        }}
+                        className="flex items-center bg-white/10 hover:bg-white/20 text-gray-200 hover:text-white px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold border border-white/10 transition-all hover:scale-105"
+                        title={t('playFromBeginning')}
+                      >
+                        <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                        <span>{t('restart')}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const mediaItem: MediaItem = {
+                            id: item.id,
+                            title: item.title,
+                            cover: item.cover,
+                            sourceUrl: item.sourceUrl,
+                            vod_id: item.vodId,
+                          };
+                          onPlayEpisode(
+                            mediaItem,
+                            { name: item.episodeName, url: item.episodeUrl },
+                            0,
+                            item.episodeIndex
+                          );
+                        }}
+                        className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shadow hover:scale-105"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-current mr-1.5" />
+                        {t('continueWatching')}
+                      </button>
+                    </div>
                   </div>
                 );
               })}

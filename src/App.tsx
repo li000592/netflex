@@ -31,6 +31,7 @@ import {
   getLocalHomeCache,
   saveLocalHomeCache,
   getAnimeSchedule,
+  saveWatchHistory,
 } from './services/api';
 import {
   getCurrentUser,
@@ -509,11 +510,27 @@ export const App: React.FC = () => {
     movie: MediaItem,
     episode: Episode,
     _groupIndex: number,
-    _episodeIndex: number
+    _episodeIndex: number,
+    startFromBeginning?: boolean
   ) => {
     setIsDetailOpen(false);
     setPlayerMovie(movie);
     setPlayerEpisode(episode);
+    if (startFromBeginning) {
+      saveWatchHistory({
+        id: movie.id,
+        title: movie.title,
+        cover: movie.cover,
+        sourceUrl: movie.sourceUrl || '',
+        vodId: movie.vod_id || '',
+        episodeIndex: _episodeIndex || 0,
+        episodeName: episode.name,
+        episodeUrl: episode.url,
+        currentTime: 0,
+        duration: 0,
+        updatedAt: Date.now(),
+      });
+    }
     setIsPlayerOpen(true);
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles, Calendar } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles, Calendar, RotateCcw } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
 import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover, fetchRelatedSeries, getAnimeSchedule } from '../services/api';
 import { useI18n } from '../i18n';
@@ -8,7 +8,7 @@ interface DetailModalProps {
   movie: MediaItem | null;
   isOpen: boolean;
   onClose: () => void;
-  onPlayEpisode: (movie: MediaItem, episode: Episode, groupIndex: number, episodeIndex: number) => void;
+  onPlayEpisode: (movie: MediaItem, episode: Episode, groupIndex: number, episodeIndex: number, startFromBeginning?: boolean) => void;
   isFavorite: boolean;
   onToggleFavorite: (movie: MediaItem) => void;
   huakaiEnabled?: boolean;
@@ -418,6 +418,28 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                 ? `${t('continueWatching')} (${historyRecord.episodeName})`
                 : t('playEpisode1')}
             </button>
+
+            {/* Start Over Button when previously watched */}
+            {historyRecord && (
+              <button
+                onClick={() => {
+                  if (currentGroup && currentGroup.episodes.length > 0) {
+                    onPlayEpisode(resolvedMovie, currentGroup.episodes[0], activeGroupIndex, 0, true);
+                  } else if (sourceCandidates.length > 0) {
+                    const candidate = sourceCandidates[0];
+                    if (candidate.sourceUrl && candidate.vod_id) {
+                      onPlayEpisode(resolvedMovie, { name: '正片', url: '' }, 0, 0, true);
+                    }
+                  }
+                }}
+                disabled={loading || (!currentGroup?.episodes.length && !sourceCandidates.length)}
+                className="flex items-center bg-white/15 hover:bg-white/25 text-white font-semibold px-4 py-2.5 rounded-md border border-white/20 transition-all hover:scale-105 disabled:opacity-50 cursor-pointer"
+                title={t('playFromBeginning')}
+              >
+                <RotateCcw className="w-4 h-4 mr-1.5 text-gray-300" />
+                <span>{t('playFromBeginning')}</span>
+              </button>
+            )}
 
             {/* Watchlist / Follow Anime Button */}
             <button

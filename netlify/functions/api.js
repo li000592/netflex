@@ -171,11 +171,11 @@ export async function handler(event) {
 
       let url;
       if (hasAdvancedFilters || !tag) {
-        const tagsParam = type === 'tv' ? '电视剧' : '电影';
+        const tagsParam = tag || (type === 'tv' ? '电视剧' : '电影');
         const q = new URLSearchParams({
           sort: String(sort),
           range: String(range),
-          tags: tagsParam,
+          tags: String(tagsParam),
           start: String(start),
           limit: String(limit),
         });

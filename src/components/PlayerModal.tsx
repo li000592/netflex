@@ -146,6 +146,30 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   const hasResumedRef = useRef<boolean>(false);
   const [resumeToast, setResumeToast] = useState<{ show: boolean; time: number } | null>(null);
   const resumeToastTimer = useRef<NodeJS.Timeout | null>(null);
+  const [videoLoadKey, setVideoLoadKey] = useState<number>(0);
+
+  const handleRestartFromBeginning = () => {
+    resumeTimeRef.current = 0;
+    hasResumedRef.current = true;
+    setHasError(false);
+    setIsLoading(true);
+    setErrorMessage('');
+    const video = videoRef.current;
+    if (video) {
+      try {
+        video.currentTime = 0;
+        setCurrentTime(0);
+      } catch {}
+    }
+    setVideoLoadKey((k) => k + 1);
+  };
+
+  const handleRetryPlayback = () => {
+    setHasError(false);
+    setIsLoading(true);
+    setErrorMessage('');
+    setVideoLoadKey((k) => k + 1);
+  };
 
   // Sync active episode
   useEffect(() => {
@@ -386,18 +410,34 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
     try {
       video.pause();
-      video.removeAttribute('src');
-      video.load();
     } catch {}
 
     const applyResumeSeek = () => {
       const seekTo = resumeTimeRef.current;
       if (seekTo > 5 && video) {
-        if (Math.abs(video.currentTime - seekTo) > 2) {
-          video.currentTime = seekTo;
-          setCurrentTime(seekTo);
+        try {
+          if (video.seekable && video.seekable.length > 0) {
+            const end = video.seekable.end(video.seekable.length - 1);
+            if (seekTo > end) {
+              console.warn('Resume seekTo exceeds seekable end, falling back to beginning');
+              resumeTimeRef.current = 0;
+              return;
+            }
+          }
+          if (video.duration && !isNaN(video.duration) && seekTo >= video.duration - 5) {
+            console.warn('Resume seekTo near video end, resetting to beginning');
+            resumeTimeRef.current = 0;
+            return;
+          }
+          if (Math.abs(video.currentTime - seekTo) > 2) {
+            video.currentTime = seekTo;
+            setCurrentTime(seekTo);
+          }
+          hasResumedRef.current = true;
+        } catch (err) {
+          console.warn('Failed to apply resume seek:', err);
+          resumeTimeRef.current = 0;
         }
-        hasResumedRef.current = true;
       }
     };
 
@@ -412,11 +452,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     // is essential so Apple AirPlay can stream the actual HTTP/HLS URL directly to Apple TV / AirPlay 2 TVs.
     if ((isAppleSafari && canPlayAppleHls && isM3u8) || isMp4 || (!Hls.isSupported() && canPlayAppleHls && isM3u8)) {
       video.src = playUrl;
-      const onLoaded = () => {
+      const onCanPlay = () => {
         applyResumeSeek();
-        video.removeEventListener('loadedmetadata', onLoaded);
+        video.removeEventListener('canplay', onCanPlay);
       };
-      video.addEventListener('loadedmetadata', onLoaded);
+      video.addEventListener('canplay', onCanPlay);
       video.play().catch((err) => {
         console.warn('Native play() error caught:', err);
         setIsPlaying(false);
@@ -471,11 +511,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       });
     } else {
       video.src = playUrl;
-      const onLoaded = () => {
+      const onCanPlay = () => {
         applyResumeSeek();
-        video.removeEventListener('loadedmetadata', onLoaded);
+        video.removeEventListener('canplay', onCanPlay);
       };
-      video.addEventListener('loadedmetadata', onLoaded);
+      video.addEventListener('canplay', onCanPlay);
       video.play().catch((err) => {
         console.warn('Fallback play() error caught:', err);
         setIsPlaying(false);
@@ -488,7 +528,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         hlsRef.current = null;
       }
     };
-  }, [isOpen, activeEp]);
+  }, [isOpen, activeEp, videoLoadKey]);
 
   // References for reliable real-time progress saving without timer teardown bugs
   const lastSavedRef = useRef<number>(0);
@@ -1034,10 +1074,22 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             setDuration(dur);
             setIsLoading(false);
 
-            if (resumeTimeRef.current > 5 && Math.abs(videoRef.current.currentTime - resumeTimeRef.current) > 2) {
-              videoRef.current.currentTime = resumeTimeRef.current;
-              setCurrentTime(resumeTimeRef.current);
-              hasResumedRef.current = true;
+            if (resumeTimeRef.current > 5) {
+              const seekTo = resumeTimeRef.current;
+              if (dur && !isNaN(dur) && seekTo >= dur - 5) {
+                resumeTimeRef.current = 0;
+              } else {
+                try {
+                  if (Math.abs(videoRef.current.currentTime - seekTo) > 2) {
+                    videoRef.current.currentTime = seekTo;
+                    setCurrentTime(seekTo);
+                    hasResumedRef.current = true;
+                  }
+                } catch (e) {
+                  console.warn('Seek on onLoadedMetadata failed:', e);
+                  resumeTimeRef.current = 0;
+                }
+              }
             }
             saveProgress();
           }
@@ -1048,8 +1100,20 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           }
           if (onNextEpisode) onNextEpisode();
         }}
-        onError={() => {
-          console.warn('Native video element onError triggered');
+        onError={(e) => {
+          console.warn('Native video element onError triggered', e);
+          if (resumeTimeRef.current > 0) {
+            console.warn('Resume seek error detected, auto-recovering from beginning 0:00');
+            resumeTimeRef.current = 0;
+            hasResumedRef.current = true;
+            if (videoRef.current) {
+              try {
+                videoRef.current.currentTime = 0;
+                videoRef.current.play().catch(() => {});
+                return;
+              } catch {}
+            }
+          }
           setIsLoading(false);
           setHasError(true);
           setErrorMessage(t('playbackErrorMsg'));
@@ -1189,11 +1253,22 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
       {/* Error State */}
       {hasError && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 p-6 text-center z-40">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/95 p-6 text-center z-40">
           <AlertCircle className="w-16 h-16 text-[#E50914] mb-4 animate-bounce" />
           <h2 className="text-xl font-bold text-white mb-2">{t('playbackError')}</h2>
           <p className="text-gray-400 text-sm max-w-md mb-6">{errorMessage || t('playbackErrorMsg')}</p>
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center justify-center gap-3 max-w-lg">
+            {/* 1. Start Over from Beginning Button (User requested!) */}
+            <button
+              type="button"
+              onClick={handleRestartFromBeginning}
+              className="px-5 py-2.5 bg-[#E50914] hover:bg-[#b80710] text-white rounded-xl text-xs sm:text-sm font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center space-x-2 shadow-lg shadow-red-950/50"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>{t('playFromBeginning')}</span>
+            </button>
+
+            {/* 2. Switch Line Button (if available) */}
             {allGroups.length > 1 && (
               <button
                 type="button"
@@ -1209,15 +1284,26 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     setIsLoading(true);
                   }
                 }}
-                className="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold border border-white/20 transition-all hover:scale-105 cursor-pointer flex items-center space-x-1.5"
+                className="px-4 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs sm:text-sm font-bold border border-white/20 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center space-x-1.5"
               >
                 <span>⚡ {t('switchingLine')}</span>
               </button>
             )}
+
+            {/* 3. Retry Button */}
+            <button
+              type="button"
+              onClick={handleRetryPlayback}
+              className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs sm:text-sm font-bold border border-white/15 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center space-x-1.5"
+            >
+              <span>{t('retryPlayback')}</span>
+            </button>
+
+            {/* 4. Go Back Button */}
             <button
               type="button"
               onClick={handleClose}
-              className="px-6 py-2.5 bg-[#E50914] text-white rounded-xl text-xs font-bold hover:bg-[#b80710] transition-all hover:scale-105 cursor-pointer"
+              className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-gray-300 hover:text-white rounded-xl text-xs sm:text-sm font-semibold border border-white/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               {t('returnToSelection')}
             </button>

@@ -100,7 +100,7 @@ const RATING_OPTIONS = [
 
 const WEEKDAY_KEYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
-const CACHE_KEY_ROWS = 'netflex_anime_page_rows_v2';
+const CACHE_KEY_ROWS = 'netflex_anime_page_rows_v3';
 
 export const AnimePage: React.FC<AnimePageProps> = ({
   onPlay,
