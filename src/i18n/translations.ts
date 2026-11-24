@@ -160,6 +160,23 @@ export const translations = {
     safariRecommended: 'Safari is recommended for native 1-click AirPlay.',
     copied: 'Copied',
 
+    // Offline Downloads (Like Netflix)
+    downloadsTab: 'Downloads',
+    downloadsCount: 'Downloads',
+    downloadEpisode: 'Download',
+    downloadingEpisode: 'Downloading',
+    downloadedEpisode: 'Downloaded',
+    downloadFailed: 'Download Failed',
+    deleteDownloadedEpisode: 'Delete Download',
+    confirmDeleteDownload: 'Delete this downloaded video from your device to free storage?',
+    offlinePlaybackBadge: 'Offline Playback',
+    storageUsedBadge: 'App Storage Used',
+    deviceStorageQuota: 'Storage Quota',
+    noDownloadsYetTitle: 'No Downloaded Videos Yet',
+    noDownloadsYetDesc: 'Videos you download will appear here. Download your favorite anime and movies to watch offline without internet!',
+    downloadAllEpisodes: 'Download Episode 1',
+    downloadNoticeStayAwake: 'Keep Netflex open while downloading for high-speed offline caching.',
+
     // Search Page
     searchTitle: 'Search movies, TV shows, anime, directors, actors...',
     allCategories: 'All',
@@ -508,6 +525,23 @@ export const translations = {
     guideStep4: '对于 Apple TV 用户，推荐在 Infuse 或 VidHub 中打开直链，享受高品质画质与空间音频。',
     safariRecommended: '推荐使用 Safari 浏览器以体验原生一键 AirPlay 投屏。',
     copied: '已复制',
+
+    // Offline Downloads (Like Netflix)
+    downloadsTab: '下载内容',
+    downloadsCount: '离线缓存',
+    downloadEpisode: '下载',
+    downloadingEpisode: '下载中',
+    downloadedEpisode: '已下载',
+    downloadFailed: '下载失败',
+    deleteDownloadedEpisode: '删除下载',
+    confirmDeleteDownload: '确定要从本机删除此离线视频吗？将释放存储空间。',
+    offlinePlaybackBadge: '离线播放中',
+    storageUsedBadge: '已用空间',
+    deviceStorageQuota: '存储配额',
+    noDownloadsYetTitle: '暂无离线下载内容',
+    noDownloadsYetDesc: '下载的剧集会存放在这里。在详情页点击「下载」，随时断网畅享无卡顿观影！',
+    downloadAllEpisodes: '下载第 1 集',
+    downloadNoticeStayAwake: '下载期间请保持 Netflex 界面开启以保证高速下载。',
 
     // Search Page
     searchTitle: '搜索电影、电视剧、动漫、演员、导演...',

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw } from 'lucide-react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
 import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule } from '../services/api';
+import { useOfflineDownloads } from '../hooks/useOfflineDownloads';
+import { formatBytes } from '../services/offlineStorage';
 import { MovieCard } from './MovieCard';
 import { useI18n } from '../i18n';
 
@@ -27,11 +29,13 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   onPlayEpisode,
 }) => {
   const { t } = useI18n();
-  const [activeTab, setActiveTab] = useState<'watchlist' | 'history'>('watchlist');
+  const [activeTab, setActiveTab] = useState<'watchlist' | 'history' | 'downloads'>('watchlist');
   const [watchlistSubTab, setWatchlistSubTab] = useState<'all' | 'anime'>('all');
   const [animeViewMode, setAnimeViewMode] = useState<'cards' | 'weekly'>('cards');
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [history, setHistory] = useState<WatchHistoryItem[]>([]);
+
+  const { downloads, storageInfo, deleteDownload, cancelDownload } = useOfflineDownloads();
 
   const reloadData = () => {
     setWatchlist(getWatchlist());
@@ -175,6 +179,22 @@ export const MyListPage: React.FC<MyListPageProps> = ({
               {history.length}
             </span>
             {activeTab === 'history' && (
+              <div className="absolute bottom-[-17px] left-0 right-0 h-1 bg-[#E50914] rounded-full" />
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('downloads')}
+            className={`flex items-center text-lg sm:text-xl font-bold transition-colors pb-1 relative ${
+              activeTab === 'downloads' ? 'text-white' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <Download className="w-5 h-5 mr-2" />
+            {t('downloadsTab')}
+            <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
+              {downloads.length}
+            </span>
+            {activeTab === 'downloads' && (
               <div className="absolute bottom-[-17px] left-0 right-0 h-1 bg-[#E50914] rounded-full" />
             )}
           </button>
@@ -562,6 +582,160 @@ export const MyListPage: React.FC<MyListPageProps> = ({
               <History className="w-16 h-16 mx-auto mb-4 text-gray-600" />
               <p className="text-lg font-semibold mb-1">{t('emptyHistoryTitle')}</p>
               <p className="text-sm text-gray-500">{t('emptyHistoryDesc')}</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Downloads Tab Content (Like Netflix App) */}
+      {activeTab === 'downloads' && (
+        <>
+          {/* Storage Information & Tips Bar */}
+          <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <HardDrive className="w-5 h-5 text-sky-400 flex-shrink-0" />
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-bold text-white">iPad 本地离线沙盒存储</span>
+                  <span className="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30 px-1.5 py-0.5 rounded font-mono">
+                    PWA 独立空间
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  已缓存 {downloads.length} 部 · {storageInfo.formattedUsed} ({t('downloadNoticeStayAwake')})
+                </p>
+              </div>
+            </div>
+
+            <div className="text-xs text-gray-400 sm:text-right">
+              <span>{t('deviceStorageQuota')}: <strong>{storageInfo.formattedQuota}</strong></span>
+            </div>
+          </div>
+
+          {downloads.length > 0 ? (
+            <div className="space-y-3">
+              {downloads.map((item) => {
+                const isCompleted = item.status === 'completed';
+                const isDownloading = item.status === 'downloading';
+                const isFailed = item.status === 'failed';
+
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-[#1c1c1c] hover:bg-[#252525] border border-white/5 transition-all group"
+                  >
+                    <div className="flex items-center space-x-3 sm:space-x-4 overflow-hidden">
+                      {/* Thumbnail */}
+                      <div className="relative w-20 sm:w-28 aspect-video rounded-lg overflow-hidden bg-black flex-none">
+                        <img
+                          src={item.movieCover}
+                          alt={item.movieTitle}
+                          className="w-full h-full object-cover"
+                        />
+                        {isDownloading && (
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                            <div
+                              className="h-full bg-sky-500 animate-pulse"
+                              style={{ width: `${item.progress}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="overflow-hidden">
+                        <h3 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-[#E50914] transition-colors">
+                          {item.movieTitle}
+                        </h3>
+                        <p className="text-xs text-gray-400 mt-0.5 truncate">
+                          {item.episodeName} • {formatBytes(item.downloadedBytes)}
+                        </p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          {isCompleted ? (
+                            <span className="flex items-center text-[11px] text-emerald-400 font-medium">
+                              <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                              {t('downloadedEpisode')} · 纯离线秒开
+                            </span>
+                          ) : isDownloading ? (
+                            <span className="flex items-center text-[11px] text-sky-400 font-medium">
+                              <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+                              {t('downloadingEpisode')} {item.progress}% ({item.downloadedSegments}/{item.totalSegments} 片段)
+                            </span>
+                          ) : isFailed ? (
+                            <span className="flex items-center text-[11px] text-red-400 font-medium">
+                              <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                              {t('downloadFailed')}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-gray-500">准备中...</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center space-x-2 flex-none ml-2">
+                      {isCompleted && item.blob && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const blobUrl = URL.createObjectURL(item.blob!);
+                            const mediaItem: MediaItem = {
+                              id: item.movieId,
+                              title: item.movieTitle,
+                              cover: item.movieCover,
+                              sourceUrl: item.sourceUrl,
+                              vod_id: item.vodId,
+                              category: item.category,
+                              sourceCategory: item.sourceCategory,
+                            };
+                            onPlayEpisode(
+                              mediaItem,
+                              { name: `${item.episodeName} (离线)`, url: blobUrl },
+                              0,
+                              item.episodeIndex,
+                              true
+                            );
+                          }}
+                          className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shadow hover:scale-105 cursor-pointer"
+                        >
+                          <Play className="w-3.5 h-3.5 fill-current mr-1.5" />
+                          <span>离线播放</span>
+                        </button>
+                      )}
+
+                      {isDownloading && (
+                        <button
+                          type="button"
+                          onClick={() => cancelDownload(item.id)}
+                          className="flex items-center bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white px-3 py-2 rounded-lg text-xs font-semibold border border-white/10 transition-all cursor-pointer"
+                        >
+                          <span>{t('cancelDownload')}</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(t('confirmDeleteDownload'))) {
+                            deleteDownload(item.id);
+                          }
+                        }}
+                        className="p-2 rounded-lg bg-white/5 hover:bg-red-600/20 text-gray-400 hover:text-red-400 border border-white/10 hover:border-red-500/30 transition-all cursor-pointer"
+                        title={t('deleteDownloadedEpisode')}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-24 text-gray-400">
+              <Download className="w-16 h-16 mx-auto mb-4 text-gray-600" />
+              <p className="text-lg font-semibold mb-1">{t('noDownloadsYetTitle')}</p>
+              <p className="text-sm text-gray-500 max-w-sm mx-auto">{t('noDownloadsYetDesc')}</p>
             </div>
           )}
         </>

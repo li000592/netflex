@@ -91,6 +91,29 @@ export interface WatchlistItem {
   isAnime?: boolean;
 }
 
+export interface OfflineDownloadItem {
+  id: string;
+  movieId: string;
+  movieTitle: string;
+  movieCover: string;
+  category?: string;
+  sourceCategory?: string;
+  episodeName: string;
+  episodeIndex: number;
+  sourceUrl?: string;
+  vodId?: string | number;
+  playUrl: string;
+  status: 'pending' | 'downloading' | 'completed' | 'failed';
+  progress: number;
+  downloadedBytes: number;
+  totalBytes: number;
+  downloadedSegments: number;
+  totalSegments: number;
+  downloadedAt: number;
+  error?: string;
+  blob?: Blob;
+}
+
 export interface UserProfile {
   id: string;
   name: string;

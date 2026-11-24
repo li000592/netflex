@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles, Calendar, RotateCcw } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles, Calendar, RotateCcw, Download, CheckCircle } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
 import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover, fetchRelatedSeries, getAnimeSchedule } from '../services/api';
+import { useOfflineDownloads } from '../hooks/useOfflineDownloads';
 import { useI18n } from '../i18n';
 
 interface DetailModalProps {
@@ -26,6 +27,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   onSelectMovie,
 }) => {
   const { t } = useI18n();
+  const { downloads, startDownload, cancelDownload } = useOfflineDownloads();
   const modalCardRef = useRef<HTMLDivElement>(null);
   const relatedScrollRef = useRef<HTMLDivElement>(null);
   const [detail, setDetail] = useState<VideoDetail | null>(null);
@@ -463,6 +465,51 @@ export const DetailModal: React.FC<DetailModalProps> = ({
               )}
             </button>
 
+            {/* In-App Offline Download Button */}
+            {currentGroup && currentGroup.episodes.length > 0 && (() => {
+              const ep = currentGroup.episodes[0];
+              const epId = `${movie.id}_${ep.name || 'ep_0'}`;
+              const dItem = downloads.find((d) => d.id === epId);
+
+              return (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (dItem?.status === 'downloading') {
+                      cancelDownload(epId);
+                    } else if (dItem?.status !== 'completed') {
+                      startDownload(resolvedMovie, ep, 0);
+                    }
+                  }}
+                  className={`flex items-center font-semibold px-4 py-2.5 rounded-md border transition-all hover:scale-105 cursor-pointer ${
+                    dItem?.status === 'completed'
+                      ? 'bg-emerald-600/20 text-emerald-400 border-emerald-500/40'
+                      : dItem?.status === 'downloading'
+                      ? 'bg-sky-600/30 text-sky-300 border-sky-500/40 animate-pulse'
+                      : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                  }`}
+                  title={t('downloadEpisode')}
+                >
+                  {dItem?.status === 'completed' ? (
+                    <>
+                      <CheckCircle className="w-5 h-5 mr-1.5 text-emerald-400" />
+                      <span>{t('downloadedEpisode')}</span>
+                    </>
+                  ) : dItem?.status === 'downloading' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-1.5 animate-spin text-sky-400" />
+                      <span>{t('downloadingEpisode')} {dItem.progress}%</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5 mr-1.5 text-gray-300" />
+                      <span>{t('downloadEpisode')}</span>
+                    </>
+                  )}
+                </button>
+              );
+            })()}
+
             {/* Anime Broadcast Schedule Pill */}
             {animeSchedule && (
               <span className="flex items-center text-xs bg-pink-950/70 border border-pink-500/40 text-pink-200 px-3 py-1.5 rounded-md font-medium shadow-sm">
@@ -662,9 +709,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                   const isCurrentHistory =
                     historyRecord &&
                     (ep.url === historyRecord.episodeUrl || ep.name === historyRecord.episodeName);
+                  const epDownloadId = `${movie.id}_${ep.name || 'ep_' + idx}`;
+                  const epDownload = downloads.find((d) => d.id === epDownloadId);
 
                   return (
-                    <button
+                    <div
                       key={idx}
                       onClick={() => onPlayEpisode(resolvedMovie, ep, activeGroupIndex, idx)}
                       className={`group relative flex flex-col items-center justify-center py-3 px-2 rounded-lg text-xs font-medium border transition-all hover:scale-105 cursor-pointer ${
@@ -673,7 +722,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                           : 'bg-white/5 hover:bg-[#E50914] hover:text-white text-gray-300 border-white/10'
                       }`}
                     >
-                      <span className="line-clamp-1">{ep.name}</span>
+                      <span className="line-clamp-1 pr-3">{ep.name}</span>
                       {isCurrentHistory ? (
                         <span className="text-[10px] text-[#E50914] group-hover:text-white mt-1 font-bold flex items-center">
                           <Play className="w-2.5 h-2.5 fill-current mr-1" />
@@ -682,7 +731,38 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                       ) : (
                         <Play className="w-3 h-3 mt-1 opacity-0 group-hover:opacity-100 fill-current transition-opacity" />
                       )}
-                    </button>
+
+                      {/* Episode Inline Download Button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (epDownload?.status === 'downloading') {
+                            cancelDownload(epDownloadId);
+                          } else if (epDownload?.status !== 'completed') {
+                            startDownload(resolvedMovie, ep, idx);
+                          }
+                        }}
+                        className="absolute top-1 right-1 p-0.5 rounded hover:bg-black/40 text-gray-400 group-hover:text-white transition-all cursor-pointer"
+                        title={
+                          epDownload?.status === 'completed'
+                            ? t('downloadedEpisode')
+                            : epDownload?.status === 'downloading'
+                            ? `${t('downloadingEpisode')} ${epDownload.progress}%`
+                            : t('downloadEpisode')
+                        }
+                      >
+                        {epDownload?.status === 'completed' ? (
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : epDownload?.status === 'downloading' ? (
+                          <span className="text-[9px] font-bold text-sky-400 font-mono animate-pulse">
+                            {epDownload.progress}%
+                          </span>
+                        ) : (
+                          <Download className="w-3 h-3 opacity-40 group-hover:opacity-100" />
+                        )}
+                      </button>
+                    </div>
                   );
                 })}
               </div>

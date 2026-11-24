@@ -438,10 +438,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     const canPlayAppleHls = video.canPlayType('application/vnd.apple.mpegurl');
     const isM3u8 = playUrl.includes('.m3u8');
     const isMp4 = playUrl.includes('.mp4');
+    const isBlob = playUrl.startsWith('blob:');
 
-    // On Apple Safari (macOS & iOS/iPadOS), using native HLS playback (video.src = playUrl)
-    // is essential so Apple AirPlay can stream the actual HTTP/HLS URL directly to Apple TV / AirPlay 2 TVs.
-    if ((isAppleSafari && canPlayAppleHls && isM3u8) || isMp4 || (!Hls.isSupported() && canPlayAppleHls && isM3u8)) {
+    // For offline blob streams or Apple Safari native HLS or MP4:
+    if (isBlob || (isAppleSafari && canPlayAppleHls && isM3u8) || isMp4 || (!Hls.isSupported() && canPlayAppleHls && isM3u8)) {
       video.src = playUrl;
       const onCanPlay = () => {
         applyResumeSeek();
@@ -1328,24 +1328,32 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
         {/* Top Right Info Badge */}
         <div className="flex items-center space-x-2">
-          {movie?.sourceCategory === 'anime' && (
-            <span className="bg-pink-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              🌸 4K双语·新番
+          {activeEp?.url?.startsWith('blob:') ? (
+            <span className="bg-emerald-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm flex items-center gap-1">
+              <span>📥 本地离线播放</span>
             </span>
+          ) : (
+            <>
+              {movie?.sourceCategory === 'anime' && (
+                <span className="bg-pink-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                  🌸 4K双语·新番
+                </span>
+              )}
+              {movie?.sourceCategory === 'speed' && (
+                <span className="bg-amber-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                  ⚡ 秒播切片·低延迟
+                </span>
+              )}
+              {movie?.sourceCategory === 'netflix' && (
+                <span className="bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                  🔴 网飞自制·美剧
+                </span>
+              )}
+              <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                HLS STREAM
+              </span>
+            </>
           )}
-          {movie?.sourceCategory === 'speed' && (
-            <span className="bg-amber-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              ⚡ 秒播切片·低延迟
-            </span>
-          )}
-          {movie?.sourceCategory === 'netflix' && (
-            <span className="bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-              🔴 网飞自制·美剧
-            </span>
-          )}
-          <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-            HLS STREAM
-          </span>
         </div>
       </div>
 
