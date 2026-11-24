@@ -416,27 +416,18 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       const seekTo = resumeTimeRef.current;
       if (seekTo > 5 && video) {
         try {
-          if (video.seekable && video.seekable.length > 0) {
-            const end = video.seekable.end(video.seekable.length - 1);
-            if (seekTo > end) {
-              console.warn('Resume seekTo exceeds seekable end, falling back to beginning');
-              resumeTimeRef.current = 0;
-              return;
-            }
-          }
-          if (video.duration && !isNaN(video.duration) && seekTo >= video.duration - 5) {
+          if (video.duration && !isNaN(video.duration) && seekTo >= video.duration - 10) {
             console.warn('Resume seekTo near video end, resetting to beginning');
             resumeTimeRef.current = 0;
             return;
           }
-          if (Math.abs(video.currentTime - seekTo) > 2) {
+          if (Math.abs(video.currentTime - seekTo) > 1.5) {
             video.currentTime = seekTo;
             setCurrentTime(seekTo);
           }
           hasResumedRef.current = true;
         } catch (err) {
           console.warn('Failed to apply resume seek:', err);
-          resumeTimeRef.current = 0;
         }
       }
     };
@@ -454,13 +445,13 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
       video.src = playUrl;
       const onCanPlay = () => {
         applyResumeSeek();
+        video.play().catch((err) => {
+          console.warn('Native play() error caught:', err);
+          setIsPlaying(false);
+        });
         video.removeEventListener('canplay', onCanPlay);
       };
       video.addEventListener('canplay', onCanPlay);
-      video.play().catch((err) => {
-        console.warn('Native play() error caught:', err);
-        setIsPlaying(false);
-      });
     } else if (Hls.isSupported() && isM3u8) {
       const hls = new Hls({
         enableWorker: true,
@@ -547,9 +538,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     let cur = explicitTime !== undefined ? explicitTime : (video ? video.currentTime : 0);
 
     // Guard against overwriting resume timestamp with 0 on player startup
-    if (!hasResumedRef.current && resumeTimeRef.current > 5 && cur < 3) {
-      cur = resumeTimeRef.current;
-    } else if (cur >= 3) {
+    if (!hasResumedRef.current && resumeTimeRef.current > 5 && cur < 5) {
+      return;
+    }
+    if (cur >= 3) {
       hasResumedRef.current = true;
     }
 
@@ -1073,25 +1065,6 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             const dur = videoRef.current.duration;
             setDuration(dur);
             setIsLoading(false);
-
-            if (resumeTimeRef.current > 5) {
-              const seekTo = resumeTimeRef.current;
-              if (dur && !isNaN(dur) && seekTo >= dur - 5) {
-                resumeTimeRef.current = 0;
-              } else {
-                try {
-                  if (Math.abs(videoRef.current.currentTime - seekTo) > 2) {
-                    videoRef.current.currentTime = seekTo;
-                    setCurrentTime(seekTo);
-                    hasResumedRef.current = true;
-                  }
-                } catch (e) {
-                  console.warn('Seek on onLoadedMetadata failed:', e);
-                  resumeTimeRef.current = 0;
-                }
-              }
-            }
-            saveProgress();
           }
         }}
         onEnded={() => {
@@ -1100,20 +1073,13 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
           }
           if (onNextEpisode) onNextEpisode();
         }}
-        onError={(e) => {
-          console.warn('Native video element onError triggered', e);
-          if (resumeTimeRef.current > 0) {
-            console.warn('Resume seek error detected, auto-recovering from beginning 0:00');
-            resumeTimeRef.current = 0;
-            hasResumedRef.current = true;
-            if (videoRef.current) {
-              try {
-                videoRef.current.currentTime = 0;
-                videoRef.current.play().catch(() => {});
-                return;
-              } catch {}
-            }
+        onError={() => {
+          const err = videoRef.current?.error;
+          // Ignore MEDIA_ERR_ABORTED (code 1) - this is normal when seeking or buffering new chunks
+          if (err && err.code === 1) {
+            return;
           }
+          console.warn('Native video element onError triggered', err);
           setIsLoading(false);
           setHasError(true);
           setErrorMessage(t('playbackErrorMsg'));
