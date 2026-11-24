@@ -13,8 +13,72 @@
     <meta name="apple-mobile-web-app-title" content="NETFLEX" />
     <meta name="referrer" content="no-referrer" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="description" content="Netflex" />
-    <title>Netflex</title>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://1netflex.netlify.app/" />
+
+    <title>Netflex - 全球影视剧集与热门日本新番在线看 | 4K高清 · 弹幕互动 · 离线缓存</title>
+    <meta name="title" content="Netflex - 全球影视剧集与热门日本新番在线看 | 4K高清 · 弹幕互动 · 离线缓存" />
+    <meta name="description" content="Netflex (1netflex.netlify.app) 聚合全球高清电影、热门电视剧、4K双语日本动画新番。支持极速秒播切片、B站实时弹幕互动、追番时刻表、历史进度记忆以及类似Netflix的浏览器内纯本地离线下载缓存播放。" />
+    <meta name="keywords" content="Netflex, 1netflex, 影视在线, 免费看剧, 日本动漫, 追番日历, 弹幕网, 4K电影, 美剧在线, 离线下载, PWA影视, netflex.netlify.app" />
+    <meta name="author" content="Netflex" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://1netflex.netlify.app/" />
+    <meta property="og:site_name" content="Netflex" />
+    <meta property="og:title" content="Netflex - 全球影视剧集与热门日本新番在线看 | 4K高清 · 弹幕互动 · 离线缓存" />
+    <meta property="og:description" content="Netflex 聚合全球高清电影、电视剧、4K日本动画新番。支持极速秒播、B站实时弹幕、追番时刻表及离线下载。" />
+    <meta property="og:image" content="https://1netflex.netlify.app/favicon.svg" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter Cards -->
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:url" content="https://1netflex.netlify.app/" />
+    <meta property="twitter:title" content="Netflex - 全球影视剧集与热门日本新番在线看" />
+    <meta property="twitter:description" content="Netflex 聚合全球高清电影、电视剧、4K日本动画新番。支持极速秒播、B站实时弹幕、追番时刻表及离线下载。" />
+    <meta property="twitter:image" content="https://1netflex.netlify.app/favicon.svg" />
+
+    <!-- Structured Data (JSON-LD) for Google Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://1netflex.netlify.app/#website",
+          "url": "https://1netflex.netlify.app/",
+          "name": "Netflex",
+          "alternateName": ["1netflex", "Netflex 影视"],
+          "description": "全球影视剧集与热门日本新番在线播放平台",
+          "inLanguage": ["zh-CN", "en-US"],
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://1netflex.netlify.app/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://1netflex.netlify.app/#webapp",
+          "name": "Netflex",
+          "url": "https://1netflex.netlify.app/",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
+      ]
+    }
+    </script>
     <style>
       .nl-wrap, #nl-card, #nl-badge, [class*="nl-"], [aria-label*="Netlify"], iframe[id*="netlify"], iframe[src*="netlify"] {
         display: none !important;
@@ -48,7 +112,19 @@
     </script>
   </head>
   <body class="bg-[#141414] text-white selection:bg-[#E50914] selection:text-white antialiased">
-    <div id="root"></div>
+    <noscript>
+      <div style="padding: 30px; text-align: center; font-family: sans-serif; background: #141414; color: #fff;">
+        <h1>Netflex - 全球影视剧集与热门日本新番播放平台</h1>
+        <p>Netflex (1netflex.netlify.app) 提供高清电影、热门电视剧、4K日本动画新番在线播放，支持实时弹幕、新番追番表与本地离线下载缓存。</p>
+        <p>请在浏览器中启用 JavaScript 以获得完整的交互与播放体验。</p>
+      </div>
+    </noscript>
+    <div id="root">
+      <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" aria-hidden="true">
+        <h1>Netflex - 全球影视剧集与热门日本新番在线看</h1>
+        <p>高清美剧、日剧、韩剧、4K日本动漫新番每日定时更新，配备B站弹幕源、极速切片源以及离线缓存下载。</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
