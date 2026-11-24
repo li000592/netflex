@@ -199,11 +199,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             `${activeMovie.title} - NETFLEX 精选热门作品，现已同步上线。`}
         </p>
 
-        {/* Action Buttons */}
+        {/* Action Buttons (Authentic Netflix Rectangular Style) */}
         <div className="flex items-center space-x-3 sm:space-x-4">
           <button
             onClick={() => onPlay(activeMovie)}
-            className="flex items-center justify-center bg-white hover:bg-white/90 text-black font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-md transition-transform duration-200 hover:scale-105 active:scale-95 shadow-xl text-sm sm:text-base cursor-pointer"
+            className="flex items-center justify-center bg-white hover:bg-white/80 text-black font-bold px-7 sm:px-8 py-2.5 sm:py-3 rounded-[4px] transition-transform duration-200 hover:scale-105 active:scale-95 shadow-xl text-sm sm:text-base cursor-pointer"
           >
             <Play className="w-5 h-5 mr-2 fill-black" />
             {t('play')}
@@ -211,7 +211,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
           <button
             onClick={() => onOpenDetail(activeMovie)}
-            className="flex items-center justify-center bg-gray-600/70 hover:bg-gray-600/90 text-white font-semibold px-5 sm:px-7 py-2.5 sm:py-3 rounded-md backdrop-blur-md transition-transform duration-200 hover:scale-105 active:scale-95 shadow-xl text-sm sm:text-base cursor-pointer"
+            className="flex items-center justify-center bg-[rgba(109,109,110,0.7)] hover:bg-[rgba(109,109,110,0.4)] text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-[4px] backdrop-blur-md transition-transform duration-200 hover:scale-105 active:scale-95 shadow-xl text-sm sm:text-base cursor-pointer"
           >
             <Info className="w-5 h-5 mr-2" />
             {t('moreInfo')}
@@ -219,7 +219,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
           <button
             onClick={() => onToggleFavorite(activeMovie)}
-            className="p-2.5 sm:p-3 rounded-full border-2 border-white/40 hover:border-white bg-black/40 hover:bg-black/60 transition-all text-white cursor-pointer hover:scale-105 active:scale-95"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-white/40 hover:border-white bg-[#2a2a2a]/60 flex items-center justify-center transition-all text-white cursor-pointer hover:scale-105 active:scale-95 shadow-lg"
             title={isFav ? t('removeFromList') : t('addToList')}
           >
             {isFav ? <Check className="w-5 h-5 text-[#E50914]" /> : <Plus className="w-5 h-5" />}
@@ -256,10 +256,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
       )}
 
       {/* Bottom Right Controls: Rating Badge & Netflix-Style Carousel Dots */}
-      <div className="absolute right-4 sm:right-8 bottom-16 sm:bottom-24 z-20 flex items-center space-x-3 sm:space-x-4">
+      <div className="absolute right-0 bottom-16 sm:bottom-24 z-20 flex items-center space-x-3 sm:space-x-4">
         {/* Carousel Indicators */}
         {displayMovies.length > 1 && (
-          <div className="flex items-center space-x-1.5 sm:space-x-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 mr-2 sm:mr-3">
             {displayMovies.map((_, idx) => (
               <button
                 key={idx}
@@ -275,9 +275,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           </div>
         )}
 
-        {/* Age Rating Badge */}
-        <div className="hidden sm:flex items-center bg-black/60 backdrop-blur-md border-l-4 border-white/80 py-1 px-3 text-xs font-semibold text-gray-200">
-          {t('ratingBadge')}
+        {/* Netflix Signature Maturity Rating Badge */}
+        <div className="hidden sm:flex items-center bg-black/60 backdrop-blur-md border-l-4 border-white/80 py-1 pl-3 pr-6 text-xs font-semibold text-gray-200">
+          <span>{activeMovie?.remarks?.includes('4K') ? '4K' : t('ratingBadge')}</span>
         </div>
       </div>
     </div>

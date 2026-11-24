@@ -50,17 +50,17 @@ export const MovieRow: React.FC<MovieRowProps> = ({
 
   return (
     <div className="relative group my-6 sm:my-8 px-4 sm:px-6 lg:px-8">
-      {/* Row Header */}
+      {/* Row Header (Authentic Netflix Typography & Explore Link) */}
       <div className="flex items-center justify-between mb-2 sm:mb-3">
         <h2
           onClick={onExplore}
-          className={`text-lg sm:text-2xl font-bold text-white tracking-wide transition-colors flex items-center group/header ${
-            onExplore ? 'cursor-pointer hover:text-[#E50914]' : ''
+          className={`text-lg sm:text-xl md:text-2xl font-bold text-[#e5e5e5] hover:text-white tracking-wide transition-colors flex items-baseline group/header ${
+            onExplore ? 'cursor-pointer' : ''
           }`}
         >
           <span>{title}</span>
           {onExplore && (
-            <span className="text-xs text-gray-400 font-normal ml-3 inline-flex items-center group-hover/header:text-[#E50914] group-hover/header:translate-x-1 transition-all">
+            <span className="text-xs sm:text-sm text-[#54b9c5] font-semibold ml-2.5 opacity-0 group-hover/header:opacity-100 group-hover/header:translate-x-1 transition-all inline-flex items-center">
               {t('exploreAll')} &gt;
             </span>
           )}
@@ -69,14 +69,14 @@ export const MovieRow: React.FC<MovieRowProps> = ({
 
       {/* Row Carousel */}
       <div className="relative">
-        {/* Left Chevron Button */}
+        {/* Left Chevron Handle (Authentic Netflix Full-Height Slider Handle) */}
         {showLeftArrow && (
           <button
             onClick={() => scroll('left')}
-            className="hidden sm:flex absolute left-0 top-0 bottom-0 z-20 w-10 sm:w-12 bg-black/60 hover:bg-black/90 items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-r-md backdrop-blur-sm"
+            className="hidden sm:flex absolute left-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/60 hover:bg-black/85 items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all cursor-pointer rounded-r-[4px]"
             aria-label="向左滚动"
           >
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="w-8 h-8 hover:scale-125 transition-transform" />
           </button>
         )}
 
@@ -84,7 +84,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({
         <div
           ref={rowRef}
           onScroll={handleScroll}
-          className="flex items-center space-x-3 sm:space-x-4 overflow-x-auto no-scrollbar scroll-smooth py-3"
+          className="flex items-center space-x-2.5 sm:space-x-3.5 overflow-x-auto no-scrollbar scroll-smooth py-3"
         >
           {movies.map((movie, index) => (
             <MovieCard
@@ -99,14 +99,14 @@ export const MovieRow: React.FC<MovieRowProps> = ({
           ))}
         </div>
 
-        {/* Right Chevron Button */}
+        {/* Right Chevron Handle (Authentic Netflix Full-Height Slider Handle) */}
         {showRightArrow && (
           <button
             onClick={() => scroll('right')}
-            className="hidden sm:flex absolute right-0 top-0 bottom-0 z-20 w-10 sm:w-12 bg-black/60 hover:bg-black/90 items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-l-md backdrop-blur-sm"
+            className="hidden sm:flex absolute right-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/60 hover:bg-black/85 items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all cursor-pointer rounded-l-[4px]"
             aria-label="向右滚动"
           >
-            <ChevronRight className="w-8 h-8" />
+            <ChevronRight className="w-8 h-8 hover:scale-125 transition-transform" />
           </button>
         )}
       </div>

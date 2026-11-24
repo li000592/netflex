@@ -367,10 +367,10 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#181818]/80 via-transparent to-transparent" />
 
-        {/* Close Button */}
+        {/* Close Button (Authentic Netflix Round Close Icon) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition-all hover:scale-110"
+          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-[#181818]/90 hover:bg-[#282828] text-white border border-white/20 transition-all hover:scale-110 flex items-center justify-center cursor-pointer shadow-lg"
           aria-label="关闭详情"
         >
           <X className="w-5 h-5" />
@@ -378,12 +378,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
         {/* Modal Header Controls */}
         <div className="absolute bottom-6 left-6 right-6 z-10">
-          <h1 className="text-2xl sm:text-4xl font-black drop-shadow-lg mb-3">
+          <h1 className="text-2xl sm:text-4xl font-black drop-shadow-2xl mb-3 text-white">
             {detail?.title || movie.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Play Button */}
+            {/* Play Button (Netflix Authentic Crisp White Play Button) */}
             <button
               onClick={() => {
                 if (currentGroup && currentGroup.episodes.length > 0) {
@@ -413,9 +413,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                 }
               }}
               disabled={loading || (!currentGroup?.episodes.length && !sourceCandidates.length)}
-              className="flex items-center bg-[#E50914] hover:bg-[#b80710] text-white font-bold px-6 py-2.5 rounded-md transition-all shadow-lg hover:scale-105 disabled:opacity-50 cursor-pointer"
+              className="flex items-center bg-white hover:bg-white/80 text-black font-bold px-7 py-2.5 rounded-[4px] transition-all shadow-xl hover:scale-105 disabled:opacity-50 cursor-pointer"
             >
-              <Play className="w-5 h-5 mr-2 fill-white" />
+              <Play className="w-5 h-5 mr-2 fill-black text-black" />
               {historyRecord?.episodeName
                 ? `${t('continueWatching')} (${historyRecord.episodeName})`
                 : t('playEpisode1')}
@@ -565,14 +565,22 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center space-x-3 text-sm">
-              <span className="text-emerald-400 font-bold">{t('matchScore')}</span>
+              <span className="text-[#46d369] font-bold">
+                {movie.rate ? `${Math.round(parseFloat(movie.rate) * 10)}% 匹配` : '98% 匹配'}
+              </span>
               <span className="text-gray-400">{detail?.year || movie.year || '2024'}</span>
-              <span className="border border-white/30 text-gray-300 text-[10px] px-1.5 py-0.5 rounded">
+              <span className="border border-white/40 text-gray-300 text-[10px] px-1.5 py-0.5 rounded-[2px] font-medium">
                 16+
               </span>
               {(detail?.remarks || movie.remarks) ? (
-                <span className="text-gray-400">{detail?.remarks || movie.remarks}</span>
+                <span className="text-gray-300 font-medium">{detail?.remarks || movie.remarks}</span>
               ) : null}
+              <span className="border border-white/40 text-gray-300 text-[10px] px-1.5 py-0.5 rounded-[2px] font-bold">
+                HD
+              </span>
+              <span className="border border-white/40 text-gray-300 text-[10px] px-1.5 py-0.5 rounded-[2px] font-bold">
+                5.1
+              </span>
             </div>
 
             <p className="text-sm sm:text-base text-gray-300 leading-relaxed">

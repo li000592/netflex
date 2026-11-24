@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   Bookmark,
@@ -16,6 +16,8 @@ import {
   Flower2,
   Settings,
   Flame,
+  Bell,
+  HelpCircle,
 } from 'lucide-react';
 import { NavTab, User, UserProfile } from '../types';
 import { useI18n } from '../i18n';
@@ -54,21 +56,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [bellDropdownOpen, setBellDropdownOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 25);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Authentic Netflix Main Navigation Structure
   const navItems: { tab: NavTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'home', label: t('home'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
-    { tab: 'netflix', label: t('tabNetflix'), icon: <Flame className="w-4 h-4 mr-1.5 text-[#E50914]" /> },
-    { tab: 'movies', label: t('movies'), icon: <Film className="w-4 h-4 mr-1.5" /> },
     { tab: 'tv', label: t('tvShows'), icon: <Tv className="w-4 h-4 mr-1.5" /> },
+    { tab: 'movies', label: t('movies'), icon: <Film className="w-4 h-4 mr-1.5" /> },
     { tab: 'anime', label: t('anime'), icon: <PlaySquare className="w-4 h-4 mr-1.5" /> },
+    { tab: 'netflix', label: t('tabNetflix'), icon: <Flame className="w-4 h-4 mr-1.5 text-[#E50914]" /> },
     { tab: 'variety', label: t('variety'), icon: <Sparkles className="w-4 h-4 mr-1.5" /> },
     { tab: 'huakai', label: t('huakai'), icon: <Flower2 className="w-4 h-4 mr-1.5 text-pink-400" /> },
     { tab: 'mylist', label: t('myList'), icon: <Bookmark className="w-4 h-4 mr-1.5" /> },
@@ -87,25 +92,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 safe-top ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-400 safe-top ${
           isScrolled
-            ? 'bg-[#141414]/95 backdrop-blur-md shadow-2xl border-b border-white/5'
-            : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent'
+            ? 'bg-[#141414] shadow-xl'
+            : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-left safe-right h-16 sm:h-20 flex items-center justify-between">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 safe-left safe-right h-16 sm:h-[68px] flex items-center justify-between">
           {/* Left Brand & Navigation */}
-          <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-8">
+          <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-10">
             {/* Mobile menu trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 text-gray-300 hover:text-white"
+              className="sm:hidden p-1.5 text-gray-200 hover:text-white"
               aria-label="Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            {/* Netflix Logo */}
+            {/* Authentic Netflix Logo */}
             <div
               onClick={() => {
                 onSelectTab('home');
@@ -113,13 +118,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center cursor-pointer select-none group"
             >
-              <span className="text-[#E50914] font-black tracking-wider text-2xl sm:text-3xl font-sans drop-shadow-md group-hover:scale-105 transition-transform">
+              <span
+                className="text-[#E50914] font-black text-2xl sm:text-3xl tracking-wide group-hover:opacity-90 transition-opacity"
+                style={{
+                  fontFamily: "'Bebas Neue', Impact, 'Arial Black', sans-serif",
+                  letterSpacing: '1.5px',
+                  display: 'inline-block',
+                  transform: 'scaleY(1.05)',
+                }}
+              >
                 NETFLEX
               </span>
             </div>
 
-            {/* Desktop & Tablet Nav Links */}
-            <nav className="hidden sm:flex items-center space-x-3 md:space-x-5 lg:space-x-6 text-xs md:text-sm font-medium">
+            {/* Desktop & Tablet Nav Links (Clean Typography Without Emoji Icons, True Netflix Style) */}
+            <nav className="hidden sm:flex items-center space-x-4 md:space-x-5 lg:space-x-6 text-[13px] md:text-sm">
               {visibleNavItems.map((item) => (
                 <button
                   key={item.tab}
@@ -130,55 +143,134 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onSelectTab(item.tab);
                     }
                   }}
-                  className={`transition-colors duration-200 flex items-center ${
+                  className={`transition-colors duration-250 py-1 ${
                     currentTab === item.tab
                       ? 'text-white font-bold'
                       : item.tab === 'huakai'
                       ? 'text-pink-400 hover:text-pink-300 font-semibold'
-                      : 'text-gray-300 hover:text-white'
+                      : 'text-[#e5e5e5] hover:text-[#b3b3b3] font-normal'
                   }`}
                 >
-                  {item.tab === 'huakai' && <Flower2 className="w-3.5 h-3.5 mr-1 inline text-pink-400" />}
                   {item.label}
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Right Actions: Search, Watchlist, Settings, Profile / Login */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search Navigation Button */}
-            <button
-              onClick={() => {
-                onSelectTab('search');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className={`p-2 transition-all rounded-full ${
-                currentTab === 'search'
-                  ? 'text-[#E50914] bg-white/10'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
-              }`}
-              aria-label={t('search')}
-              title={t('search')}
-            >
-              <Search className="w-5 h-5" />
-            </button>
+          {/* Right Actions: Expandable Search, Notifications Bell, Settings, Netflix Profile */}
+          <div className="flex items-center space-x-3 sm:space-x-5">
+            {/* Expandable Search Bar (True Netflix Experience) */}
+            <div className="relative flex items-center">
+              {searchOpen ? (
+                <div className="flex items-center bg-black/90 border border-white/80 px-2.5 py-1 rounded-[2px] transition-all duration-300 w-36 sm:w-56 md:w-64 shadow-lg">
+                  <Search className="w-4 h-4 text-white flex-shrink-0 mr-2" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      onSearch(e.target.value);
+                      if (currentTab !== 'search') onSelectTab('search');
+                    }}
+                    placeholder={t('searchPlaceholder')}
+                    className="bg-transparent text-white text-xs sm:text-sm focus:outline-none w-full placeholder:text-gray-400"
+                  />
+                  {searchQuery ? (
+                    <button
+                      onClick={() => onSearch('')}
+                      className="text-gray-400 hover:text-white ml-1 p-0.5"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setSearchOpen(false)}
+                      className="text-gray-400 hover:text-white ml-1 p-0.5"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setSearchOpen(true);
+                    setTimeout(() => searchInputRef.current?.focus(), 80);
+                  }}
+                  className="p-1.5 text-gray-200 hover:text-white transition-colors cursor-pointer"
+                  aria-label={t('search')}
+                  title={t('search')}
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+              )}
+            </div>
 
-            {/* Quick Watchlist Shortcut */}
-            <button
-              onClick={handleMyListClick}
-              className={`p-2 transition-colors relative ${
-                currentTab === 'mylist' ? 'text-[#E50914]' : 'text-gray-300 hover:text-white'
-              }`}
-              title={t('myList')}
-            >
-              <Bookmark className="w-5 h-5" />
-            </button>
+            {/* Netflix Notification Bell */}
+            <div className="relative">
+              <button
+                onClick={() => setBellDropdownOpen(!bellDropdownOpen)}
+                className="p-1.5 text-gray-200 hover:text-white transition-colors relative cursor-pointer"
+                title="最新动态与追番通知"
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-[#E50914] rounded-full ring-2 ring-[#141414]" />
+              </button>
+
+              {bellDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-30"
+                    onClick={() => setBellDropdownOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-[#141414]/95 border border-white/15 rounded-[4px] shadow-2xl py-2 z-40 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-4 py-2 border-b border-white/10 flex items-center justify-between">
+                      <span className="text-xs font-bold text-white uppercase tracking-wider">
+                        最新通知 & 放送
+                      </span>
+                      <span className="text-[10px] text-[#E50914] font-semibold">今日更新</span>
+                    </div>
+                    <div className="p-3 text-xs text-gray-300 space-y-2.5">
+                      <div
+                        onClick={() => {
+                          onSelectTab('anime');
+                          setBellDropdownOpen(false);
+                        }}
+                        className="p-2 rounded bg-white/5 hover:bg-white/10 transition-colors cursor-pointer flex items-start gap-2.5"
+                      >
+                        <span className="text-base flex-shrink-0">🌸</span>
+                        <div>
+                          <p className="text-white font-semibold">今日新番已上线</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            点击前往动漫排期表，查看今日放送与B站弹幕源
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          onSelectTab('mylist');
+                          setBellDropdownOpen(false);
+                        }}
+                        className="p-2 rounded bg-white/5 hover:bg-white/10 transition-colors cursor-pointer flex items-start gap-2.5"
+                      >
+                        <span className="text-base flex-shrink-0">📥</span>
+                        <div>
+                          <p className="text-white font-semibold">离线下载功能就绪</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            支持将剧集与新番缓存到本地，离线随心看
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Quick Settings Shortcut */}
             <button
               onClick={onOpenSettings}
-              className="p-2 text-gray-300 hover:text-white transition-colors"
+              className="p-1.5 text-gray-200 hover:text-white transition-colors cursor-pointer"
               title={t('settings')}
               aria-label={t('settings')}
             >

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Plus, Check, ChevronDown, Star } from 'lucide-react';
+import { Play, Plus, Check, ChevronDown, Star, ThumbsUp } from 'lucide-react';
 import { MediaItem } from '../types';
 import { useI18n } from '../i18n';
 import { prefetchVideo, hasValidCover } from '../services/api';
@@ -143,49 +143,85 @@ export const MovieCard: React.FC<MovieCardProps> = ({
             </div>
           )}
 
-          {/* Quick Action Overlay on Hover (Desktop) */}
+          {/* Authentic Netflix Mini Card Hover Action Overlay (Desktop) */}
           <div
-            className={`absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-3 flex flex-col justify-end transition-opacity duration-200 ${
+            className={`absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent p-3 flex flex-col justify-end transition-opacity duration-200 z-20 ${
               isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           >
-            <p className="text-white font-bold text-xs sm:text-sm line-clamp-1 mb-2">
+            <p className="text-white font-bold text-xs sm:text-sm line-clamp-1 mb-2 drop-shadow">
               {movie.title}
             </p>
-            <div className="flex items-center justify-between">
+
+            {/* Circular Actions Row (Play, Add, Like, More Info) */}
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-1.5">
+                {/* Netflix White Play Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onPlay(movie);
                   }}
-                  className="p-1.5 sm:p-2 bg-white hover:bg-[#E50914] hover:text-white text-black rounded-full transition-colors shadow"
+                  className="w-8 h-8 rounded-full bg-white hover:bg-white/80 text-black flex items-center justify-center transition-transform hover:scale-110 shadow-lg cursor-pointer"
                   title={t('play')}
                 >
-                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <Play className="w-4 h-4 fill-black translate-x-0.5" />
                 </button>
+
+                {/* Add to List */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onToggleFavorite(movie);
                   }}
-                  className="p-1.5 sm:p-2 bg-black/60 hover:bg-black/90 border border-white/30 text-white rounded-full transition-colors"
+                  className="w-8 h-8 rounded-full bg-[#2a2a2a]/80 hover:bg-[#2a2a2a] border border-white/40 hover:border-white text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
                   title={isFavorite ? t('removeFromList') : t('addToList')}
                 >
-                  {isFavorite ? <Check className="w-3.5 h-3.5 text-[#E50914]" /> : <Plus className="w-3.5 h-3.5" />}
+                  {isFavorite ? <Check className="w-4 h-4 text-[#E50914]" /> : <Plus className="w-4 h-4" />}
+                </button>
+
+                {/* Thumbs Up (Like) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="w-8 h-8 rounded-full bg-[#2a2a2a]/80 hover:bg-[#2a2a2a] border border-white/40 hover:border-white text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                  title="顶 / 喜欢"
+                >
+                  <ThumbsUp className="w-3.5 h-3.5" />
                 </button>
               </div>
+
+              {/* Expand Detail Modal */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onOpenDetail(movie);
                 }}
-                className="p-1.5 sm:p-2 bg-black/60 hover:bg-black/90 border border-white/30 text-white rounded-full transition-colors"
+                className="w-8 h-8 rounded-full bg-[#2a2a2a]/80 hover:bg-[#2a2a2a] border border-white/40 hover:border-white text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
                 title={t('moreInfo')}
               >
-                <ChevronDown className="w-3.5 h-3.5" />
+                <ChevronDown className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Netflix Meta Tags (98% Match, Age Rating, HD) */}
+            <div className="flex items-center space-x-1.5 text-[10px] font-semibold">
+              <span className="text-[#46d369] font-bold">
+                {movie.rate ? `${Math.round(parseFloat(movie.rate) * 10)}% 匹配` : '98% 匹配'}
+              </span>
+              <span className="border border-white/30 text-gray-300 px-1 py-0.2 rounded-[2px]">
+                16+
+              </span>
+              <span className="border border-white/30 text-gray-300 px-1 py-0.2 rounded-[2px] font-bold">
+                HD
+              </span>
+            </div>
+
+            {/* Tags / Remarks */}
+            <p className="text-[10px] text-gray-300 line-clamp-1 mt-1 font-medium">
+              {movie.remarks || movie.category || '精选 · 高清 · 秒播'}
+            </p>
           </div>
         </div>
       </div>
