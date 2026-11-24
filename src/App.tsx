@@ -30,6 +30,7 @@ import {
   syncCloudData,
   getLocalHomeCache,
   saveLocalHomeCache,
+  getAnimeSchedule,
 } from './services/api';
 import {
   getCurrentUser,
@@ -206,6 +207,16 @@ export const App: React.FC = () => {
       setAuthModalOpen(true);
       return;
     }
+    const isAnime =
+      movie.category === '动漫' ||
+      movie.sourceCategory === 'anime' ||
+      movie.id?.startsWith('bangumi_') ||
+      Boolean(movie.airDay);
+
+    const sched = isAnime
+      ? getAnimeSchedule(movie.title, movie.airDay, movie.airWeekday, movie.remarks)
+      : null;
+
     toggleWatchlist({
       id: movie.id,
       title: movie.title,
@@ -215,6 +226,12 @@ export const App: React.FC = () => {
       addedAt: Date.now(),
       sourceUrl: movie.sourceUrl,
       vod_id: movie.vod_id,
+      category: movie.category,
+      sourceCategory: movie.sourceCategory,
+      airDay: sched?.airDay || movie.airDay,
+      airWeekday: sched?.airWeekday || movie.airWeekday,
+      airTime: sched?.airTime || movie.airTime,
+      isAnime,
     });
     reloadWatchlist();
   };

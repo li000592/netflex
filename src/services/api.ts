@@ -224,6 +224,7 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
     
     const parsedCalendar = list.map((group: any) => {
       const weekdayName = group.weekday?.cn || group.weekday?.en || '每日更新';
+      const weekdayNum = group.weekday?.id || (group.items?.[0]?.air_weekday) || 1;
       const items: MediaItem[] = (group.items || []).map((anime: any) => {
         const cover = anime.images?.large || anime.images?.common || '';
         return {
@@ -232,13 +233,18 @@ export async function fetchBangumiCalendar(): Promise<{ day: string; items: Medi
           rate: anime.rating?.score ? anime.rating.score.toFixed(1) : undefined,
           cover: hasValidCover(cover) ? cover : '',
           category: '动漫',
+          sourceCategory: 'anime',
           overview: anime.summary || '',
           year: anime.air_date ? anime.air_date.slice(0, 4) : '',
+          airDay: weekdayName,
+          airWeekday: anime.air_weekday || weekdayNum,
+          airTime: '约 23:30 放送',
         };
       });
       return { day: weekdayName, items: sortMediaByCover(items) };
     });
 
+    registerAnimeSchedules(parsedCalendar);
     bangumiMemoryCache = { data: parsedCalendar, time: now };
     try {
       sessionStorage.setItem('netflex_cache_bangumi', JSON.stringify({ data: parsedCalendar, time: now }));
@@ -607,6 +613,157 @@ export function normalizeTitle(t?: string): string {
   return (t || '')
     .toLowerCase()
     .replace(/[·\s:：\-—_.,/()（）\[\]【】]/g, '');
+}
+
+// -------------------------------------------------------------
+// Anime Broadcast Schedule & Follow Resolver
+// -------------------------------------------------------------
+
+export interface AnimeScheduleInfo {
+  airDay: string;       // e.g. "周五"
+  airWeekday: number;   // 1=Mon ... 7=Sun
+  airTime: string;      // e.g. "约 23:30 放送"
+  isToday: boolean;     // whether it airs today
+  status: 'airing' | 'finished';
+  displayText: string;  // e.g. "每周五 约 23:30 放送" or "🔥 今日放送 · 约 23:30 极速同步"
+}
+
+const animeScheduleCache = new Map<string, { airDay: string; airWeekday: number; airTime: string; title: string }>();
+
+// Load pre-cached schedules if available
+try {
+  const stored = sessionStorage.getItem('netflex_anime_schedules');
+  if (stored) {
+    const arr = JSON.parse(stored);
+    if (Array.isArray(arr)) {
+      for (const item of arr) {
+        if (item.norm) animeScheduleCache.set(item.norm, item);
+      }
+    }
+  }
+} catch {}
+
+export function registerAnimeSchedules(calendar: { day: string; items: MediaItem[] }[]): void {
+  const dayToWeekday: Record<string, number> = {
+    周一: 1,
+    周二: 2,
+    周三: 3,
+    周四: 4,
+    周五: 5,
+    周六: 6,
+    周日: 7,
+  };
+
+  const toPersist: Array<{ norm: string; airDay: string; airWeekday: number; airTime: string; title: string }> = [];
+
+  for (const group of calendar) {
+    const day = group.day;
+    const weekday = dayToWeekday[day] || 1;
+    for (const item of group.items) {
+      const norm = normalizeTitle(item.title);
+      if (norm) {
+        const entry = {
+          norm,
+          title: item.title,
+          airDay: day,
+          airWeekday: item.airWeekday || weekday,
+          airTime: item.airTime || '约 23:30 放送',
+        };
+        animeScheduleCache.set(norm, entry);
+        toPersist.push(entry);
+      }
+    }
+  }
+
+  try {
+    sessionStorage.setItem('netflex_anime_schedules', JSON.stringify(toPersist));
+  } catch {}
+}
+
+export function getAnimeSchedule(
+  title?: string,
+  existingAirDay?: string,
+  existingAirWeekday?: number,
+  remarks?: string
+): AnimeScheduleInfo | null {
+  if (!title) return null;
+
+  const todayIdx = new Date().getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
+  const dayToWeekday: Record<string, number> = {
+    周日: 7,
+    周一: 1,
+    周二: 2,
+    周三: 3,
+    周四: 4,
+    周五: 5,
+    周六: 6,
+  };
+
+  let airDay = existingAirDay;
+  let airWeekday = existingAirWeekday;
+  let airTime = '约 23:30 放送';
+
+  if (!airDay) {
+    const norm = normalizeTitle(title);
+    if (animeScheduleCache.has(norm)) {
+      const match = animeScheduleCache.get(norm)!;
+      airDay = match.airDay;
+      airWeekday = match.airWeekday;
+      airTime = match.airTime;
+    } else {
+      // Substring fuzzy matching
+      for (const [key, val] of animeScheduleCache.entries()) {
+        if (norm.length >= 2 && (norm.includes(key) || key.includes(norm))) {
+          airDay = val.airDay;
+          airWeekday = val.airWeekday;
+          airTime = val.airTime;
+          break;
+        }
+      }
+    }
+  }
+
+  if (airDay && !airWeekday) {
+    airWeekday = dayToWeekday[airDay] || 1;
+  }
+
+  const isFinished = Boolean(remarks && /完结|全\d+集/.test(remarks));
+
+  if (!airDay) {
+    if (isFinished) {
+      return {
+        airDay: '',
+        airWeekday: 0,
+        airTime: '',
+        isToday: false,
+        status: 'finished',
+        displayText: remarks || '已完结',
+      };
+    }
+    return null;
+  }
+
+  // 1=Mon, ..., 6=Sat, 7=Sun
+  // todayIdx: 0=Sun, 1=Mon, ..., 6=Sat
+  const isToday = ((airWeekday || 1) % 7) === todayIdx;
+
+  let displayText = '';
+  if (isFinished) {
+    displayText = `已完结 (${remarks || '全集已上线'})`;
+  } else if (isToday) {
+    displayText = `🔥 今日放送 · ${airTime} 极速同步`;
+  } else {
+    displayText = `每周${airDay.replace('周', '')} · ${airTime}`;
+  }
+
+  return {
+    airDay,
+    airWeekday: airWeekday || 1,
+    airTime,
+    isToday,
+    status: isFinished ? 'finished' : 'airing',
+    displayText,
+  };
 }
 
 export function extractFranchiseTerms(rawTitle: string): string[] {

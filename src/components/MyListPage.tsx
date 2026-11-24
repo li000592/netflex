@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon } from 'lucide-react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
-import { getWatchHistory, getWatchlist, clearWatchHistory } from '../services/api';
+import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule } from '../services/api';
 import { MovieCard } from './MovieCard';
 import { useI18n } from '../i18n';
 
@@ -28,6 +28,8 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 }) => {
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<'watchlist' | 'history'>('watchlist');
+  const [watchlistSubTab, setWatchlistSubTab] = useState<'all' | 'anime'>('all');
+  const [animeViewMode, setAnimeViewMode] = useState<'cards' | 'weekly'>('cards');
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [history, setHistory] = useState<WatchHistoryItem[]>([]);
 
@@ -39,6 +41,28 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   useEffect(() => {
     reloadData();
   }, [watchlistIds, currentUser, currentProfile, activeTab]);
+
+  const todayChineseDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()];
+
+  // Followed anime items
+  const followedAnime = watchlist.filter((item) => {
+    return (
+      item.isAnime ||
+      item.category === '动漫' ||
+      item.sourceCategory === 'anime' ||
+      item.id.startsWith('bangumi_') ||
+      Boolean(item.airDay) ||
+      Boolean(getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks)?.airDay)
+    );
+  });
+
+  // Anime airing today
+  const todayAiringAnime = followedAnime.filter((item) => {
+    const sched = getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks);
+    return sched?.isToday;
+  });
+
+  const displayedWatchlist = watchlistSubTab === 'anime' ? followedAnime : watchlist;
 
   const handleClearHistory = () => {
     if (window.confirm(t('confirmClearHistory'))) {
@@ -170,36 +194,271 @@ export const MyListPage: React.FC<MyListPageProps> = ({
       {/* Watchlist Tab Content */}
       {activeTab === 'watchlist' && (
         <>
-          {watchlist.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
-              {watchlist.map((item) => {
-                const mediaItem: MediaItem = {
-                  id: item.id,
-                  title: item.title,
-                  cover: item.cover,
-                  rate: item.rate,
-                  remarks: item.remarks,
-                  sourceUrl: item.sourceUrl,
-                  vod_id: item.vod_id,
-                };
-                return (
-                  <div key={item.id} className="flex justify-center">
-                    <MovieCard
-                      movie={mediaItem}
-                      onPlay={onPlay}
-                      onOpenDetail={onOpenDetail}
-                      isFavorite={watchlistIds.has(item.id)}
-                      onToggleFavorite={onToggleFavorite}
-                    />
+          {/* Today Airing Anime Alert Banner */}
+          {todayAiringAnime.length > 0 && (
+            <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-pink-950/70 via-red-950/50 to-zinc-900 border border-pink-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+              <div className="flex items-center space-x-3.5">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-pink-600/30 border border-pink-500/50 flex items-center justify-center flex-shrink-0 animate-bounce">
+                  <Sparkles className="w-5 h-5 text-pink-400" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h3 className="text-white font-bold text-sm sm:text-base">
+                      {t('airingTodayNotice')} · {todayChineseDay}
+                    </h3>
+                    <span className="bg-[#E50914] text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                      TODAY
+                    </span>
                   </div>
-                );
-              })}
+                  <p className="text-xs sm:text-sm text-pink-200/90 mt-0.5">
+                    你追的 {todayAiringAnime.map((a) => `《${a.title}》`).join('、')} {t('airingTodayDesc')}
+                  </p>
+                </div>
+              </div>
+
+              {watchlistSubTab !== 'anime' && (
+                <button
+                  onClick={() => setWatchlistSubTab('anime')}
+                  className="self-start sm:self-auto text-xs bg-pink-600 hover:bg-pink-500 text-white font-bold px-4 py-2 rounded-lg transition-transform hover:scale-105 shadow flex items-center cursor-pointer"
+                >
+                  <span>查看追番列表</span>
+                </button>
+              )}
             </div>
+          )}
+
+          {/* Sub-tabs: All vs Followed Anime */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setWatchlistSubTab('all')}
+                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                  watchlistSubTab === 'all'
+                    ? 'bg-white text-black shadow'
+                    : 'bg-white/10 hover:bg-white/15 text-gray-300'
+                }`}
+              >
+                {t('allWatchlist')} ({watchlist.length})
+              </button>
+
+              <button
+                onClick={() => setWatchlistSubTab('anime')}
+                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                  watchlistSubTab === 'anime'
+                    ? 'bg-pink-600 text-white shadow-md shadow-pink-900/40'
+                    : 'bg-white/10 hover:bg-white/15 text-gray-300'
+                }`}
+              >
+                <span>🌸</span>
+                <span>{t('followedAnimeList')}</span>
+                <span className="ml-1 bg-black/30 px-1.5 py-0.2 rounded-full text-[10px]">
+                  {followedAnime.length}
+                </span>
+              </button>
+            </div>
+
+            {watchlistSubTab === 'anime' && followedAnime.length > 0 && (
+              <div className="flex items-center space-x-1 bg-white/5 p-1 rounded-lg border border-white/10 self-start sm:self-auto">
+                <button
+                  onClick={() => setAnimeViewMode('cards')}
+                  className={`text-xs px-3 py-1 rounded font-medium transition-all cursor-pointer ${
+                    animeViewMode === 'cards' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  海报网格
+                </button>
+                <button
+                  onClick={() => setAnimeViewMode('weekly')}
+                  className={`text-xs px-3 py-1 rounded font-medium transition-all cursor-pointer ${
+                    animeViewMode === 'weekly' ? 'bg-pink-600 text-white' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  📅 每周放送日程
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Watchlist Items Display */}
+          {displayedWatchlist.length > 0 ? (
+            watchlistSubTab === 'anime' && animeViewMode === 'weekly' ? (
+              /* Weekly Schedule Grouping View */
+              <div className="space-y-6">
+                {['周一', '周二', '周三', '周四', '周五', '周六', '周日'].map((weekday) => {
+                  const dayItems = followedAnime.filter((item) => {
+                    const sched = getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks);
+                    return sched?.airDay === weekday;
+                  });
+                  if (dayItems.length === 0) return null;
+                  const isToday = todayChineseDay === weekday;
+
+                  return (
+                    <div
+                      key={weekday}
+                      className={`p-4 sm:p-5 rounded-2xl border transition-all ${
+                        isToday
+                          ? 'bg-pink-950/20 border-pink-500/40 ring-1 ring-pink-500/20'
+                          : 'bg-white/5 border-white/10'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-base sm:text-lg font-black text-white">{weekday} 放送</span>
+                          {isToday && (
+                            <span className="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">
+                              今日放送
+                            </span>
+                          )}
+                          <span className="text-xs text-gray-400">
+                            共 {dayItems.length} 部 · 约 23:30 极速同步
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                        {dayItems.map((item) => {
+                          const sched = getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks);
+                          const mediaItem: MediaItem = {
+                            id: item.id,
+                            title: item.title,
+                            cover: item.cover,
+                            rate: item.rate,
+                            remarks: item.remarks,
+                            sourceUrl: item.sourceUrl,
+                            vod_id: item.vod_id,
+                            category: item.category || '动漫',
+                            sourceCategory: item.sourceCategory || 'anime',
+                            airDay: sched?.airDay || item.airDay,
+                            airWeekday: sched?.airWeekday || item.airWeekday,
+                            airTime: sched?.airTime || item.airTime,
+                          };
+
+                          return (
+                            <div key={item.id} className="flex flex-col">
+                              <MovieCard
+                                movie={mediaItem}
+                                onPlay={onPlay}
+                                onOpenDetail={onOpenDetail}
+                                isFavorite={watchlistIds.has(item.id)}
+                                onToggleFavorite={onToggleFavorite}
+                              />
+                              <div className="mt-1 px-1">
+                                <span className={`text-[11px] font-medium block truncate ${
+                                  sched?.isToday ? 'text-red-400 font-bold' : 'text-pink-300'
+                                }`}>
+                                  {sched?.displayText || item.remarks || '连载中'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Other/Finished anime that didn't match a specific weekday */}
+                {(() => {
+                  const unassignedItems = followedAnime.filter((item) => {
+                    const sched = getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks);
+                    return !sched?.airDay;
+                  });
+                  if (unassignedItems.length === 0) return null;
+                  return (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/10">
+                      <h4 className="text-sm font-bold text-gray-300 mb-3">其他/已完结番剧 ({unassignedItems.length})</h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                        {unassignedItems.map((item) => {
+                          const mediaItem: MediaItem = {
+                            id: item.id,
+                            title: item.title,
+                            cover: item.cover,
+                            rate: item.rate,
+                            remarks: item.remarks,
+                            sourceUrl: item.sourceUrl,
+                            vod_id: item.vod_id,
+                            category: item.category || '动漫',
+                            sourceCategory: item.sourceCategory || 'anime',
+                          };
+                          return (
+                            <div key={item.id} className="flex flex-col">
+                              <MovieCard
+                                movie={mediaItem}
+                                onPlay={onPlay}
+                                onOpenDetail={onOpenDetail}
+                                isFavorite={watchlistIds.has(item.id)}
+                                onToggleFavorite={onToggleFavorite}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : (
+              /* Grid View (Cards) */
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+                {displayedWatchlist.map((item) => {
+                  const sched = getAnimeSchedule(item.title, item.airDay, item.airWeekday, item.remarks);
+                  const isAnime = Boolean(
+                    item.isAnime ||
+                    item.category === '动漫' ||
+                    item.sourceCategory === 'anime' ||
+                    item.id.startsWith('bangumi_') ||
+                    sched?.airDay
+                  );
+
+                  const mediaItem: MediaItem = {
+                    id: item.id,
+                    title: item.title,
+                    cover: item.cover,
+                    rate: item.rate,
+                    remarks: item.remarks,
+                    sourceUrl: item.sourceUrl,
+                    vod_id: item.vod_id,
+                    category: item.category || (isAnime ? '动漫' : undefined),
+                    sourceCategory: item.sourceCategory || (isAnime ? 'anime' : undefined),
+                    airDay: sched?.airDay || item.airDay,
+                    airWeekday: sched?.airWeekday || item.airWeekday,
+                    airTime: sched?.airTime || item.airTime,
+                  };
+
+                  return (
+                    <div key={item.id} className="flex flex-col">
+                      <MovieCard
+                        movie={mediaItem}
+                        onPlay={onPlay}
+                        onOpenDetail={onOpenDetail}
+                        isFavorite={watchlistIds.has(item.id)}
+                        onToggleFavorite={onToggleFavorite}
+                      />
+                      {isAnime && sched && (
+                        <div className="mt-1.5 px-0.5">
+                          <span
+                            className={`text-[11px] font-medium block truncate ${
+                              sched.isToday ? 'text-red-400 font-bold' : 'text-pink-300'
+                            }`}
+                          >
+                            {sched.displayText}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
           ) : (
             <div className="text-center py-24 text-gray-400">
               <Bookmark className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-lg font-semibold mb-1">{t('emptyListTitle')}</p>
-              <p className="text-sm text-gray-500">{t('emptyListDesc')}</p>
+              <p className="text-lg font-semibold mb-1">
+                {watchlistSubTab === 'anime' ? t('noFollowedAnimeTitle') : t('emptyListTitle')}
+              </p>
+              <p className="text-sm text-gray-500 max-w-sm mx-auto">
+                {watchlistSubTab === 'anime' ? t('noFollowedAnimeDesc') : t('emptyListDesc')}
+              </p>
             </div>
           )}
         </>

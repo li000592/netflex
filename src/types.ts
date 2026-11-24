@@ -22,6 +22,9 @@ export interface MediaItem {
   groups?: EpisodeGroup[];
   sequelOrder?: number | null;
   sequelBadge?: string;
+  airDay?: string;
+  airWeekday?: number;
+  airTime?: string;
   availableSources?: Array<{
     sourceId: string;
     sourceName: string;
@@ -80,6 +83,12 @@ export interface WatchlistItem {
   addedAt: number;
   sourceUrl?: string;
   vod_id?: string | number;
+  category?: string;
+  sourceCategory?: string;
+  airDay?: string;
+  airWeekday?: number;
+  airTime?: string;
+  isAnime?: boolean;
 }
 
 export interface UserProfile {

@@ -101,14 +101,28 @@ export const MovieCard: React.FC<MovieCardProps> = ({
             </div>
           )}
 
-          {/* New / HD Badges */}
+          {/* New / HD / Anime Badges */}
           <div className="absolute top-2 left-2 flex flex-col space-y-1">
-            {movie.sourceCategory === 'anime' && (
+            {movie.airDay ? (
+              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 ${
+                (movie.airDay === ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()] ||
+                 (movie.airWeekday && (movie.airWeekday % 7) === new Date().getDay()))
+                  ? 'bg-red-600 text-white animate-pulse'
+                  : 'bg-pink-600/90 text-white'
+              }`}>
+                <span>
+                  {(movie.airDay === ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()] ||
+                    (movie.airWeekday && (movie.airWeekday % 7) === new Date().getDay()))
+                    ? '🔥 今日放送'
+                    : `每周${movie.airDay.replace('周', '')}`}
+                </span>
+              </span>
+            ) : movie.sourceCategory === 'anime' ? (
               <span className="bg-pink-600/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5">
                 <span>🌸</span>
                 <span>动漫</span>
               </span>
-            )}
+            ) : null}
             {movie.isNew && (
               <span className="bg-[#E50914] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">
                 {t('newBadge')}

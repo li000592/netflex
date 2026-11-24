@@ -579,7 +579,12 @@ export const AnimePage: React.FC<AnimePageProps> = ({
                         {currentAirRow.items.map((anime) => (
                           <div key={anime.id} className="w-32 sm:w-44 flex-shrink-0">
                             <MovieCard
-                              movie={{ ...anime, category: '动漫', sourceCategory: 'anime' }}
+                              movie={{
+                                ...anime,
+                                airDay: anime.airDay || currentAirRow.day,
+                                category: '动漫',
+                                sourceCategory: 'anime',
+                              }}
                               onPlay={onPlay}
                               onOpenDetail={onOpenDetail}
                               isFavorite={watchlistIds.has(anime.id)}
@@ -738,7 +743,12 @@ export const AnimePage: React.FC<AnimePageProps> = ({
                   <MovieRow
                     key={row.day}
                     title={`${row.day} 更新`}
-                    movies={row.items.map((m) => ({ ...m, category: '动漫', sourceCategory: 'anime' }))}
+                    movies={row.items.map((m) => ({
+                      ...m,
+                      airDay: m.airDay || row.day,
+                      category: '动漫',
+                      sourceCategory: 'anime',
+                    }))}
                     onPlay={onPlay}
                     onOpenDetail={onOpenDetail}
                     watchlistIds={watchlistIds}
@@ -760,7 +770,12 @@ export const AnimePage: React.FC<AnimePageProps> = ({
                     {currentAirRow.items.map((anime) => (
                       <MovieCard
                         key={anime.id}
-                        movie={{ ...anime, category: '动漫', sourceCategory: 'anime' }}
+                        movie={{
+                          ...anime,
+                          airDay: anime.airDay || selectedWeekday,
+                          category: '动漫',
+                          sourceCategory: 'anime',
+                        }}
                         onPlay={onPlay}
                         onOpenDetail={onOpenDetail}
                         isFavorite={watchlistIds.has(anime.id)}

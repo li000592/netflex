@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles } from 'lucide-react';
+import { X, Play, Plus, Check, Star, Layers, Film, Loader2, ChevronDown, ChevronLeft, ChevronRight, Airplay, Sparkles, Calendar } from 'lucide-react';
 import { MediaItem, VideoDetail, EpisodeGroup, Episode, WatchHistoryItem } from '../types';
-import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover, fetchRelatedSeries } from '../services/api';
+import { fetchVideoDetail, searchVideos, getWatchHistory, hasValidCover, fetchRelatedSeries, getAnimeSchedule } from '../services/api';
 import { useI18n } from '../i18n';
 
 interface DetailModalProps {
@@ -305,6 +305,17 @@ export const DetailModal: React.FC<DetailModalProps> = ({
     groups: detail?.groups || currentCandidate?.groups || movie.groups,
   };
 
+  const isAnime = Boolean(
+    movie?.category === '动漫' ||
+    movie?.sourceCategory === 'anime' ||
+    movie?.id?.startsWith('bangumi_') ||
+    movie?.airDay
+  );
+
+  const animeSchedule = (movie && isAnime)
+    ? getAnimeSchedule(movie.title, movie.airDay, movie.airWeekday, detail?.remarks || movie.remarks)
+    : null;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 select-none"
@@ -408,23 +419,40 @@ export const DetailModal: React.FC<DetailModalProps> = ({
                 : t('playEpisode1')}
             </button>
 
-            {/* Watchlist Button */}
+            {/* Watchlist / Follow Anime Button */}
             <button
               onClick={() => onToggleFavorite(movie)}
-              className="flex items-center bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-2.5 rounded-md border border-white/20 transition-all hover:scale-105"
+              className={`flex items-center font-semibold px-4 py-2.5 rounded-md border transition-all hover:scale-105 cursor-pointer ${
+                isFavorite
+                  ? 'bg-pink-600/20 text-pink-300 border-pink-500/40 shadow-lg shadow-pink-950/50'
+                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+              }`}
             >
               {isFavorite ? (
                 <>
-                  <Check className="w-5 h-5 mr-1.5 text-[#E50914]" />
-                  {t('inMyList')}
+                  <Check className="w-5 h-5 mr-1.5 text-pink-400" />
+                  <span>{isAnime ? t('followingAnime') : t('inMyList')}</span>
                 </>
               ) : (
                 <>
-                  <Plus className="w-5 h-5 mr-1.5" />
-                  {t('addToList')}
+                  <Plus className="w-5 h-5 mr-1.5 text-pink-400" />
+                  <span>{isAnime ? t('followAnime') : t('addToList')}</span>
                 </>
               )}
             </button>
+
+            {/* Anime Broadcast Schedule Pill */}
+            {animeSchedule && (
+              <span className="flex items-center text-xs bg-pink-950/70 border border-pink-500/40 text-pink-200 px-3 py-1.5 rounded-md font-medium shadow-sm">
+                <Calendar className="w-4 h-4 mr-1.5 text-pink-400 flex-shrink-0" />
+                <span>{animeSchedule.displayText}</span>
+                {animeSchedule.isToday && (
+                  <span className="ml-1.5 bg-[#E50914] text-white text-[9px] font-bold px-1.5 py-0.5 rounded animate-pulse">
+                    TODAY
+                  </span>
+                )}
+              </span>
+            )}
 
             {/* Apple AirPlay & Cast Button */}
             <button
