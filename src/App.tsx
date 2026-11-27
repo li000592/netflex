@@ -196,12 +196,36 @@ export const App: React.FC = () => {
     setWatchlistIds(new Set(list.map((w) => w.id)));
   };
 
+  // Automatic real-time cross-device sync on tab change, focus, visibility, and 15s background interval
   useEffect(() => {
     reloadWatchlist();
     if (currentUser) {
-      syncCloudData().then(() => reloadWatchlist());
+      const doSync = () => {
+        syncCloudData().then(() => reloadWatchlist());
+      };
+
+      // 1. Initial sync on mount or tab change
+      doSync();
+
+      // 2. Sync immediately when user switches back to browser tab or unlocks phone
+      const handleVisibility = () => {
+        if (document.visibilityState === 'visible') {
+          doSync();
+        }
+      };
+      window.addEventListener('visibilitychange', handleVisibility);
+      window.addEventListener('focus', doSync);
+
+      // 3. Periodic background sync every 15 seconds
+      const interval = setInterval(doSync, 15000);
+
+      return () => {
+        window.removeEventListener('visibilitychange', handleVisibility);
+        window.removeEventListener('focus', doSync);
+        clearInterval(interval);
+      };
     }
-  }, [currentUser, currentProfile]);
+  }, [currentUser, currentProfile, currentTab]);
 
   const handleToggleFavorite = (movie: MediaItem) => {
     if (!currentUser) {
@@ -241,6 +265,7 @@ export const App: React.FC = () => {
     setCurrentUser(user);
     setCurrentProfile(getCurrentProfile(user));
     reloadWatchlist();
+    syncCloudData().then(() => reloadWatchlist());
   };
 
   // Check for Google OAuth redirect access_token in URL hash

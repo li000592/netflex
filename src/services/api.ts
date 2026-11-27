@@ -598,12 +598,16 @@ export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; his
         localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(mergedWatchlist));
         localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(mergedHistory));
 
-        // If local had items not in cloud, push the merged set up
+        // If local had items not in cloud, automatically push the merged set up
+        const localHasNew = localList.some((l) => !cloudList.some((c) => c.id === l.id));
+        const localHistHasNew = localHist.some((l) => !cloudHist.some((c) => c.id === l.id));
         if (
+          localHasNew ||
+          localHistHasNew ||
           mergedWatchlist.length !== cloudList.length ||
           mergedHistory.length !== cloudHist.length
         ) {
-          pushCloudSync(user.id, user.currentProfileId, mergedWatchlist, mergedHistory);
+          await pushCloudSync(user.id, user.currentProfileId, mergedWatchlist, mergedHistory);
         }
 
         return { watchlist: mergedWatchlist, history: mergedHistory };

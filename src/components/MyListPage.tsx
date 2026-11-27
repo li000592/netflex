@@ -90,15 +90,38 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   useEffect(() => {
     reloadData();
     if (currentUser) {
-      syncCloudData().then((res) => {
-        if (res && res.watchlist) {
-          setWatchlist(res.watchlist);
-          setHistory(res.history);
-        } else {
-          setWatchlist(getWatchlist());
-          setHistory(getWatchHistory());
+      const doSync = () => {
+        syncCloudData().then((res) => {
+          if (res && res.watchlist) {
+            setWatchlist(res.watchlist);
+            setHistory(res.history);
+          } else {
+            setWatchlist(getWatchlist());
+            setHistory(getWatchHistory());
+          }
+        });
+      };
+
+      // 1. Initial sync
+      doSync();
+
+      // 2. Re-sync automatically on tab focus / phone unlock
+      const handleVisibility = () => {
+        if (document.visibilityState === 'visible') {
+          doSync();
         }
-      });
+      };
+      window.addEventListener('visibilitychange', handleVisibility);
+      window.addEventListener('focus', doSync);
+
+      // 3. Periodic background sync every 15 seconds
+      const interval = setInterval(doSync, 15000);
+
+      return () => {
+        window.removeEventListener('visibilitychange', handleVisibility);
+        window.removeEventListener('focus', doSync);
+        clearInterval(interval);
+      };
     }
   }, [watchlistIds, currentUser, currentProfile, activeTab]);
 
@@ -224,32 +247,22 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           ) : (
             <div className="flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-2.5 py-1.5 rounded-lg font-medium shadow-sm">
               <Cloud className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 animate-pulse" />
-              <span>云端同步已连接</span>
+              <span>全自动实时同步已开启</span>
             </div>
           )}
 
           <button
             onClick={handleManualSync}
             disabled={syncing}
-            className="flex items-center space-x-1 text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white px-3 py-1.5 rounded-lg transition-all border border-white/10 disabled:opacity-50"
-            title="从云端获取最新片单和观看历史"
+            className="flex items-center space-x-1 text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white px-2.5 py-1.5 rounded-lg transition-all border border-white/10 disabled:opacity-50"
+            title="全自动同步中，也可点击立即刷新"
           >
             {syncing ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E50914]" />
             ) : (
               <RotateCcw className="w-3.5 h-3.5 text-gray-300" />
             )}
-            <span>{syncing ? '同步中...' : '立即同步'}</span>
-          </button>
-
-          <button
-            onClick={handleForceUpload}
-            disabled={syncing}
-            className="flex items-center space-x-1 text-xs bg-[#E50914]/20 hover:bg-[#E50914]/30 active:scale-95 text-red-200 px-3 py-1.5 rounded-lg transition-all border border-[#E50914]/40 disabled:opacity-50"
-            title="将当前设备保存的片单强制上传备份至云端"
-          >
-            <ArrowUpCircle className="w-3.5 h-3.5 text-red-400" />
-            <span>上传到云端</span>
+            <span>{syncing ? '同步中...' : '刷新'}</span>
           </button>
         </div>
       </div>
