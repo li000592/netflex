@@ -997,8 +997,13 @@ api.post('/api/auth/login', async (req, res) => {
   const safeUser = { ...record };
   delete safeUser.passwordHash;
 
+  // Fetch user's cloud watchlist and watch history (try email key first, then userId fallback)
   const profileId = safeUser.currentProfileId || 'profile_main';
-  const cloudData = (await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`)) || { watchlist: [], history: [] };
+  let cloudData = await getCloudItem('netflex_data', `email:${safeUser.email}_${profileId}`);
+  if (!cloudData) {
+    cloudData = await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`);
+  }
+  cloudData = cloudData || { watchlist: [], history: [] };
 
   return res.json({
     success: true,
@@ -1010,13 +1015,20 @@ api.post('/api/auth/login', async (req, res) => {
 
 // 9. Cloud User Sync
 api.post('/api/user/sync', async (req, res) => {
-  const { userId, profileId, watchlist, history } = req.body || {};
-  if (!userId) {
-    return res.status(400).json({ success: false, error: 'userId required' });
+  const { userId, email, profileId, watchlist, history } = req.body || {};
+  if (!userId && !email) {
+    return res.status(400).json({ success: false, error: 'userId or email required' });
   }
+  const cleanEmail = (email || '').trim().toLowerCase();
   const pId = profileId || 'profile_main';
-  const key = `${userId}_${pId}`;
-  const current = (await getCloudItem('netflex_data', key)) || { watchlist: [], history: [] };
+  const primaryKey = cleanEmail ? `email:${cleanEmail}_${pId}` : `${userId}_${pId}`;
+
+  // Get current data
+  let current = await getCloudItem('netflex_data', primaryKey);
+  if (!current && userId) {
+    current = await getCloudItem('netflex_data', `${userId}_${pId}`);
+  }
+  current = current || { watchlist: [], history: [] };
 
   const updated = {
     watchlist: Array.isArray(watchlist) ? watchlist : (current.watchlist || []),
@@ -1024,17 +1036,30 @@ api.post('/api/user/sync', async (req, res) => {
     updatedAt: Date.now()
   };
 
-  await setCloudItem('netflex_data', key, updated);
+  // Save under both primaryKey and userId key for 100% cross-device compatibility
+  await setCloudItem('netflex_data', primaryKey, updated);
+  if (userId && primaryKey !== `${userId}_${pId}`) {
+    await setCloudItem('netflex_data', `${userId}_${pId}`, updated);
+  }
+
   return res.json({ success: true, ...updated });
 });
 
 api.get('/api/user/sync', async (req, res) => {
-  const { userId, profileId } = req.query || {};
-  if (!userId) {
-    return res.status(400).json({ success: false, error: 'userId required' });
+  const { userId, email, profileId } = req.query || {};
+  if (!userId && !email) {
+    return res.status(400).json({ success: false, error: 'userId or email required' });
   }
+  const cleanEmail = (email || '').trim().toLowerCase();
   const pId = profileId || 'profile_main';
-  const cloudData = (await getCloudItem('netflex_data', `${userId}_${pId}`)) || { watchlist: [], history: [] };
+  const primaryKey = cleanEmail ? `email:${cleanEmail}_${pId}` : `${userId}_${pId}`;
+
+  let cloudData = await getCloudItem('netflex_data', primaryKey);
+  if (!cloudData && userId) {
+    cloudData = await getCloudItem('netflex_data', `${userId}_${pId}`);
+  }
+  cloudData = cloudData || { watchlist: [], history: [] };
+
   return res.json({
     success: true,
     watchlist: cloudData.watchlist || [],

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle, Cloud } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle, Cloud, ArrowUpCircle } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
-import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule, syncCloudData } from '../services/api';
+import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule, syncCloudData, forceUploadCurrentDeviceToCloud } from '../services/api';
 import { useOfflineDownloads } from '../hooks/useOfflineDownloads';
 import { formatBytes } from '../services/offlineStorage';
 import { MovieCard } from './MovieCard';
@@ -34,20 +34,70 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   const [animeViewMode, setAnimeViewMode] = useState<'cards' | 'weekly'>('cards');
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [history, setHistory] = useState<WatchHistoryItem[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   const { downloads, storageInfo, deleteDownload, cancelDownload } = useOfflineDownloads();
+
+  const guestCount = useMemo(() => {
+    try {
+      const raw = localStorage.getItem('netflex_watchlist_guest');
+      return raw ? JSON.parse(raw).length : 0;
+    } catch {
+      return 0;
+    }
+  }, []);
 
   const reloadData = () => {
     setWatchlist(getWatchlist());
     setHistory(getWatchHistory());
   };
 
+  const handleManualSync = async () => {
+    setSyncing(true);
+    setSyncMessage(null);
+    try {
+      const res = await syncCloudData();
+      setWatchlist(res.watchlist);
+      setHistory(res.history);
+      setSyncMessage(`已同步云端片单 (${res.watchlist.length} 部)`);
+    } catch {
+      setSyncMessage('同步遇到问题，请检查网络');
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncMessage(null), 4000);
+    }
+  };
+
+  const handleForceUpload = async () => {
+    setSyncing(true);
+    setSyncMessage(null);
+    try {
+      const res = await forceUploadCurrentDeviceToCloud();
+      if (res.success) {
+        setSyncMessage(`已将本地 ${res.watchlistCount} 部影片上传至云端数据库！`);
+      } else {
+        setSyncMessage('上传失败，请先登录');
+      }
+    } catch {
+      setSyncMessage('上传遇到问题，请检查网络');
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncMessage(null), 4000);
+    }
+  };
+
   useEffect(() => {
     reloadData();
     if (currentUser) {
-      syncCloudData().then(() => {
-        setWatchlist(getWatchlist());
-        setHistory(getWatchHistory());
+      syncCloudData().then((res) => {
+        if (res && res.watchlist) {
+          setWatchlist(res.watchlist);
+          setHistory(res.history);
+        } else {
+          setWatchlist(getWatchlist());
+          setHistory(getWatchHistory());
+        }
       });
     }
   }, [watchlistIds, currentUser, currentProfile, activeTab]);
@@ -93,9 +143,18 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           {t('signInPromptTitle')}
         </h1>
 
-        <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-8 leading-relaxed">
+        <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-6 leading-relaxed">
           {t('signInPromptDesc')}
         </p>
+
+        {guestCount > 0 && (
+          <div className="mb-6 bg-amber-500/10 border border-amber-500/30 text-amber-300 p-3 sm:p-4 rounded-xl text-xs sm:text-sm max-w-md mx-auto flex items-center space-x-3 text-left shadow-lg">
+            <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-400" />
+            <span>
+              检测到当前电脑/手机本地保存了 <strong>{guestCount}</strong> 部影片。登录同一账号后，它们将自动上传至云端数据库，实现多设备互通！
+            </span>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-xs">
           <button
@@ -129,32 +188,69 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
   return (
     <div className="min-h-screen safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Profile Header Badge */}
-      <div className="flex items-center space-x-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl">
-        <img
-          src={currentProfile?.avatar}
-          alt={currentProfile?.name}
-          className="w-10 h-10 rounded-lg object-cover border border-white/20"
-        />
-        <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-bold text-white">
-              {currentProfile?.name}
-              {t('profileSpace')}
-            </span>
-            {currentProfile?.isKids && (
-              <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold">
-                KIDS
+      {/* Profile Header Badge with Cloud Sync Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl shadow-lg">
+        <div className="flex items-center space-x-3">
+          <img
+            src={currentProfile?.avatar}
+            alt={currentProfile?.name}
+            className="w-10 h-10 rounded-lg object-cover border border-white/20"
+          />
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-bold text-white">
+                {currentProfile?.name}
+                {t('profileSpace')}
               </span>
-            )}
+              {currentProfile?.isKids && (
+                <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold">
+                  KIDS
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {t('account')}: <span className="text-gray-200 font-mono">{currentUser.email}</span>
+            </p>
           </div>
-          <p className="text-xs text-gray-400 mt-0.5">
-            {t('account')}: {currentUser.email}
-          </p>
         </div>
-        <div className="ml-auto hidden sm:flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-3 py-1.5 rounded-lg font-medium shadow-sm">
-          <Cloud className="w-4 h-4 text-emerald-400 flex-shrink-0 animate-pulse" />
-          <span>云端实时同步已开启</span>
+
+        {/* Sync Controls (Always visible on mobile & desktop) */}
+        <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
+          {syncMessage ? (
+            <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 animate-fadeIn">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+              {syncMessage}
+            </span>
+          ) : (
+            <div className="flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-2.5 py-1.5 rounded-lg font-medium shadow-sm">
+              <Cloud className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 animate-pulse" />
+              <span>云端同步已连接</span>
+            </div>
+          )}
+
+          <button
+            onClick={handleManualSync}
+            disabled={syncing}
+            className="flex items-center space-x-1 text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white px-3 py-1.5 rounded-lg transition-all border border-white/10 disabled:opacity-50"
+            title="从云端获取最新片单和观看历史"
+          >
+            {syncing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E50914]" />
+            ) : (
+              <RotateCcw className="w-3.5 h-3.5 text-gray-300" />
+            )}
+            <span>{syncing ? '同步中...' : '立即同步'}</span>
+          </button>
+
+          <button
+            onClick={handleForceUpload}
+            disabled={syncing}
+            className="flex items-center space-x-1 text-xs bg-[#E50914]/20 hover:bg-[#E50914]/30 active:scale-95 text-red-200 px-3 py-1.5 rounded-lg transition-all border border-[#E50914]/40 disabled:opacity-50"
+            title="将当前设备保存的片单强制上传备份至云端"
+          >
+            <ArrowUpCircle className="w-3.5 h-3.5 text-red-400" />
+            <span>上传到云端</span>
+          </button>
         </div>
       </div>
 

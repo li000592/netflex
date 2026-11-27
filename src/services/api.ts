@@ -509,11 +509,13 @@ export async function pushCloudSync(
   history?: WatchHistoryItem[]
 ): Promise<void> {
   try {
+    const user = getCurrentUser();
     await fetch(`${API_BASE}/api/user/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId,
+        email: user?.email || '',
         profileId,
         watchlist: watchlist || getWatchlist(),
         history: history || getWatchHistory(),
@@ -531,12 +533,43 @@ export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; his
     return { watchlist: getWatchlist(), history: getWatchHistory() };
   }
 
-  // 1. Try Netflex native Cloud API
+  // Check and absorb any local guest data first into this account
+  try {
+    const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
+    const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
+    const curList = getWatchlist();
+    const curHist = getWatchHistory();
+    let guestList: WatchlistItem[] = [];
+    let guestHist: WatchHistoryItem[] = [];
+    if (guestWatchlistRaw) guestList = JSON.parse(guestWatchlistRaw);
+    if (guestHistoryRaw) guestHist = JSON.parse(guestHistoryRaw);
+    let changed = false;
+    for (const g of guestList) {
+      if (!curList.some((item) => item.id === g.id)) {
+        curList.push(g);
+        changed = true;
+      }
+    }
+    for (const h of guestHist) {
+      if (!curHist.some((item) => item.id === h.id)) {
+        curHist.push(h);
+        changed = true;
+      }
+    }
+    if (changed) {
+      localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(curList));
+      localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(curHist));
+      localStorage.removeItem('netflex_watchlist_guest');
+      localStorage.removeItem('netflex_watch_history_guest');
+    }
+  } catch {}
+
+  // 1. Try Netflex native Cloud API (sending both userId and email)
   try {
     const res = await fetch(
-      `${API_BASE}/api/user/sync?userId=${encodeURIComponent(user.id)}&profileId=${encodeURIComponent(
-        user.currentProfileId
-      )}`
+      `${API_BASE}/api/user/sync?userId=${encodeURIComponent(user.id)}&email=${encodeURIComponent(
+        user.email || ''
+      )}&profileId=${encodeURIComponent(user.currentProfileId)}`
     );
     if (res.ok) {
       const data = await res.json();
@@ -607,6 +640,18 @@ export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; his
   return { watchlist: getWatchlist(), history: getWatchHistory() };
 }
 
+// Force upload current device watchlist and history directly to cloud
+export async function forceUploadCurrentDeviceToCloud(): Promise<{ success: boolean; watchlistCount: number; historyCount: number }> {
+  const user = getCurrentUser();
+  if (!user) {
+    return { success: false, watchlistCount: 0, historyCount: 0 };
+  }
+  const watchlist = getWatchlist();
+  const history = getWatchHistory();
+  await pushCloudSync(user.id, user.currentProfileId, watchlist, history);
+  return { success: true, watchlistCount: watchlist.length, historyCount: history.length };
+}
+
 export function saveWatchHistory(item: WatchHistoryItem): void {
   try {
     const key = getStorageKey(BASE_HISTORY_KEY);
@@ -648,8 +693,36 @@ export function clearWatchHistory(): void {
 
 export function getWatchlist(): WatchlistItem[] {
   try {
-    const raw = localStorage.getItem(getStorageKey(BASE_WATCHLIST_KEY));
-    return raw ? JSON.parse(raw) : [];
+    const key = getStorageKey(BASE_WATCHLIST_KEY);
+    const raw = localStorage.getItem(key);
+    let list: WatchlistItem[] = raw ? JSON.parse(raw) : [];
+
+    // Auto-migrate guest watchlist if user is logged in and guest list has items
+    const user = getCurrentUser();
+    if (user) {
+      const guestRaw = localStorage.getItem('netflex_watchlist_guest');
+      if (guestRaw) {
+        try {
+          const guestList = JSON.parse(guestRaw);
+          if (Array.isArray(guestList) && guestList.length > 0) {
+            let changed = false;
+            for (const g of guestList) {
+              if (!list.some((item) => item.id === g.id)) {
+                list.push(g);
+                changed = true;
+              }
+            }
+            if (changed) {
+              localStorage.setItem(key, JSON.stringify(list));
+              localStorage.removeItem('netflex_watchlist_guest');
+              pushCloudSync(user.id, user.currentProfileId, list, getWatchHistory());
+            }
+          }
+        } catch {}
+      }
+    }
+
+    return list;
   } catch {
     return [];
   }

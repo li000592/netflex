@@ -77,6 +77,93 @@ export function saveCurrentUser(user: User | null): void {
   } catch {}
 }
 
+export async function syncUserCloudDataOnLogin(
+  user: User,
+  initialWatchlist?: any[],
+  initialHistory?: any[]
+): Promise<void> {
+  try {
+    const profileId = user.currentProfileId || 'profile_main';
+    let cloudWatchlist = Array.isArray(initialWatchlist) ? initialWatchlist : null;
+    let cloudHistory = Array.isArray(initialHistory) ? initialHistory : null;
+
+    // Fetch from cloud if not provided
+    if (!cloudWatchlist || !cloudHistory) {
+      try {
+        const res = await fetch(
+          `/api/user/sync?userId=${encodeURIComponent(user.id)}&email=${encodeURIComponent(user.email)}&profileId=${encodeURIComponent(profileId)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            cloudWatchlist = data.watchlist || [];
+            cloudHistory = data.history || [];
+          }
+        }
+      } catch {}
+    }
+
+    cloudWatchlist = cloudWatchlist || [];
+    cloudHistory = cloudHistory || [];
+
+    // Get any local guest data or existing profile data
+    const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
+    const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
+    let guestWatchlist: any[] = [];
+    let guestHistory: any[] = [];
+    try { if (guestWatchlistRaw) guestWatchlist = JSON.parse(guestWatchlistRaw); } catch {}
+    try { if (guestHistoryRaw) guestHistory = JSON.parse(guestHistoryRaw); } catch {}
+
+    const profileKeyList = `netflex_watchlist_${user.id}_${profileId}`;
+    const profileKeyHist = `netflex_watch_history_${user.id}_${profileId}`;
+
+    let localWatchlist: any[] = [];
+    let localHistory: any[] = [];
+    try {
+      const localListRaw = localStorage.getItem(profileKeyList);
+      if (localListRaw) localWatchlist = JSON.parse(localListRaw);
+    } catch {}
+    try {
+      const localHistRaw = localStorage.getItem(profileKeyHist);
+      if (localHistRaw) localHistory = JSON.parse(localHistRaw);
+    } catch {}
+
+    const mergedWatchlist = [...cloudWatchlist];
+    for (const item of [...localWatchlist, ...guestWatchlist]) {
+      if (!mergedWatchlist.some((w) => w.id === item.id)) {
+        mergedWatchlist.push(item);
+      }
+    }
+
+    const mergedHistory = [...cloudHistory];
+    for (const item of [...localHistory, ...guestHistory]) {
+      if (!mergedHistory.some((h) => h.id === item.id)) {
+        mergedHistory.push(item);
+      }
+    }
+
+    localStorage.setItem(profileKeyList, JSON.stringify(mergedWatchlist));
+    localStorage.setItem(profileKeyHist, JSON.stringify(mergedHistory));
+    localStorage.removeItem('netflex_watchlist_guest');
+    localStorage.removeItem('netflex_watch_history_guest');
+
+    // Push merged state back to cloud
+    fetch('/api/user/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: user.id,
+        email: user.email,
+        profileId,
+        watchlist: mergedWatchlist,
+        history: mergedHistory,
+      }),
+    }).catch(() => {});
+  } catch (err) {
+    console.warn('[syncUserCloudDataOnLogin] error:', err);
+  }
+}
+
 export async function login(
   account: string,
   password: string
@@ -94,52 +181,7 @@ export async function login(
       const data = await res.json();
       if (data.success && data.user) {
         saveCurrentUser(data.user);
-
-        // Inherit & merge local guest watchlist/history into this cloud account
-        const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
-        const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
-        let guestWatchlist: any[] = [];
-        let guestHistory: any[] = [];
-        try { if (guestWatchlistRaw) guestWatchlist = JSON.parse(guestWatchlistRaw); } catch {}
-        try { if (guestHistoryRaw) guestHistory = JSON.parse(guestHistoryRaw); } catch {}
-
-        const profileKeyList = `netflex_watchlist_${data.user.id}_${data.user.currentProfileId}`;
-        const profileKeyHist = `netflex_watch_history_${data.user.id}_${data.user.currentProfileId}`;
-
-        const cloudWatchlist: any[] = data.watchlist || [];
-        const cloudHistory: any[] = data.history || [];
-
-        const mergedWatchlist = [...cloudWatchlist];
-        for (const item of guestWatchlist) {
-          if (!mergedWatchlist.some((w) => w.id === item.id)) {
-            mergedWatchlist.push(item);
-          }
-        }
-
-        const mergedHistory = [...cloudHistory];
-        for (const item of guestHistory) {
-          if (!mergedHistory.some((h) => h.id === item.id)) {
-            mergedHistory.push(item);
-          }
-        }
-
-        localStorage.setItem(profileKeyList, JSON.stringify(mergedWatchlist));
-        localStorage.setItem(profileKeyHist, JSON.stringify(mergedHistory));
-
-        // Push merged state back to cloud if guest items were added
-        if (guestWatchlist.length > 0 || guestHistory.length > 0) {
-          fetch('/api/user/sync', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: data.user.id,
-              profileId: data.user.currentProfileId,
-              watchlist: mergedWatchlist,
-              history: mergedHistory,
-            }),
-          }).catch(() => {});
-        }
-
+        await syncUserCloudDataOnLogin(data.user, data.watchlist, data.history);
         return { success: true, user: data.user };
       } else if (data.error) {
         return { success: false, error: data.error };
@@ -226,33 +268,7 @@ export async function register(
       const data = await res.json();
       if (data.success && data.user) {
         saveCurrentUser(data.user);
-
-        // Inherit guest watchlist/history
-        const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
-        const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
-        let guestWatchlist: any[] = [];
-        let guestHistory: any[] = [];
-        try { if (guestWatchlistRaw) guestWatchlist = JSON.parse(guestWatchlistRaw); } catch {}
-        try { if (guestHistoryRaw) guestHistory = JSON.parse(guestHistoryRaw); } catch {}
-
-        const profileKeyList = `netflex_watchlist_${data.user.id}_${data.user.currentProfileId}`;
-        const profileKeyHist = `netflex_watch_history_${data.user.id}_${data.user.currentProfileId}`;
-        localStorage.setItem(profileKeyList, JSON.stringify(guestWatchlist));
-        localStorage.setItem(profileKeyHist, JSON.stringify(guestHistory));
-
-        if (guestWatchlist.length > 0 || guestHistory.length > 0) {
-          fetch('/api/user/sync', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: data.user.id,
-              profileId: data.user.currentProfileId,
-              watchlist: guestWatchlist,
-              history: guestHistory,
-            }),
-          }).catch(() => {});
-        }
-
+        await syncUserCloudDataOnLogin(data.user);
         return { success: true, user: data.user };
       } else if (data.error) {
         return { success: false, error: data.error };
@@ -442,6 +458,7 @@ export async function fetchGoogleUserInfo(accessToken: string): Promise<User | n
     };
 
     saveCurrentUser(user);
+    syncUserCloudDataOnLogin(user);
     return user;
   } catch (err) {
     console.warn('Failed to fetch Google userinfo:', err);
@@ -494,6 +511,7 @@ export function loginWithGoogleCredential(credential: string): User | null {
   };
 
   saveCurrentUser(user);
+  syncUserCloudDataOnLogin(user);
   return user;
 }
 

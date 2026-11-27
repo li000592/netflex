@@ -987,9 +987,13 @@ export async function handler(event) {
       const safeUser = { ...record };
       delete safeUser.passwordHash;
 
-      // Fetch user's cloud watchlist and watch history for this profile
+      // Fetch user's cloud watchlist and watch history (try email key first, then userId fallback)
       const profileId = safeUser.currentProfileId || 'profile_main';
-      const cloudData = (await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`)) || { watchlist: [], history: [] };
+      let cloudData = await getCloudItem('netflex_data', `email:${safeUser.email}_${profileId}`);
+      if (!cloudData) {
+        cloudData = await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`);
+      }
+      cloudData = cloudData || { watchlist: [], history: [] };
 
       return {
         statusCode: 200,
@@ -1008,13 +1012,20 @@ export async function handler(event) {
       if (event.httpMethod === 'POST') {
         let bodyObj = {};
         try { bodyObj = JSON.parse(event.body || '{}'); } catch {}
-        const { userId, profileId, watchlist, history } = bodyObj;
-        if (!userId) {
-          return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId required' }) };
+        const { userId, email, profileId, watchlist, history } = bodyObj;
+        if (!userId && !email) {
+          return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId or email required' }) };
         }
+        const cleanEmail = (email || '').trim().toLowerCase();
         const pId = profileId || 'profile_main';
-        const key = `${userId}_${pId}`;
-        const current = (await getCloudItem('netflex_data', key)) || { watchlist: [], history: [] };
+        const primaryKey = cleanEmail ? `email:${cleanEmail}_${pId}` : `${userId}_${pId}`;
+
+        // Get current data
+        let current = await getCloudItem('netflex_data', primaryKey);
+        if (!current && userId) {
+          current = await getCloudItem('netflex_data', `${userId}_${pId}`);
+        }
+        current = current || { watchlist: [], history: [] };
 
         const updated = {
           watchlist: Array.isArray(watchlist) ? watchlist : (current.watchlist || []),
@@ -1022,17 +1033,30 @@ export async function handler(event) {
           updatedAt: Date.now()
         };
 
-        await setCloudItem('netflex_data', key, updated);
+        // Save under both primaryKey and userId key for 100% cross-device compatibility
+        await setCloudItem('netflex_data', primaryKey, updated);
+        if (userId && primaryKey !== `${userId}_${pId}`) {
+          await setCloudItem('netflex_data', `${userId}_${pId}`, updated);
+        }
+
         return { statusCode: 200, headers, body: JSON.stringify({ success: true, ...updated }) };
       }
 
       // GET: fetch cloud watchlist & history
-      const { userId, profileId } = params;
-      if (!userId) {
-        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId required' }) };
+      const { userId, email, profileId } = params;
+      if (!userId && !email) {
+        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId or email required' }) };
       }
+      const cleanEmail = (email || '').trim().toLowerCase();
       const pId = profileId || 'profile_main';
-      const cloudData = (await getCloudItem('netflex_data', `${userId}_${pId}`)) || { watchlist: [], history: [] };
+      const primaryKey = cleanEmail ? `email:${cleanEmail}_${pId}` : `${userId}_${pId}`;
+
+      let cloudData = await getCloudItem('netflex_data', primaryKey);
+      if (!cloudData && userId) {
+        cloudData = await getCloudItem('netflex_data', `${userId}_${pId}`);
+      }
+      cloudData = cloudData || { watchlist: [], history: [] };
+
       return {
         statusCode: 200,
         headers,
