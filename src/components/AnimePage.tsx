@@ -15,6 +15,7 @@ import {
   Rows3,
   SlidersHorizontal,
   ChevronRight,
+  ChevronLeft,
   Clock,
   Star,
   MessageSquare,
@@ -131,6 +132,72 @@ export const AnimePage: React.FC<AnimePageProps> = ({
     const dayIdx = new Date().getDay();
     return WEEKDAY_KEYS[dayIdx];
   });
+
+  // Timeline Horizontal Slider Ref & State (Desktop scrolling, wheel, & mouse drag support)
+  const timelineRowRef = useRef<HTMLDivElement | null>(null);
+  const [showTimelineLeft, setShowTimelineLeft] = useState(false);
+  const [showTimelineRight, setShowTimelineRight] = useState(true);
+  const isDraggingTimeline = useRef(false);
+  const startXTimeline = useRef(0);
+  const startScrollLeftTimeline = useRef(0);
+
+  const handleTimelineScroll = useCallback(() => {
+    if (timelineRowRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = timelineRowRef.current;
+      setShowTimelineLeft(scrollLeft > 15);
+      setShowTimelineRight(scrollLeft + clientWidth < scrollWidth - 15);
+    }
+  }, []);
+
+  const scrollTimeline = (direction: 'left' | 'right') => {
+    if (timelineRowRef.current) {
+      const { clientWidth } = timelineRowRef.current;
+      const amount = direction === 'left' ? -clientWidth * 0.75 : clientWidth * 0.75;
+      timelineRowRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  // Reset scroll and recalculate arrows when switching weekday
+  useEffect(() => {
+    if (timelineRowRef.current) {
+      timelineRowRef.current.scrollLeft = 0;
+      setShowTimelineLeft(false);
+      setTimeout(handleTimelineScroll, 120);
+    }
+  }, [selectedWeekday, handleTimelineScroll]);
+
+  // Support mouse wheel horizontal scrolling on desktop
+  useEffect(() => {
+    const el = timelineRowRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && el.scrollWidth > el.clientWidth) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [selectedWeekday, bangumiCalendar]);
+
+  // Mouse drag handlers for desktop mouse users
+  const handleTimelineMouseDown = (e: React.MouseEvent) => {
+    if (!timelineRowRef.current) return;
+    isDraggingTimeline.current = true;
+    startXTimeline.current = e.pageX - timelineRowRef.current.offsetLeft;
+    startScrollLeftTimeline.current = timelineRowRef.current.scrollLeft;
+  };
+
+  const handleTimelineMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingTimeline.current || !timelineRowRef.current) return;
+    const x = e.pageX - timelineRowRef.current.offsetLeft;
+    const walk = (x - startXTimeline.current) * 1.5;
+    timelineRowRef.current.scrollLeft = startScrollLeftTimeline.current - walk;
+  };
+
+  const handleTimelineMouseUp = () => {
+    isDraggingTimeline.current = false;
+  };
 
   // Filter & Grid State (for genres / seasons / timeline grid)
   const [selectedSeason, setSelectedSeason] = useState<string>('2026,2026');
@@ -573,25 +640,60 @@ export const AnimePage: React.FC<AnimePageProps> = ({
                       </div>
                     </div>
 
-                    {/* Airing items for the selected day */}
+                    {/* Airing items for the selected day (Interactive Desktop Carousel with Arrows, Drag, & Wheel) */}
                     {currentAirRow ? (
-                      <div className="overflow-x-auto no-scrollbar flex space-x-3 sm:space-x-4 py-2">
-                        {currentAirRow.items.map((anime) => (
-                          <div key={anime.id} className="w-32 sm:w-44 flex-shrink-0">
-                            <MovieCard
-                              movie={{
-                                ...anime,
-                                airDay: anime.airDay || currentAirRow.day,
-                                category: '动漫',
-                                sourceCategory: 'anime',
-                              }}
-                              onPlay={onPlay}
-                              onOpenDetail={onOpenDetail}
-                              isFavorite={watchlistIds.has(anime.id)}
-                              onToggleFavorite={onToggleFavorite}
-                            />
-                          </div>
-                        ))}
+                      <div className="relative group/timeline mt-2">
+                        {/* Left Chevron Handle (Desktop Hover) */}
+                        {showTimelineLeft && (
+                          <button
+                            type="button"
+                            onClick={() => scrollTimeline('left')}
+                            className="hidden sm:flex absolute left-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black/90 items-center justify-center text-white opacity-0 group-hover/timeline:opacity-100 transition-all cursor-pointer rounded-r-lg backdrop-blur-sm shadow-xl"
+                            aria-label="向左滑动"
+                          >
+                            <ChevronLeft className="w-8 h-8 hover:scale-125 transition-transform" />
+                          </button>
+                        )}
+
+                        {/* Scrollable Container with Smooth Scroll, Drag and Wheel support */}
+                        <div
+                          ref={timelineRowRef}
+                          onScroll={handleTimelineScroll}
+                          onMouseDown={handleTimelineMouseDown}
+                          onMouseMove={handleTimelineMouseMove}
+                          onMouseUp={handleTimelineMouseUp}
+                          onMouseLeave={handleTimelineMouseUp}
+                          className="overflow-x-auto no-scrollbar flex space-x-3 sm:space-x-4 py-2 scroll-smooth cursor-grab active:cursor-grabbing select-none"
+                        >
+                          {currentAirRow.items.map((anime) => (
+                            <div key={anime.id} className="w-32 sm:w-44 flex-shrink-0">
+                              <MovieCard
+                                movie={{
+                                  ...anime,
+                                  airDay: anime.airDay || currentAirRow.day,
+                                  category: '动漫',
+                                  sourceCategory: 'anime',
+                                }}
+                                onPlay={onPlay}
+                                onOpenDetail={onOpenDetail}
+                                isFavorite={watchlistIds.has(anime.id)}
+                                onToggleFavorite={onToggleFavorite}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Right Chevron Handle (Desktop Hover) */}
+                        {showTimelineRight && (
+                          <button
+                            type="button"
+                            onClick={() => scrollTimeline('right')}
+                            className="hidden sm:flex absolute right-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black/90 items-center justify-center text-white opacity-0 group-hover/timeline:opacity-100 transition-all cursor-pointer rounded-l-lg backdrop-blur-sm shadow-xl"
+                            aria-label="向右滑动"
+                          >
+                            <ChevronRight className="w-8 h-8 hover:scale-125 transition-transform" />
+                          </button>
+                        )}
                       </div>
                     ) : (
                       <div className="text-center py-8 text-gray-400 text-sm">
