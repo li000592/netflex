@@ -3,6 +3,7 @@ import cors from 'cors';
 import { VIDEO_SOURCES } from '../config/sources.js';
 import { NETFLIX_ARTWORK } from '../config/netflixArtwork.js';
 import { getDanmakuComments, addDanmakuComment } from './danmaku.js';
+import { getCloudItem, setCloudItem } from './cloudStore.js';
 
 const api = express();
 api.use(cors());
@@ -948,6 +949,97 @@ api.post('/api/danmaku', (req, res) => {
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// 7. Cloud Auth: Register
+api.post('/api/auth/register', async (req, res) => {
+  const { email, username, password, profiles, currentProfileId } = req.body || {};
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (!cleanEmail || !password) {
+    return res.status(400).json({ success: false, error: 'Email and password required' });
+  }
+  const existing = await getCloudItem('netflex_users', cleanEmail);
+  if (existing) {
+    return res.status(400).json({ success: false, error: 'This email is already registered' });
+  }
+  const user = {
+    id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    email: cleanEmail,
+    username: username || cleanEmail.split('@')[0],
+    passwordHash: password,
+    profiles: profiles || [
+      { id: 'profile_main', name: username || 'User', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces' },
+      { id: 'profile_kids', name: 'Kids', avatar: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=150&h=150&fit=crop&crop=faces', isKids: true }
+    ],
+    currentProfileId: currentProfileId || 'profile_main',
+    createdAt: Date.now()
+  };
+  await setCloudItem('netflex_users', cleanEmail, user);
+  const safeUser = { ...user };
+  delete safeUser.passwordHash;
+  return res.json({ success: true, user: safeUser });
+});
+
+// 8. Cloud Auth: Login
+api.post('/api/auth/login', async (req, res) => {
+  const { account, password } = req.body || {};
+  const cleanAccount = (account || '').trim().toLowerCase();
+  if (!cleanAccount || !password) {
+    return res.status(400).json({ success: false, error: 'Account and password required' });
+  }
+  const record = await getCloudItem('netflex_users', cleanAccount);
+  if (!record) {
+    return res.status(404).json({ success: false, error: 'Account not found. Please register first.' });
+  }
+  if (record.passwordHash !== password) {
+    return res.status(401).json({ success: false, error: 'Password incorrect' });
+  }
+  const safeUser = { ...record };
+  delete safeUser.passwordHash;
+
+  const profileId = safeUser.currentProfileId || 'profile_main';
+  const cloudData = (await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`)) || { watchlist: [], history: [] };
+
+  return res.json({
+    success: true,
+    user: safeUser,
+    watchlist: cloudData.watchlist || [],
+    history: cloudData.history || []
+  });
+});
+
+// 9. Cloud User Sync
+api.post('/api/user/sync', async (req, res) => {
+  const { userId, profileId, watchlist, history } = req.body || {};
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'userId required' });
+  }
+  const pId = profileId || 'profile_main';
+  const key = `${userId}_${pId}`;
+  const current = (await getCloudItem('netflex_data', key)) || { watchlist: [], history: [] };
+
+  const updated = {
+    watchlist: Array.isArray(watchlist) ? watchlist : (current.watchlist || []),
+    history: Array.isArray(history) ? history : (current.history || []),
+    updatedAt: Date.now()
+  };
+
+  await setCloudItem('netflex_data', key, updated);
+  return res.json({ success: true, ...updated });
+});
+
+api.get('/api/user/sync', async (req, res) => {
+  const { userId, profileId } = req.query || {};
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'userId required' });
+  }
+  const pId = profileId || 'profile_main';
+  const cloudData = (await getCloudItem('netflex_data', `${userId}_${pId}`)) || { watchlist: [], history: [] };
+  return res.json({
+    success: true,
+    watchlist: cloudData.watchlist || [],
+    history: cloudData.history || []
+  });
 });
 
 export default api;

@@ -501,29 +501,110 @@ export function getWatchHistory(): WatchHistoryItem[] {
   }
 }
 
-// Background sync helper from cloud
+// Helper to push cloud sync asynchronously to Netflex backend API
+export async function pushCloudSync(
+  userId: string,
+  profileId: string,
+  watchlist?: WatchlistItem[],
+  history?: WatchHistoryItem[]
+): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/api/user/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        profileId,
+        watchlist: watchlist || getWatchlist(),
+        history: history || getWatchHistory(),
+      }),
+    });
+  } catch (err) {
+    console.warn('[CloudSync] Failed to push to backend API:', err);
+  }
+}
+
+// Background sync helper from cloud (Netflex Cloud Store & Supabase fallback)
 export async function syncCloudData(): Promise<{ watchlist: WatchlistItem[]; history: WatchHistoryItem[] }> {
   const user = getCurrentUser();
-  if (!user || !isSupabaseConfigured()) {
+  if (!user) {
     return { watchlist: getWatchlist(), history: getWatchHistory() };
   }
 
-  const [cloudList, cloudHist] = await Promise.all([
-    cloudFetchWatchlist(user.id, user.currentProfileId),
-    cloudFetchWatchHistory(user.id, user.currentProfileId),
-  ]);
+  // 1. Try Netflex native Cloud API
+  try {
+    const res = await fetch(
+      `${API_BASE}/api/user/sync?userId=${encodeURIComponent(user.id)}&profileId=${encodeURIComponent(
+        user.currentProfileId
+      )}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
+        const localList = getWatchlist();
+        const localHist = getWatchHistory();
 
-  if (cloudList && cloudList.length > 0) {
-    localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(cloudList));
-  }
-  if (cloudHist && cloudHist.length > 0) {
-    localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(cloudHist));
+        // Merge lists (preserve all items, no duplicates, order by newest)
+        const cloudList: WatchlistItem[] = data.watchlist || [];
+        const cloudHist: WatchHistoryItem[] = data.history || [];
+
+        const mergedWatchlist = [...cloudList];
+        for (const item of localList) {
+          if (!mergedWatchlist.some((w) => w.id === item.id)) {
+            mergedWatchlist.push(item);
+          }
+        }
+
+        const mergedHistory = [...cloudHist];
+        for (const item of localHist) {
+          if (!mergedHistory.some((h) => h.id === item.id)) {
+            mergedHistory.push(item);
+          }
+        }
+
+        localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(mergedWatchlist));
+        localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(mergedHistory));
+
+        // If local had items not in cloud, push the merged set up
+        if (
+          mergedWatchlist.length !== cloudList.length ||
+          mergedHistory.length !== cloudHist.length
+        ) {
+          pushCloudSync(user.id, user.currentProfileId, mergedWatchlist, mergedHistory);
+        }
+
+        return { watchlist: mergedWatchlist, history: mergedHistory };
+      }
+    }
+  } catch (err) {
+    console.warn('[CloudSync] Sync fetch error, checking Supabase fallback:', err);
   }
 
-  return {
-    watchlist: cloudList.length > 0 ? cloudList : getWatchlist(),
-    history: cloudHist.length > 0 ? cloudHist : getWatchHistory(),
-  };
+  // 2. Supabase Cloud Sync Fallback (if configured)
+  if (isSupabaseConfigured()) {
+    try {
+      const [cloudList, cloudHist] = await Promise.all([
+        cloudFetchWatchlist(user.id, user.currentProfileId),
+        cloudFetchWatchHistory(user.id, user.currentProfileId),
+      ]);
+
+      if (cloudList && cloudList.length > 0) {
+        localStorage.setItem(getStorageKey(BASE_WATCHLIST_KEY), JSON.stringify(cloudList));
+      }
+      if (cloudHist && cloudHist.length > 0) {
+        localStorage.setItem(getStorageKey(BASE_HISTORY_KEY), JSON.stringify(cloudHist));
+      }
+
+      return {
+        watchlist: cloudList.length > 0 ? cloudList : getWatchlist(),
+        history: cloudHist.length > 0 ? cloudHist : getWatchHistory(),
+      };
+    } catch (err) {
+      console.warn('[CloudSync] Supabase sync fallback failed:', err);
+    }
+  }
+
+  return { watchlist: getWatchlist(), history: getWatchHistory() };
 }
 
 export function saveWatchHistory(item: WatchHistoryItem): void {
@@ -536,12 +617,16 @@ export function saveWatchHistory(item: WatchHistoryItem): void {
       return true;
     });
     history.unshift(item);
-    localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
+    const sliced = history.slice(0, 50);
+    localStorage.setItem(key, JSON.stringify(sliced));
 
-    // Cloud sync
+    // Cloud sync to backend API & Supabase
     const user = getCurrentUser();
-    if (user && isSupabaseConfigured()) {
-      cloudSaveWatchHistory(user.id, user.currentProfileId, item);
+    if (user) {
+      pushCloudSync(user.id, user.currentProfileId, getWatchlist(), sliced);
+      if (isSupabaseConfigured()) {
+        cloudSaveWatchHistory(user.id, user.currentProfileId, item);
+      }
     }
   } catch (err) {
     console.error('Failed to save history:', err);
@@ -552,8 +637,11 @@ export function clearWatchHistory(): void {
   try {
     localStorage.removeItem(getStorageKey(BASE_HISTORY_KEY));
     const user = getCurrentUser();
-    if (user && isSupabaseConfigured()) {
-      cloudClearWatchHistory(user.id, user.currentProfileId);
+    if (user) {
+      pushCloudSync(user.id, user.currentProfileId, getWatchlist(), []);
+      if (isSupabaseConfigured()) {
+        cloudClearWatchHistory(user.id, user.currentProfileId);
+      }
     }
   } catch {}
 }
@@ -580,10 +668,13 @@ export function toggleWatchlist(item: WatchlistItem): boolean {
     }
     localStorage.setItem(key, JSON.stringify(updated));
 
-    // Cloud sync
+    // Cloud sync to backend API & Supabase
     const user = getCurrentUser();
-    if (user && isSupabaseConfigured()) {
-      cloudSaveWatchlist(user.id, user.currentProfileId, item, exists ? 'remove' : 'add');
+    if (user) {
+      pushCloudSync(user.id, user.currentProfileId, updated, getWatchHistory());
+      if (isSupabaseConfigured()) {
+        cloudSaveWatchlist(user.id, user.currentProfileId, item, exists ? 'remove' : 'add');
+      }
     }
 
     return !exists;

@@ -1,6 +1,7 @@
 import { VIDEO_SOURCES } from '../../src/config/sources.js';
 import { NETFLIX_ARTWORK } from '../../src/config/netflixArtwork.js';
 import { getDanmakuComments, addDanmakuComment } from '../../src/server/danmaku.js';
+import { getCloudItem, setCloudItem } from '../../src/server/cloudStore.js';
 
 // Serverless in-memory cache
 const cache = new Map();
@@ -933,6 +934,113 @@ export async function handler(event) {
         },
         isBase64Encoded: true,
         body: base64,
+      };
+    }
+
+    // 7. Cloud Auth: Register
+    if (path === '/auth/register') {
+      let bodyObj = {};
+      try { bodyObj = JSON.parse(event.body || '{}'); } catch {}
+      const { email, username, password, profiles, currentProfileId } = bodyObj;
+      const cleanEmail = (email || '').trim().toLowerCase();
+      if (!cleanEmail || !password) {
+        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Email and password required' }) };
+      }
+      const existing = await getCloudItem('netflex_users', cleanEmail);
+      if (existing) {
+        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'This email is already registered' }) };
+      }
+      const user = {
+        id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        email: cleanEmail,
+        username: username || cleanEmail.split('@')[0],
+        passwordHash: password,
+        profiles: profiles || [
+          { id: 'profile_main', name: username || 'User', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces' },
+          { id: 'profile_kids', name: 'Kids', avatar: 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=150&h=150&fit=crop&crop=faces', isKids: true }
+        ],
+        currentProfileId: currentProfileId || 'profile_main',
+        createdAt: Date.now()
+      };
+      await setCloudItem('netflex_users', cleanEmail, user);
+      const safeUser = { ...user };
+      delete safeUser.passwordHash;
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true, user: safeUser }) };
+    }
+
+    // 8. Cloud Auth: Login
+    if (path === '/auth/login') {
+      let bodyObj = {};
+      try { bodyObj = JSON.parse(event.body || '{}'); } catch {}
+      const { account, password } = bodyObj;
+      const cleanAccount = (account || '').trim().toLowerCase();
+      if (!cleanAccount || !password) {
+        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Account and password required' }) };
+      }
+      const record = await getCloudItem('netflex_users', cleanAccount);
+      if (!record) {
+        return { statusCode: 404, headers, body: JSON.stringify({ success: false, error: 'Account not found. Please register first.' }) };
+      }
+      if (record.passwordHash !== password) {
+        return { statusCode: 401, headers, body: JSON.stringify({ success: false, error: 'Password incorrect' }) };
+      }
+      const safeUser = { ...record };
+      delete safeUser.passwordHash;
+
+      // Fetch user's cloud watchlist and watch history for this profile
+      const profileId = safeUser.currentProfileId || 'profile_main';
+      const cloudData = (await getCloudItem('netflex_data', `${safeUser.id}_${profileId}`)) || { watchlist: [], history: [] };
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          user: safeUser,
+          watchlist: cloudData.watchlist || [],
+          history: cloudData.history || []
+        })
+      };
+    }
+
+    // 9. Cloud User Sync (Watchlist & Watch History)
+    if (path === '/user/sync') {
+      if (event.httpMethod === 'POST') {
+        let bodyObj = {};
+        try { bodyObj = JSON.parse(event.body || '{}'); } catch {}
+        const { userId, profileId, watchlist, history } = bodyObj;
+        if (!userId) {
+          return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId required' }) };
+        }
+        const pId = profileId || 'profile_main';
+        const key = `${userId}_${pId}`;
+        const current = (await getCloudItem('netflex_data', key)) || { watchlist: [], history: [] };
+
+        const updated = {
+          watchlist: Array.isArray(watchlist) ? watchlist : (current.watchlist || []),
+          history: Array.isArray(history) ? history : (current.history || []),
+          updatedAt: Date.now()
+        };
+
+        await setCloudItem('netflex_data', key, updated);
+        return { statusCode: 200, headers, body: JSON.stringify({ success: true, ...updated }) };
+      }
+
+      // GET: fetch cloud watchlist & history
+      const { userId, profileId } = params;
+      if (!userId) {
+        return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'userId required' }) };
+      }
+      const pId = profileId || 'profile_main';
+      const cloudData = (await getCloudItem('netflex_data', `${userId}_${pId}`)) || { watchlist: [], history: [] };
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          watchlist: cloudData.watchlist || [],
+          history: cloudData.history || []
+        })
       };
     }
 

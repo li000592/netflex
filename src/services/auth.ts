@@ -83,7 +83,78 @@ export async function login(
 ): Promise<{ success: boolean; user?: User; error?: string }> {
   const cleanAccount = account.trim().toLowerCase();
 
-  // 1. Try Supabase Cloud Login if configured
+  // 1. Try Netflex Native Cloud Login (/api/auth/login)
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ account: cleanAccount, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.user) {
+        saveCurrentUser(data.user);
+
+        // Inherit & merge local guest watchlist/history into this cloud account
+        const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
+        const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
+        let guestWatchlist: any[] = [];
+        let guestHistory: any[] = [];
+        try { if (guestWatchlistRaw) guestWatchlist = JSON.parse(guestWatchlistRaw); } catch {}
+        try { if (guestHistoryRaw) guestHistory = JSON.parse(guestHistoryRaw); } catch {}
+
+        const profileKeyList = `netflex_watchlist_${data.user.id}_${data.user.currentProfileId}`;
+        const profileKeyHist = `netflex_watch_history_${data.user.id}_${data.user.currentProfileId}`;
+
+        const cloudWatchlist: any[] = data.watchlist || [];
+        const cloudHistory: any[] = data.history || [];
+
+        const mergedWatchlist = [...cloudWatchlist];
+        for (const item of guestWatchlist) {
+          if (!mergedWatchlist.some((w) => w.id === item.id)) {
+            mergedWatchlist.push(item);
+          }
+        }
+
+        const mergedHistory = [...cloudHistory];
+        for (const item of guestHistory) {
+          if (!mergedHistory.some((h) => h.id === item.id)) {
+            mergedHistory.push(item);
+          }
+        }
+
+        localStorage.setItem(profileKeyList, JSON.stringify(mergedWatchlist));
+        localStorage.setItem(profileKeyHist, JSON.stringify(mergedHistory));
+
+        // Push merged state back to cloud if guest items were added
+        if (guestWatchlist.length > 0 || guestHistory.length > 0) {
+          fetch('/api/user/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: data.user.id,
+              profileId: data.user.currentProfileId,
+              watchlist: mergedWatchlist,
+              history: mergedHistory,
+            }),
+          }).catch(() => {});
+        }
+
+        return { success: true, user: data.user };
+      } else if (data.error) {
+        return { success: false, error: data.error };
+      }
+    } else if (res.status === 401 || res.status === 404 || res.status === 400) {
+      const data = await res.json().catch(() => ({}));
+      if (data.error) {
+        return { success: false, error: data.error };
+      }
+    }
+  } catch (err) {
+    console.warn('[Auth] Cloud login fetch error, falling back:', err);
+  }
+
+  // 2. Try Supabase Cloud Login if configured
   const supabase = getSupabase();
   if (supabase) {
     try {
@@ -114,7 +185,7 @@ export async function login(
     }
   }
 
-  // 2. Fallback to LocalStorage
+  // 3. Fallback to LocalStorage (Offline only)
   const db = getRegisteredUsers();
   const entry = Object.values(db).find(
     (e) => e.user.email.toLowerCase() === cleanAccount || e.user.username.toLowerCase() === cleanAccount
@@ -144,6 +215,58 @@ export async function register(
     return { success: false, error: 'Please fill in all registration fields' };
   }
 
+  // 1. Try Netflex Native Cloud Register (/api/auth/register)
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, username: cleanUsername, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.user) {
+        saveCurrentUser(data.user);
+
+        // Inherit guest watchlist/history
+        const guestWatchlistRaw = localStorage.getItem('netflex_watchlist_guest');
+        const guestHistoryRaw = localStorage.getItem('netflex_watch_history_guest');
+        let guestWatchlist: any[] = [];
+        let guestHistory: any[] = [];
+        try { if (guestWatchlistRaw) guestWatchlist = JSON.parse(guestWatchlistRaw); } catch {}
+        try { if (guestHistoryRaw) guestHistory = JSON.parse(guestHistoryRaw); } catch {}
+
+        const profileKeyList = `netflex_watchlist_${data.user.id}_${data.user.currentProfileId}`;
+        const profileKeyHist = `netflex_watch_history_${data.user.id}_${data.user.currentProfileId}`;
+        localStorage.setItem(profileKeyList, JSON.stringify(guestWatchlist));
+        localStorage.setItem(profileKeyHist, JSON.stringify(guestHistory));
+
+        if (guestWatchlist.length > 0 || guestHistory.length > 0) {
+          fetch('/api/user/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: data.user.id,
+              profileId: data.user.currentProfileId,
+              watchlist: guestWatchlist,
+              history: guestHistory,
+            }),
+          }).catch(() => {});
+        }
+
+        return { success: true, user: data.user };
+      } else if (data.error) {
+        return { success: false, error: data.error };
+      }
+    } else if (res.status === 400 || res.status === 409) {
+      const data = await res.json().catch(() => ({}));
+      if (data.error) {
+        return { success: false, error: data.error };
+      }
+    }
+  } catch (err) {
+    console.warn('[Auth] Cloud register fetch error, falling back:', err);
+  }
+
   const newUser: User = {
     id: `user_${Date.now()}`,
     email: cleanEmail,
@@ -164,7 +287,7 @@ export async function register(
     ],
   };
 
-  // 1. Save to Supabase Cloud if configured
+  // 2. Save to Supabase Cloud if configured
   const supabase = getSupabase();
   if (supabase) {
     try {
@@ -186,7 +309,7 @@ export async function register(
     }
   }
 
-  // 2. Save to LocalStorage
+  // 3. Save to LocalStorage
   const db = getRegisteredUsers();
   db[cleanEmail] = {
     user: newUser,

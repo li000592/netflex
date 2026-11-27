@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle, Cloud } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
-import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule } from '../services/api';
+import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule, syncCloudData } from '../services/api';
 import { useOfflineDownloads } from '../hooks/useOfflineDownloads';
 import { formatBytes } from '../services/offlineStorage';
 import { MovieCard } from './MovieCard';
@@ -44,6 +44,12 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
   useEffect(() => {
     reloadData();
+    if (currentUser) {
+      syncCloudData().then(() => {
+        setWatchlist(getWatchlist());
+        setHistory(getWatchHistory());
+      });
+    }
   }, [watchlistIds, currentUser, currentProfile, activeTab]);
 
   const todayChineseDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()];
@@ -145,6 +151,10 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           <p className="text-xs text-gray-400 mt-0.5">
             {t('account')}: {currentUser.email}
           </p>
+        </div>
+        <div className="ml-auto hidden sm:flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-3 py-1.5 rounded-lg font-medium shadow-sm">
+          <Cloud className="w-4 h-4 text-emerald-400 flex-shrink-0 animate-pulse" />
+          <span>云端实时同步已开启</span>
         </div>
       </div>
 

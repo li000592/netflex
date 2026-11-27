@@ -10,6 +10,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.12",
     "@supabase/supabase-js": "^2.119.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
