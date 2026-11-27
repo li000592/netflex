@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, RotateCcw, Download, HardDrive, CheckCircle, Loader2, AlertCircle, Cloud, ArrowUpCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bookmark, History, Trash2, Play, Lock, User as UserIcon, Calendar, Sparkles, Film, Download, HardDrive } from 'lucide-react';
 import { MediaItem, WatchHistoryItem, WatchlistItem, Episode, User, UserProfile } from '../types';
-import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule, syncCloudData, forceUploadCurrentDeviceToCloud } from '../services/api';
+import { getWatchHistory, getWatchlist, clearWatchHistory, getAnimeSchedule, syncCloudData } from '../services/api';
 import { useOfflineDownloads } from '../hooks/useOfflineDownloads';
 import { formatBytes } from '../services/offlineStorage';
 import { MovieCard } from './MovieCard';
@@ -34,57 +34,12 @@ export const MyListPage: React.FC<MyListPageProps> = ({
   const [animeViewMode, setAnimeViewMode] = useState<'cards' | 'weekly'>('cards');
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [history, setHistory] = useState<WatchHistoryItem[]>([]);
-  const [syncing, setSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   const { downloads, storageInfo, deleteDownload, cancelDownload } = useOfflineDownloads();
-
-  const guestCount = useMemo(() => {
-    try {
-      const raw = localStorage.getItem('netflex_watchlist_guest');
-      return raw ? JSON.parse(raw).length : 0;
-    } catch {
-      return 0;
-    }
-  }, []);
 
   const reloadData = () => {
     setWatchlist(getWatchlist());
     setHistory(getWatchHistory());
-  };
-
-  const handleManualSync = async () => {
-    setSyncing(true);
-    setSyncMessage(null);
-    try {
-      const res = await syncCloudData();
-      setWatchlist(res.watchlist);
-      setHistory(res.history);
-      setSyncMessage(`已同步云端片单 (${res.watchlist.length} 部)`);
-    } catch {
-      setSyncMessage('同步遇到问题，请检查网络');
-    } finally {
-      setSyncing(false);
-      setTimeout(() => setSyncMessage(null), 4000);
-    }
-  };
-
-  const handleForceUpload = async () => {
-    setSyncing(true);
-    setSyncMessage(null);
-    try {
-      const res = await forceUploadCurrentDeviceToCloud();
-      if (res.success) {
-        setSyncMessage(`已将本地 ${res.watchlistCount} 部影片上传至云端数据库！`);
-      } else {
-        setSyncMessage('上传失败，请先登录');
-      }
-    } catch {
-      setSyncMessage('上传遇到问题，请检查网络');
-    } finally {
-      setSyncing(false);
-      setTimeout(() => setSyncMessage(null), 4000);
-    }
   };
 
   useEffect(() => {
@@ -166,18 +121,9 @@ export const MyListPage: React.FC<MyListPageProps> = ({
           {t('signInPromptTitle')}
         </h1>
 
-        <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-6 leading-relaxed">
+        <p className="text-gray-400 text-sm sm:text-base max-w-lg mb-8 leading-relaxed">
           {t('signInPromptDesc')}
         </p>
-
-        {guestCount > 0 && (
-          <div className="mb-6 bg-amber-500/10 border border-amber-500/30 text-amber-300 p-3 sm:p-4 rounded-xl text-xs sm:text-sm max-w-md mx-auto flex items-center space-x-3 text-left shadow-lg">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-400" />
-            <span>
-              检测到当前电脑/手机本地保存了 <strong>{guestCount}</strong> 部影片。登录同一账号后，它们将自动上传至云端数据库，实现多设备互通！
-            </span>
-          </div>
-        )}
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-xs">
           <button
@@ -211,110 +157,81 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
   return (
     <div className="min-h-screen safe-page-top pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Profile Header Badge with Cloud Sync Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl shadow-lg">
-        <div className="flex items-center space-x-3">
-          <img
-            src={currentProfile?.avatar}
-            alt={currentProfile?.name}
-            className="w-10 h-10 rounded-lg object-cover border border-white/20"
-          />
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-bold text-white">
-                {currentProfile?.name}
-                {t('profileSpace')}
-              </span>
-              {currentProfile?.isKids && (
-                <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold">
-                  KIDS
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {t('account')}: <span className="text-gray-200 font-mono">{currentUser.email}</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Sync Controls (Always visible on mobile & desktop) */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
-          {syncMessage ? (
-            <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 animate-fadeIn">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-              {syncMessage}
+      {/* Profile Header Badge */}
+      <div className="flex items-center space-x-3 mb-6 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-xl">
+        <img
+          src={currentProfile?.avatar}
+          alt={currentProfile?.name}
+          className="w-10 h-10 rounded-lg object-cover border border-white/20 flex-shrink-0"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-bold text-white truncate">
+              {currentProfile?.name}
+              {t('profileSpace')}
             </span>
-          ) : (
-            <div className="flex items-center space-x-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs px-2.5 py-1.5 rounded-lg font-medium shadow-sm">
-              <Cloud className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 animate-pulse" />
-              <span>全自动实时同步已开启</span>
-            </div>
-          )}
-
-          <button
-            onClick={handleManualSync}
-            disabled={syncing}
-            className="flex items-center space-x-1 text-xs bg-white/10 hover:bg-white/20 active:scale-95 text-white px-2.5 py-1.5 rounded-lg transition-all border border-white/10 disabled:opacity-50"
-            title="全自动同步中，也可点击立即刷新"
-          >
-            {syncing ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E50914]" />
-            ) : (
-              <RotateCcw className="w-3.5 h-3.5 text-gray-300" />
+            {currentProfile?.isKids && (
+              <span className="text-[10px] bg-[#E50914] text-white px-1.5 py-0.5 rounded font-bold flex-shrink-0">
+                KIDS
+              </span>
             )}
-            <span>{syncing ? '同步中...' : '刷新'}</span>
-          </button>
+          </div>
+          <p className="text-xs text-gray-400 mt-0.5 truncate">
+            {t('account')}: <span className="text-gray-300 font-mono">{currentUser.email}</span>
+          </p>
         </div>
       </div>
 
-      {/* Tab Switcher */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-8">
-        <div className="flex items-center space-x-6">
+      {/* Tab Switcher - Responsive & Scrollable without wrapping */}
+      <div className="flex items-center justify-between border-b border-white/10 mb-6 sm:mb-8 overflow-x-auto no-scrollbar">
+        <div className="flex items-center space-x-4 sm:space-x-8 min-w-max pb-3">
           <button
             onClick={() => setActiveTab('watchlist')}
-            className={`flex items-center text-lg sm:text-xl font-bold transition-colors pb-1 relative ${
+            className={`flex items-center whitespace-nowrap text-sm sm:text-base md:text-lg font-bold transition-colors relative py-1 ${
               activeTab === 'watchlist' ? 'text-white' : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Bookmark className="w-5 h-5 mr-2" />
-            {t('myList')}
-            <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
+            <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0" />
+            <span>{t('myList')}</span>
+            <span className="ml-1.5 sm:ml-2 text-[11px] sm:text-xs bg-white/10 text-gray-300 px-1.5 sm:px-2 py-0.5 rounded-full font-mono">
               {watchlist.length}
             </span>
             {activeTab === 'watchlist' && (
-              <div className="absolute bottom-[-17px] left-0 right-0 h-1 bg-[#E50914] rounded-full" />
+              <div className="absolute -bottom-3 left-0 right-0 h-0.5 sm:h-1 bg-[#E50914] rounded-full" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`flex items-center text-lg sm:text-xl font-bold transition-colors pb-1 relative ${
+            className={`flex items-center whitespace-nowrap text-sm sm:text-base md:text-lg font-bold transition-colors relative py-1 ${
               activeTab === 'history' ? 'text-white' : 'text-gray-400 hover:text-white'
             }`}
           >
-            <History className="w-5 h-5 mr-2" />
-            {t('watchHistory')}
-            <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
+            <History className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0" />
+            <span>{t('watchHistory')}</span>
+            <span className="ml-1.5 sm:ml-2 text-[11px] sm:text-xs bg-white/10 text-gray-300 px-1.5 sm:px-2 py-0.5 rounded-full font-mono">
               {history.length}
             </span>
             {activeTab === 'history' && (
-              <div className="absolute bottom-[-17px] left-0 right-0 h-1 bg-[#E50914] rounded-full" />
+              <div className="absolute -bottom-3 left-0 right-0 h-0.5 sm:h-1 bg-[#E50914] rounded-full" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('downloads')}
-            className={`flex items-center text-lg sm:text-xl font-bold transition-colors pb-1 relative ${
+            className={`flex items-center whitespace-nowrap text-sm sm:text-base md:text-lg font-bold transition-colors relative py-1 ${
               activeTab === 'downloads' ? 'text-white' : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Download className="w-5 h-5 mr-2" />
-            {t('downloadsTab')}
-            <span className="ml-2 text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded-full font-mono">
-              {downloads.length}
-            </span>
+            <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 flex-shrink-0" />
+            <span>{t('downloadsTab')}</span>
+            {downloads.length > 0 && (
+              <span className="ml-1.5 sm:ml-2 text-[11px] sm:text-xs bg-white/10 text-gray-300 px-1.5 sm:px-2 py-0.5 rounded-full font-mono">
+                {downloads.length}
+              </span>
+            )}
             {activeTab === 'downloads' && (
-              <div className="absolute bottom-[-17px] left-0 right-0 h-1 bg-[#E50914] rounded-full" />
+              <div className="absolute -bottom-3 left-0 right-0 h-0.5 sm:h-1 bg-[#E50914] rounded-full" />
             )}
           </button>
         </div>
@@ -322,10 +239,10 @@ export const MyListPage: React.FC<MyListPageProps> = ({
         {activeTab === 'history' && history.length > 0 && (
           <button
             onClick={handleClearHistory}
-            className="flex items-center text-xs text-gray-400 hover:text-[#E50914] transition-colors"
+            className="flex items-center whitespace-nowrap text-xs text-gray-400 hover:text-[#E50914] transition-colors ml-4 pb-3 flex-shrink-0"
           >
-            <Trash2 className="w-4 h-4 mr-1" />
-            {t('clearHistory')}
+            <Trash2 className="w-3.5 h-3.5 mr-1" />
+            <span>{t('clearHistory')}</span>
           </button>
         )}
       </div>
@@ -368,10 +285,10 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
           {/* Sub-tabs: All vs Followed Anime */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-1">
               <button
                 onClick={() => setWatchlistSubTab('all')}
-                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   watchlistSubTab === 'all'
                     ? 'bg-white text-black shadow'
                     : 'bg-white/10 hover:bg-white/15 text-gray-300'
@@ -382,7 +299,7 @@ export const MyListPage: React.FC<MyListPageProps> = ({
 
               <button
                 onClick={() => setWatchlistSubTab('anime')}
-                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all flex items-center space-x-1.5 cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   watchlistSubTab === 'anime'
                     ? 'bg-pink-600 text-white shadow-md shadow-pink-900/40'
                     : 'bg-white/10 hover:bg-white/15 text-gray-300'
